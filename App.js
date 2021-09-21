@@ -3,6 +3,8 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import firebase from 'firebase/app'
+import 'firebase/auth'
+
 
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
@@ -21,9 +23,7 @@ const firebaseConfig = {
     measurementId: "G-HLYXQHGYPT"
 };
 
-if (firebase.app.length === 0) {
-    firebase.initializeApp(firebaseConfig)
-}
+firebase.initializeApp(firebaseConfig)
 
 //github test
 
