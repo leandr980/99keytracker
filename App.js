@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
+import React, { Component } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import firebase from 'firebase/app'
@@ -31,17 +31,57 @@ firebase.initializeApp(firebaseConfig)
 
 const Stack = createStackNavigator();
 
-export default function App() {
-    return (
-        <NavigationContainer>
-            <Stack.Navigator initialRouteName="Landing">
-                <Stack.Screen name="Landing" component={LandingScreen} options={{headerShown: false}}/>
-                <Stack.Screen name="Register" component={RegisterScreen} />
+export class App extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            loaded: false,
+        }
+    }
+
+    componentDidMount() {
+        firebase.auth().onAuthStateChanged((user) => {
+            if (!user) {
+                this.setState({
+                    loggedIn: false,
+                    loaded: true,
+                })
+            }
+            else {
+                this.setState({
+                    loggedIn: true,
+                    loaded:true 
+                })
+            }
+        })
+    }
+
+    render() {
+        const { loggedIn, loaded } = this.setState
+
+        if (!loaded) {
+            return (
+                <View>
+                    </Text> Loading </Text>
+                    </View>
+                )
+        }
+
+        return (
+            <NavigationContainer>
+                <Stack.Navigator initialRouteName="Landing">
+                    <Stack.Screen name="Landing" component={LandingScreen} options={{ headerShown: false }} />
+                    <Stack.Screen name="Register" component={RegisterScreen} />
 
                 </Stack.Navigator>
-        </NavigationContainer>
-  );
+            </NavigationContainer >
+            )
+    }
 }
+ export default App
+
+
+
 
 const styles = StyleSheet.create({
   container: {
