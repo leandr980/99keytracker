@@ -82,7 +82,6 @@ export class App extends Component {
                         <Stack.Screen name="Landing" component={LandingScreen} options={{ headerShown: false }} />
                         <Stack.Screen name="Register" component={RegisterScreen} />
                         <Stack.Screen name="Login" component={LoginScreen} />
-
                     </Stack.Navigator>
                 </NavigationContainer >
             )
@@ -90,8 +89,12 @@ export class App extends Component {
 
         return (
             <Provider store={store}>
-                <MainScreen />
-                </Provider>
+                <NavigationContainer>
+                    <Stack.Navigator initialRouteName="Main">
+                        <Stack.Screen name="Main" component={MainScreen} options={{ headerShown: false }} />
+                    </Stack.Navigator>
+                </NavigationContainer >
+            </Provider>
         )
     }
 }
