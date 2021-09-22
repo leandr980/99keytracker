@@ -17,23 +17,10 @@ export class Main extends Component {
 		this.props.fetchUser();
 	}
 	render() {
-
-		/*
-		const { currentUser } = this.props;
-
-		console.log(currentUser)
-		if (currentUser === undefined) {
-			return (
-				<View>
-				</View>
-			)
-		}
-		*/
-
 		return (
 			<Tab.Navigator>
-				<Tab.Navigator name='feed' component={FeedScreen}/>
-				</Tab.Navigator>
+				<Tab.Screen name='feed' component={FeedScreen} />
+			</Tab.Navigator>
 
 		)
 	}
@@ -47,3 +34,15 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({ fetchUser }, dispa
 
 
 export default connect(mapStateToProps, mapDispatchToProps)(Main)
+
+/*
+const { currentUser } = this.props;
+
+console.log(currentUser)
+if (currentUser === undefined) {
+	return (
+		<View>
+		</View>
+	)
+}
+*/
