@@ -4,6 +4,6 @@
     "\\components",
     "\\components\\auth"
   ],
-  "SelectedNode": "\\App.js",
+  "SelectedNode": "\\components\\auth\\Login.js",
   "PreviewInSolutionExplorer": false
 }
