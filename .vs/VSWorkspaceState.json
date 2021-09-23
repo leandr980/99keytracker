@@ -2,8 +2,13 @@
   "ExpandedNodes": [
     "",
     "\\components",
-    "\\components\\auth"
+    "\\components\\auth",
+    "\\components\\main",
+    "\\redux",
+    "\\redux\\actions",
+    "\\redux\\constants",
+    "\\redux\\reducers"
   ],
-  "SelectedNode": "\\components\\auth\\Login.js",
+  "SelectedNode": "\\redux\\actions\\index.js",
   "PreviewInSolutionExplorer": false
 }
