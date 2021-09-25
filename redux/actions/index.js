@@ -23,3 +23,17 @@ export function fetchUser() {
                 })
     })
 }
+
+export function fetchUserPosts() {
+    return ((dispatch) => {
+        firebase.firestore()
+            .collection("posts")
+            .doc(firebase.auth().currentUser.uid)
+            .collection("userPosts")
+            .orderBy("creation", "asc")
+            .get()
+            .then((snapshot) => {
+                console.log(snapshot.docs)
+            })
+    })
+}
