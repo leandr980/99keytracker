@@ -2,8 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import React, { Component } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import firebase from 'firebase/app'
-import 'firebase/auth'
+import firebase from 'firebase'
 
 
 import { NavigationContainer } from '@react-navigation/native'
@@ -20,6 +19,8 @@ import rootReducer from './redux/reducers'
 import thunk from 'redux-thunk'
 
 import MainScreen from './components/Main'
+import SaveScreen from './components/main/Save'
+import AddScreen from './components/main/Add'
 
 console.disableYellowBox = true;
 
@@ -94,6 +95,8 @@ export class App extends Component {
                 <NavigationContainer>
                     <Stack.Navigator initialRouteName="Main">
                         <Stack.Screen name="Main" component={MainScreen} options={{ headerShown: false }} />
+                        <Stack.Screen name="Add" component={AddScreen}/>
+                        <Stack.Screen name="Save" component={SaveScreen} navigation={ this.props.navigation}  />
                     </Stack.Navigator>
                 </NavigationContainer >
             </Provider>

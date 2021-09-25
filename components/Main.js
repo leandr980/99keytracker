@@ -15,23 +15,34 @@ import ProfileScreen from './main/Profile'
 
 const Tab = createBottomTabNavigator();
 
+const EmptyScreen = () => {
+	return(null)
+}
+
 export class Main extends Component {
 	componentDidMount() {
 		this.props.fetchUser();
 	}
 	render() {
 		return (
-			<Tab.Navigator>
+			<Tab.Navigator initialRouteName="Feed">
 				<Tab.Screen name='Feed' component={FeedScreen}
 					options={{
 						tabBarIcon: ({ color, size }) => (
-							<MaterialCommunityIcons name="home" color={color} size={26} />
+							<MaterialCommunityIcons name="home-circle" color={color} size={26} />
 						),
 					}} />
-				<Tab.Screen name='Add' component={AddScreen}
+				<Tab.Screen name='Photo' component={EmptyScreen}
+					listeners={({ navigation }) => ({
+						tabPress: event => {
+							event.preventDefault();
+							navigation.navigate("Add")
+                        }
+					})}
+
 					options={{
 						tabBarIcon: ({ color, size }) => (
-							<MaterialCommunityIcons name="plus" color={color} size={26} />
+							<MaterialCommunityIcons name="plus-circle" color={color} size={26} />
 						),
 					}} />
 				<Tab.Screen name='Profile' component={ProfileScreen}
