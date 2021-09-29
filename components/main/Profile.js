@@ -1,6 +1,6 @@
 // JavaScript source code
 import React, { useEffect, useState } from 'react'
-import { View, Text, Image, FlatList, StyleSheet } from 'react-native'
+import { View, Text, Image, FlatList, StyleSheet, Button } from 'react-native'
 
 import firebase from 'firebase'
 require ("firebase/firestore")
@@ -55,7 +55,11 @@ function Profile(props) {
                 })
         }
 
-    } , [props.route.params.uid])
+    }, [props.route.params.uid])
+
+    const onLogout = () => {
+        firebase.auth().signOut();
+    }
 
     if (user === null) {
         return <View/>
@@ -69,6 +73,8 @@ function Profile(props) {
             <View style={styles.containerInfo}>
                 <Text> name: {user.name} </Text>
                 <Text> email: {user.email} </Text>
+
+                <Button title='logout' onPress={() =>onLogout()}/>
             </View>
 
             <View style={styles.containerGallery}>
