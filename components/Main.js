@@ -15,6 +15,7 @@ import FeedScreen from './main/Feed'
 import AddScreen from './main/Add'
 import ProfileScreen from './main/Profile'
 import SearchScreen from './main/Search'
+import KeyScreen from './main/Addkey'
 
 const Tab = createBottomTabNavigator();
 
@@ -30,6 +31,7 @@ export class Main extends Component {
 	render() {
 		return (
 			<Tab.Navigator initialRouteName="Feed">
+
 				<Tab.Screen name='Feed' component={FeedScreen}
 					options={{
 						tabBarIcon: ({ color, size }) => (
@@ -37,6 +39,7 @@ export class Main extends Component {
 						),
 						headerShown: false
 					}} />
+
 				<Tab.Screen name='Search' component={SearchScreen} navigation={this.props.navigation}
 					options={{
 						tabBarIcon: ({ color, size }) => (
@@ -44,6 +47,7 @@ export class Main extends Component {
 						),
 						headerShown: false
 					}} />
+
 				<Tab.Screen name='Photo' component={EmptyScreen}
 					listeners={({ navigation }) => ({
 						tabPress: event => {
@@ -57,6 +61,15 @@ export class Main extends Component {
 							<MaterialCommunityIcons name="plus-circle" color={color} size={26} />
 						),
 					}} />
+
+				<Tab.Screen name='Key' component={KeyScreen} 
+					options={{
+						tabBarIcon: ({ color, size }) => (
+							<MaterialCommunityIcons name="magnify" color={color} size={26} />
+						),
+						headerShown: false
+					}} />
+
 				<Tab.Screen name='Profile' component={ProfileScreen}
 					listeners={({ navigation }) => ({
 						tabPress: event => {
@@ -72,6 +85,7 @@ export class Main extends Component {
 						),
 						headerShown: false
 					}} />
+
 			</Tab.Navigator>
 
 		)
