@@ -95,11 +95,16 @@ function Profile(props) {
 
             <View style={styles.containerGallery}>
                 <FlatList
-                    numColumns={1}
+                    numColumns={3}
                     horizontal={false}
                     data={userPost}
                     renderItem={({ item }) => (
                         <View style={ styles.containerImage}>
+
+                            <Image
+                                style={styles.image}
+                                source={{ uri: item.downloadURL }}
+                            />
 
                             <TouchableOpacity>
                                 <Text> {item.caption}  </Text>
