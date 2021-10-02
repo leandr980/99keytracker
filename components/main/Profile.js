@@ -6,20 +6,23 @@ import firebase from 'firebase'
 require ("firebase/firestore")
 
 import { connect } from 'react-redux'
-
+    
 function Profile(props) {
 
     const [userPost, setUserPosts] = useState([]);
+    const [userKeys, setUserKeys ] = useState([]);
     const [user, setUser] = useState(null);
-    const [keyinfo, setkeyinfo] = useState([]);
 
     useEffect(() => {
-        const { currentUser, posts } = props;
+        const { currentUser, posts, keyinfo } = props;
         //console.log({ currentUser, posts })
 
         if (props.route.params.uid === firebase.auth().currentUser.uid) {
             setUser(currentUser)
             setUserPosts(posts)
+            setUserKeys(keyinfo)
+
+            //console.log(keyinfo)
         }
         else {
             firebase.firestore()
@@ -39,11 +42,11 @@ function Profile(props) {
                     }
                 })
 
-
             firebase.firestore()
                 .collection("posts")
                 .doc(props.route.params.uid)
                 .collection("userPosts")
+                .orderBy("creation", "asc")
                 .get()
                 .then((snapshot) => {
                     let posts = snapshot.docs.map(doc => {
@@ -58,17 +61,17 @@ function Profile(props) {
                 .collection("keycollection")
                 .doc(props.route.params.uid)
                 .collection("keylist")
+                .orderBy("creation", "asc")
                 .get()
                 .then((snapshot) => {
-                    let keydata = snapshot.docs.map(doc => {
+                    let keyinfo = snapshot.docs.map(doc => {
                         const data = doc.data();
                         const id = doc.id;
                         return { id, ...data }
-
-                        //change this into something idk
                     })
-                    setkeyinfo(keydata)
+                    setUserKeys(keyinfo)
                 })
+
         }
 
     }, [props.route.params.uid])
@@ -91,47 +94,33 @@ function Profile(props) {
                 <Text> email: {user.email} </Text>
 
                 <Button title='logout' onPress={() =>onLogout()}/>
+                <Button title='refresh' onPress={() => setUserKeys(keyinfo)}/>
             </View>
 
             <View style={styles.containerGallery}>
-                <FlatList
-                    numColumns={3}
-                    horizontal={false}
-                    data={userPost}
-                    renderItem={({ item }) => (
-                        <View style={ styles.containerImage}>
-
-                            <Image
-                                style={styles.image}
-                                source={{ uri: item.downloadURL }}
-                            />
-
-                            <TouchableOpacity>
-                                <Text> {item.caption}  </Text>
-                            </TouchableOpacity>
-                        </View>
-
-                        )}
-                />
 
                 <FlatList
                     numColumns={1}
                     horizontal={false}
-                    data={keyinfo}
+                    data={userKeys}
                     renderItem={({ item }) => (
-                        <View style={styles.containerImage}>
-
-                            <TouchableOpacity>
-                                <Text> {item.keyname}  </Text>
+                        <View style={styles.containerKeylist}>
+                            <TouchableOpacity
+                                onPress={() => props.navigation.navigate("Keyinfo", { uid: item.id })}>
+                                <Text> {item.keyname} {item.keylocation} </Text>
                             </TouchableOpacity>
+
                         </View>
 
                     )}
                 />
+
             </View>
         </View>
     )
 }
+
+
 
 const styles = StyleSheet.create({
     container: {
@@ -150,12 +139,17 @@ const styles = StyleSheet.create({
     },
     containerImage: {
         flex: 1/3
+    },
+    containerKeylist: {
+        flex: 1,
+        alignItems: "center",
     }
 })
 
 const mapStateToProps = (store) => ({
     currentUser: store.userState.currentUser,
-    posts: store.userState.posts
+    posts: store.userState.posts,
+    keyinfo: store.userState.keyinfo
 })
 
 export default connect(mapStateToProps, null)(Profile)

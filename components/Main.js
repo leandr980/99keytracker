@@ -6,7 +6,7 @@ import firebase from 'firebase'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
-import { fetchUser, fetchUserPosts } from '../redux/actions/index'
+import { fetchUser, fetchUserPosts, fetchKeyInfo } from '../redux/actions/index'
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -27,6 +27,8 @@ export class Main extends Component {
 	componentDidMount() {
 		this.props.fetchUser();
 		this.props.fetchUserPosts();
+		this.props.fetchKeyInfo();
+		
 	}
 	render() {
 		return (
@@ -70,7 +72,7 @@ export class Main extends Component {
 						headerShown: false
 					}} />
 
-				<Tab.Screen name='Profile' component={ProfileScreen}
+				<Tab.Screen name='Profile' component={ProfileScreen} navigation={this.props.navigation}
 					listeners={({ navigation }) => ({
 						tabPress: event => {
 							event.preventDefault();
@@ -96,7 +98,7 @@ const mapStateToProps = (store) => ({
 	currentUser: store.userState.currentUser
 })
 
-const mapDispatchToProps = (dispatch) => bindActionCreators({ fetchUser, fetchUserPosts }, dispatch);
+const mapDispatchToProps = (dispatch) => bindActionCreators({ fetchUser, fetchUserPosts, fetchKeyInfo }, dispatch);
 
 
 export default connect(mapStateToProps, mapDispatchToProps)(Main)

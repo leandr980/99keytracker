@@ -21,6 +21,7 @@ import thunk from 'redux-thunk'
 import MainScreen from './components/Main'
 import SaveScreen from './components/main/Save'
 import AddScreen from './components/main/Add'
+import KeyinfoScreen from './components/main/Keyinfo'
 
 console.disableYellowBox = true;
 
@@ -96,6 +97,7 @@ export class App extends Component {
                     <Stack.Navigator initialRouteName="Main">
                         <Stack.Screen name="Main" component={MainScreen} />
                         <Stack.Screen name="Add" component={AddScreen}/>
+                        <Stack.Screen name="Keyinfo" component={KeyinfoScreen}/>
                         <Stack.Screen name="Save" component={SaveScreen} navigation={ this.props.navigation}  />
                     </Stack.Navigator>
                 </NavigationContainer >

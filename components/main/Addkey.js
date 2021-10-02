@@ -8,6 +8,7 @@ require("firebase/firebase-storage")
 export default function Addkey(props) {
 
     const [keyname, setkeyname] = useState("")
+    const [keylocation, setKeylocation] = useState("")
 
     const saveKeyData = () => {
 
@@ -17,6 +18,7 @@ export default function Addkey(props) {
             .collection("keylist")
             .add({
                 keyname,
+                keylocation,
                 creation: firebase.firestore.FieldValue.serverTimestamp()
             },
                 function (error) {
@@ -32,8 +34,12 @@ export default function Addkey(props) {
     return (
         <View style={{ flex: 1 }}>
             <TextInput
-                placeholder="Write a Caption . . ."
+                placeholder="Write key name . . ."
                 onChangeText={(keyname) => setkeyname(keyname)}
+            />
+            <TextInput
+                placeholder="Write a location . . ."
+                onChangeText={(keylocation) => setKeylocation(keylocation)}
             />
 
             <Button
