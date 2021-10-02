@@ -1,4 +1,4 @@
-import { USER_STATE_CHANGE, USER_POSTS_STATE_CHANGE } from '../constants/index'
+import { USER_STATE_CHANGE, USER_POSTS_STATE_CHANGE, USER_KEYINFO_STATE_CHANGE } from '../constants/index'
 
 import firebase from 'firebase'
 import 'firebase/auth'
@@ -41,6 +41,27 @@ export function fetchUserPosts() {
                 })
                 //console.log(posts)
                 dispatch({type: USER_POSTS_STATE_CHANGE, posts})
+            })
+    })
+}
+
+export function fetchKeyInfo() {
+    return ((dispatch) => {
+        firebase.firestore()
+            .collection("keycollection")
+            .doc(firebase.auth().currentUser.uid)
+            .collection("keylist")
+            .orderBy("creation", "asc")
+            .get()
+            .then((snapshot) => {
+                let keyinfo = snapshot.docs.map(doc => {
+                    const data = doc.data();
+                    const id = doc.id;
+                    return { id, ...data }
+
+                })
+                //console.log(keyinfo)
+                dispatch({ type: USER_KEYINFO_STATE_CHANGE, keyinfo })
             })
     })
 }
