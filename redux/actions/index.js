@@ -86,7 +86,7 @@ export function fetchKeyInfoDetailes() {
                     return { id, ...data }
 
                 })
-                //console.log(keyinfo)
+                console.log(keyinfo)
                 dispatch({ type: USER_KEYINFO_DETAILS_STATE_CHANGE, keyinfodetails })
             })
     })
