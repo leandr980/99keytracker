@@ -7,7 +7,7 @@ require("firebase/firestore")
 
 import { connect } from 'react-redux'
 
-function Keyinfo(props) {
+function Keyinfo(props, { navigation}) {
 
     const [userKeys, setUserKeys] = useState([]);
     const [user, setUser] = useState(null);
@@ -36,7 +36,7 @@ function Keyinfo(props) {
 
                     }
                     else {
-                        console.log('does not exit!')
+                        console.log('does not exit!' + ' ' + props.route.params.uid)
                     }
                 })
 
@@ -45,7 +45,7 @@ function Keyinfo(props) {
                 .collection("keycollection")
                 .doc(firebase.auth().currentUser.uid)
                 .collection("keylist")
-                .doc(props.route.params.keyid)
+                .doc()
                 .get()
                 .then((snapshot) => {
                     let keyinfodetails = snapshot.docs.map(doc => {
@@ -69,8 +69,8 @@ function Keyinfo(props) {
     }
 
 
-    console.log(props.route.params.uid + ' ' + firebase.auth().currentUser.uid)
-    console.log(userKeys)
+    console.log(props.route.params.uid + ' ' + firebase.auth().currentUser.uid + ' keyinfo screen ')
+    console.log(userKeys + " userkeys state")
 
     return (
         <View style={styles.container}>

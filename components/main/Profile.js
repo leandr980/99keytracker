@@ -85,12 +85,9 @@ function Profile(props) {
         return <View/>
 
     }
-
-    const { currentUser, posts } = props;
     //console.log({currentUser, posts})
 
-    console.log(props.route.params.uid)
-    console.log()
+    console.log(props.route.params.uid + ' profile screen ')
 
     return (
         <View style={ styles.container}>
@@ -111,7 +108,7 @@ function Profile(props) {
                     renderItem={({ item }) => (
                         <View style={styles.containerKeylist}>
                             <TouchableOpacity
-                                onPress={() => props.navigation.navigate("Keyinfo", { keyid: item.keyname, uid: props.route.params.uid })}>
+                                onPress={() => props.navigation.navigate("Keyinfo", item )}>
                                 <Text> {item.keyname} {item.keylocation} {item.id} </Text>
                             </TouchableOpacity>
 
