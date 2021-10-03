@@ -14,7 +14,7 @@ function Profile(props) {
     const [user, setUser] = useState(null);
 
     useEffect(() => {
-        const { currentUser, posts, keyinfo } = props;
+        const { currentUser, posts, keyinfo} = props;
         //console.log({ currentUser, posts })
 
         if (props.route.params.uid === firebase.auth().currentUser.uid) {
@@ -42,6 +42,7 @@ function Profile(props) {
                     }
                 })
 
+            /*
             firebase.firestore()
                 .collection("posts")
                 .doc(props.route.params.uid)
@@ -56,7 +57,7 @@ function Profile(props) {
                     })
                     setUserPosts(posts)
                 })
-
+                */
             firebase.firestore()
                 .collection("keycollection")
                 .doc(props.route.params.uid)
@@ -87,6 +88,10 @@ function Profile(props) {
 
     const { currentUser, posts } = props;
     //console.log({currentUser, posts})
+
+    console.log(props.route.params.uid)
+    console.log()
+
     return (
         <View style={ styles.container}>
             <View style={styles.containerInfo}>
@@ -106,8 +111,8 @@ function Profile(props) {
                     renderItem={({ item }) => (
                         <View style={styles.containerKeylist}>
                             <TouchableOpacity
-                                onPress={() => props.navigation.navigate("Keyinfo", { uid: item.id })}>
-                                <Text> {item.keyname} {item.keylocation} </Text>
+                                onPress={() => props.navigation.navigate("Keyinfo", { keyid: item.keyname, uid: props.route.params.uid })}>
+                                <Text> {item.keyname} {item.keylocation} {item.id} </Text>
                             </TouchableOpacity>
 
                         </View>
@@ -143,6 +148,7 @@ const styles = StyleSheet.create({
     containerKeylist: {
         flex: 1,
         alignItems: "center",
+        margin: 10,
     }
 })
 
