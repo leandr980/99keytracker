@@ -6,7 +6,7 @@ import firebase from 'firebase'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
-import { fetchUser, fetchUserPosts, fetchKeyInfo } from '../redux/actions/index'
+import { fetchUser, fetchUserPosts, fetchKeyInfo, fetchKeyInfoDetails } from '../redux/actions/index'
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -67,7 +67,7 @@ export class Main extends Component {
 				<Tab.Screen name='Key' component={KeyScreen} 
 					options={{
 						tabBarIcon: ({ color, size }) => (
-							<MaterialCommunityIcons name="magnify" color={color} size={26} />
+							<MaterialCommunityIcons name="key-variant" color={color} size={26} />
 						),
 						headerShown: false
 					}} />
@@ -98,7 +98,7 @@ const mapStateToProps = (store) => ({
 	currentUser: store.userState.currentUser
 })
 
-const mapDispatchToProps = (dispatch) => bindActionCreators({ fetchUser, fetchUserPosts, fetchKeyInfo }, dispatch);
+const mapDispatchToProps = (dispatch) => bindActionCreators({ fetchUser, fetchUserPosts, fetchKeyInfo, fetchKeyInfoDetails }, dispatch);
 
 
 export default connect(mapStateToProps, mapDispatchToProps)(Main)
