@@ -1,4 +1,9 @@
-import { USER_STATE_CHANGE, USER_POSTS_STATE_CHANGE, USER_KEYINFO_STATE_CHANGE } from "../constants"
+import {
+    USER_STATE_CHANGE,
+    USER_POSTS_STATE_CHANGE,
+    USER_KEYINFO_STATE_CHANGE,
+    USER_KEYINFO_DETAILS_STATE_CHANGE
+} from "../constants"
 
 const initialState = {
     currentUser: null,
@@ -22,6 +27,11 @@ export const user = (state = initialState, action) => {
             return {
                 ...state,
                 keyinfo: action.keyinfo
+            }
+        case USER_KEYINFO_DETAILS_STATE_CHANGE:
+            return {
+                ...state,
+                keyinfodetails: action.keyinfodetails
             }
 
         default:
