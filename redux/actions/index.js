@@ -80,13 +80,9 @@ export function fetchKeyInfoDetailes() {
             .doc(props.route.params.uid)
             .get()
             .then((snapshot) => {
-                let keyinfodetails = snapshot.docs.map(doc => {
-                    const data = doc.data();
-                    const id = doc.id;
-                    return { id, ...data }
-
-                })
-                console.log(keyinfo)
+                let keyinfodetails = snapshot.data
+                return keyinfodetails
+                console.log(keyinfo + "redux actions")
                 dispatch({ type: USER_KEYINFO_DETAILS_STATE_CHANGE, keyinfodetails })
             })
     })

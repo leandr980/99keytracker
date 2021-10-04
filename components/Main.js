@@ -98,7 +98,7 @@ const mapStateToProps = (store) => ({
 	currentUser: store.userState.currentUser
 })
 
-const mapDispatchToProps = (dispatch) => bindActionCreators({ fetchUser, fetchUserPosts, fetchKeyInfo, fetchKeyInfoDetails }, dispatch);
+const mapDispatchToProps = (dispatch) => bindActionCreators({ fetchUser, fetchUserPosts, fetchKeyInfo }, dispatch);
 
 
 export default connect(mapStateToProps, mapDispatchToProps)(Main)

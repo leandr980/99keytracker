@@ -31,7 +31,7 @@ function Profile(props) {
                 .get()
                 .then((snapshot) => {
                     if (snapshot.exists) {
-                        //console.log(snapshot.data())
+
                         setUser(snapshot.data());
                         console.log(snapshot.data())
                          
@@ -108,7 +108,7 @@ function Profile(props) {
                     renderItem={({ item }) => (
                         <View style={styles.containerKeylist}>
                             <TouchableOpacity
-                                onPress={() => props.navigation.navigate("Keyinfo", item )}>
+                                onPress={() => props.navigation.navigate("Keyinfo", { uid: item.id })}>
                                 <Text> {item.keyname} {item.keylocation} {item.id} </Text>
                             </TouchableOpacity>
 
