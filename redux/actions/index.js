@@ -82,7 +82,7 @@ export function fetchKeyInfoDetailes() {
             .then((snapshot) => {
                 let keyinfodetails = snapshot.data
                 return keyinfodetails
-                console.log(keyinfo + "redux actions")
+                console.log(keyinfodetails , "redux actions")
                 dispatch({ type: USER_KEYINFO_DETAILS_STATE_CHANGE, keyinfodetails })
             })
     })

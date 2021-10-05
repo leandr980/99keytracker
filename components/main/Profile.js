@@ -9,94 +9,29 @@ import { connect } from 'react-redux'
     
 function Profile(props) {
 
-    const [userPost, setUserPosts] = useState([]);
-    const [userKeys, setUserKeys ] = useState([]);
-    const [user, setUser] = useState(null);
+    const { currentUser, keyinfo } = props;
 
-    useEffect(() => {
-        const { currentUser, posts, keyinfo} = props;
-        //console.log({ currentUser, posts })
+    //console.log({ currentUser, keyinfo }, props.route.params.uid)
+    //console.log("profile screen")
 
-        if (props.route.params.uid === firebase.auth().currentUser.uid) {
-            setUser(currentUser)
-            setUserPosts(posts)
-            setUserKeys(keyinfo)
-
-            //console.log(keyinfo)
-        }
-        else {
-            firebase.firestore()
-                .collection("users")
-                .doc(props.route.params.uid)
-                .get()
-                .then((snapshot) => {
-                    if (snapshot.exists) {
-
-                        setUser(snapshot.data());
-                        console.log(snapshot.data())
-                         
-
-                    }
-                    else {
-                        console.log('does not exit!')
-                    }
-                })
-
-            /*
-            firebase.firestore()
-                .collection("posts")
-                .doc(props.route.params.uid)
-                .collection("userPosts")
-                .orderBy("creation", "asc")
-                .get()
-                .then((snapshot) => {
-                    let posts = snapshot.docs.map(doc => {
-                        const data = doc.data();
-                        const id = doc.id;
-                        return { id, ...data }
-                    })
-                    setUserPosts(posts)
-                })
-                */
-            firebase.firestore()
-                .collection("keycollection")
-                .doc(props.route.params.uid)
-                .collection("keylist")
-                .orderBy("creation", "asc")
-                .get()
-                .then((snapshot) => {
-                    let keyinfo = snapshot.docs.map(doc => {
-                        const data = doc.data();
-                        const id = doc.id;
-                        return { id, ...data }
-                    })
-                    setUserKeys(keyinfo)
-                })
-
-        }
-
-    }, [props.route.params.uid])
 
     const onLogout = () => {
         firebase.auth().signOut();
     }
 
-    if (user === null) {
+
+    if (currentUser === null) {
         return <View/>
-
     }
-    //console.log({currentUser, posts})
-
-    console.log(props.route.params.uid + ' profile screen ')
 
     return (
-        <View style={ styles.container}>
+        <View style={styles.container}>
             <View style={styles.containerInfo}>
-                <Text> name: {user.name} </Text>
-                <Text> email: {user.email} </Text>
+                <Text> name: {currentUser.name} </Text>
+                <Text> email:  {currentUser.email}</Text>
+                <Text> uid:  {currentUser.uid}</Text>
 
-                <Button title='logout' onPress={() =>onLogout()}/>
-                <Button title='refresh' onPress={() => setUserKeys(keyinfo)}/>
+                <Button title='logout' onPress={() => onLogout()} />
             </View>
 
             <View style={styles.containerGallery}>
@@ -104,22 +39,21 @@ function Profile(props) {
                 <FlatList
                     numColumns={1}
                     horizontal={false}
-                    data={userKeys}
+                    data={keyinfo}
                     renderItem={({ item }) => (
                         <View style={styles.containerKeylist}>
                             <TouchableOpacity
-                                onPress={() => props.navigation.navigate("Keyinfo", { uid: item.id })}>
-                                <Text> {item.keyname} {item.keylocation} {item.id} </Text>
+                                onPress={() => props.navigation.navigate("Keyinfo", { keyId: item.id, uid: firebase.auth().currentUser.uid})}>
+                                <Text> {item.keyname} {item.keylocation} {item.id}  </Text>
                             </TouchableOpacity>
 
                         </View>
 
                     )}
                 />
-
+                </View>
             </View>
-        </View>
-    )
+            )
 }
 
 

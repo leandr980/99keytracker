@@ -14,7 +14,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import FeedScreen from './main/Feed'
 import AddScreen from './main/Add'
 import ProfileScreen from './main/Profile'
-import SearchScreen from './main/Search'
+//import SearchScreen from './main/Search'
 import KeyScreen from './main/Addkey'
 
 const Tab = createBottomTabNavigator();
@@ -38,14 +38,6 @@ export class Main extends Component {
 					options={{
 						tabBarIcon: ({ color, size }) => (
 							<MaterialCommunityIcons name="home-circle" color={color} size={26} />
-						),
-						headerShown: false
-					}} />
-
-				<Tab.Screen name='Search' component={SearchScreen} navigation={this.props.navigation}
-					options={{
-						tabBarIcon: ({ color, size }) => (
-							<MaterialCommunityIcons name="magnify" color={color} size={26} />
 						),
 						headerShown: false
 					}} />
