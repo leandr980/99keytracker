@@ -56,7 +56,7 @@ export class Main extends Component {
 						),
 					}} />
 
-				<Tab.Screen name='Key' component={KeyScreen} 
+				<Tab.Screen name='My Keys' component={KeyScreen} 
 					options={{
 						tabBarIcon: ({ color, size }) => (
 							<MaterialCommunityIcons name="key-variant" color={color} size={26} />
