@@ -1,6 +1,7 @@
 // JavaScript source code
 import React, { useEffect, useState } from 'react'
 import { View, Text, Image, FlatList, StyleSheet, Button, TouchableOpacity } from 'react-native'
+import { Card } from 'react-native-elements'
 
 import firebase from 'firebase'
 require ("firebase/firestore")
@@ -27,11 +28,7 @@ function Profile(props) {
     return (
         <View style={styles.container}>
             <View style={styles.containerInfo}>
-                <Text> name: {currentUser.name} </Text>
-                <Text> email:  {currentUser.email}</Text>
-                <Text> uid:  {currentUser.uid}</Text>
-
-                <Button title='logout' onPress={() => onLogout()} />
+                <Text> Welcome {currentUser.name} </Text>
             </View>
 
             <View style={styles.containerGallery}>
@@ -41,13 +38,20 @@ function Profile(props) {
                     horizontal={false}
                     data={keyinfo}
                     renderItem={({ item }) => (
-                        <View style={styles.containerKeylist}>
-                            <TouchableOpacity
-                                onPress={() => props.navigation.navigate("Keyinfo", { keyId: item.id, uid: firebase.auth().currentUser.uid})}>
-                                <Text> {item.keyname} {item.keylocation} {item.id}  </Text>
-                            </TouchableOpacity>
 
-                        </View>
+                        <Card style={{ borderRadius: 8 }}>
+                            <View style={styles.containerKeylist}>
+
+
+                                <TouchableOpacity
+                                    style={styles.containerTouchable}
+                                    onPress={() => props.navigation.navigate("Keyinfo", { keyId: item.id, uid: firebase.auth().currentUser.uid })}>
+                                    <Text style={styles.keyliststyle}> {item.keyname} </Text>
+                                    <Text style={styles.keyliststyle}> {item.keylocation} </Text>
+                                    <Text style={styles.keyliststyle}> {item.id}  </Text>
+                                </TouchableOpacity>
+                            </View>
+                            </Card>
 
                     )}
                 />
@@ -68,18 +72,24 @@ const styles = StyleSheet.create({
     },
     containerGallery: {
         flex: 1,
-    },
-    image: {
-        flex: 1,
-        aspectRatio: 1/1
-    },
-    containerImage: {
-        flex: 1/3
+        margin: 20,
+        justifyContent: 'center',
     },
     containerKeylist: {
         flex: 1,
         alignItems: "center",
+        flexDirection: 'row',
+        justifyContent:'space-between',
         margin: 10,
+    },
+    containerTouchable: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    keyliststyle: {
+        flex: 1,
+        fontSize: 15,
     }
 })
 
