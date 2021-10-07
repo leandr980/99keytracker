@@ -67,6 +67,10 @@ export default function Keyinfo(props) {
                     <Text> Key Status </Text>
                 </View>
 
+                <Button
+                    title='Add'
+                    onPress={() => props.navigation.navigate("AddKeyHistory", { keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid })} />
+
             </View>
             <View style={styles.containerGallery}>
 
@@ -96,7 +100,7 @@ export default function Keyinfo(props) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginTop: 40
+        marginTop: 20
     },
     containerInfo: {
         margin: 10,
