@@ -13,9 +13,10 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 import FeedScreen from './main/Feed'
 import AddScreen from './main/Add'
-import ProfileScreen from './main/Profile'
+import KeyScreen from './main/Keylist'
 //import SearchScreen from './main/Search'
-import KeyScreen from './main/Addkey'
+import AddkeyScreen from './main/Addkey'
+import ProfileScreen from './main/Profile'
 
 const Tab = createBottomTabNavigator();
 
@@ -32,15 +33,7 @@ export class Main extends Component {
 	}
 	render() {
 		return (
-			<Tab.Navigator initialRouteName="Feed">
-
-				<Tab.Screen name='Feed' component={FeedScreen}
-					options={{
-						tabBarIcon: ({ color, size }) => (
-							<MaterialCommunityIcons name="home-circle" color={color} size={26} />
-						),
-						headerShown: false
-					}} />
+			<Tab.Navigator initialRouteName="Key List">
 
 				<Tab.Screen name='Photo' component={EmptyScreen}
 					listeners={({ navigation }) => ({
@@ -56,26 +49,26 @@ export class Main extends Component {
 						),
 					}} />
 
-				<Tab.Screen name='My Keys' component={KeyScreen} 
-					options={{
-						tabBarIcon: ({ color, size }) => (
-							<MaterialCommunityIcons name="key-variant" color={color} size={26} />
-						),
-						headerShown: false
-					}} />
-
-				<Tab.Screen name='Profile' component={ProfileScreen} navigation={this.props.navigation}
+				<Tab.Screen name='Key List' component={KeyScreen} navigation={this.props.navigation}
 					listeners={({ navigation }) => ({
 						tabPress: event => {
 							event.preventDefault();
-							navigation.navigate("Profile", {uid: firebase.auth().currentUser.uid})
+							navigation.navigate("Key List", {uid: firebase.auth().currentUser.uid})
 						}
 					})}
 
 					options={{
 						tabBarIcon: ({ color, size }) => (
-							<MaterialCommunityIcons name="account-circle" color={color} size={26}
+							<MaterialCommunityIcons name="key-variant" color={color} size={26}
 							/>
+						),
+						headerShown: false
+					}} />
+
+				<Tab.Screen name='Profile' component={ProfileScreen}
+					options={{
+						tabBarIcon: ({ color, size }) => (
+							<MaterialCommunityIcons name="account-circle" color={color} size={26} />
 						),
 						headerShown: false
 					}} />
