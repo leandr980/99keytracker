@@ -22,6 +22,7 @@ import MainScreen from './components/Main'
 import SaveScreen from './components/main/Save'
 import AddScreen from './components/main/Add'
 import KeyinfoScreen from './components/main/Keyinfo'
+import Addkeyscreen from './components/main/Addkey'
 
 console.disableYellowBox = true;
 
@@ -97,6 +98,7 @@ export class App extends Component {
                     <Stack.Navigator initialRouteName="Main">
                         <Stack.Screen name="Main" component={MainScreen} options={{ headerShown: false }} />
                         <Stack.Screen name="Add" component={AddScreen}/>
+                        <Stack.Screen name="AddKey" component={Addkeyscreen}/>
                         <Stack.Screen name="Keyinfo" component={KeyinfoScreen}/>
                         <Stack.Screen name="Save" component={SaveScreen} navigation={ this.props.navigation}  />
                     </Stack.Navigator>
