@@ -1,7 +1,7 @@
 // JavaScript source code
 import React, { useEffect, useState } from 'react'
 import { View, Text, Image, FlatList, StyleSheet, Button, TouchableOpacity } from 'react-native'
-import { Card, FAB, Searchbar, IconButton } from 'react-native-paper'
+import { Card, FAB, Searchbar, IconButton, Title, Paragraph } from 'react-native-paper'
 
 import firebase from 'firebase'
 require ("firebase/firestore")
@@ -39,17 +39,16 @@ function Profile(props) {
                     data={keyinfo}
                     renderItem={({ item }) => (
 
-                        <Card
-                            style={styles.cardstyle}>
-
-                            <View style={styles.containerKeylistinfo}>
-                                <Card.Title
-                                    right={() => <IconButton {...props} icon="chevron-right"
-                                        onPress={() => props.navigation.navigate("Keyinfo", { keyId: item.id, uid: firebase.auth().currentUser.uid })} />}
-                                    title={item.keyname}
-                                    subtitle={item.keylocation} />
-                            </View>
-
+                        <Card style={styles.cardstyle}>
+                            <Card.Title
+                                right={() => <IconButton {...props} icon="chevron-right"
+                                    onPress={() => props.navigation.navigate("Keyinfo", { keyId: item.id, uid: firebase.auth().currentUser.uid })} />
+                                }
+                                title={item.keyname}
+                            />
+                            <Card.Content>
+                                <Paragraph> {item.keylocation} </Paragraph>
+                            </Card.Content>
                         </Card>
                     )}
                 />
@@ -61,6 +60,7 @@ function Profile(props) {
                 color = 'blue'
                 large
                 icon="plus"
+                label="Add a new key"
                 onPress={() => props.navigation.navigate('AddKey')}
             />
             </View>
