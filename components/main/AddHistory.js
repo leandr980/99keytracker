@@ -7,8 +7,8 @@ require("firebase/firebase-storage")
 
 export default function AddHistory(props) {
 
-    const [field1, setfeild1] = useState("")
-    const [field2, setfield2] = useState("")
+    const [name, setfeild1] = useState("")
+    const [user, setfield2] = useState("")
 
     const saveKeyData = () => {
 
@@ -37,11 +37,11 @@ export default function AddHistory(props) {
         <View style={{ flex: 1 }}>
             <TextInput
                 placeholder="Write user name . . ."
-                onChangeText={(name) => setName(name)}
+                onChangeText={(name) => setfeild1(name)}
             />
             <TextInput
                 placeholder="Write company . . ."
-                onChangeText={(user) => setUser(keylocation)}
+                onChangeText={(user) => setfield2(user)}
             />
 
             <Button

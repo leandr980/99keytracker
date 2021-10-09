@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, Image, FlatList, StyleSheet, Button, TouchableOpacity } from 'react-native'
-import { Card, FAB, Searchbar, IconButton } from 'react-native-paper'
+import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity } from 'react-native'
+import { Card, FAB, Searchbar, IconButton, Chip, Paragraph, Button } from 'react-native-paper'
 
 import firebase from 'firebase'
 require("firebase/firestore")
@@ -82,13 +82,17 @@ export default function Keyinfo(props) {
 
                         <Card
                             style={styles.cardstyle}>
-
-                            <View style={styles.containerKeylistinfo}>
                                 <Card.Title
                                     title={item.name}
-                                    subtitle={item.user} />
-                            </View>
+                            />
+                            <Card.Content style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
+                                <Paragraph> {item.user} </Paragraph>
+                                <Paragraph> {item.creation.toDate().toDateString()} </Paragraph>
+                            </Card.Content>
 
+                            <Card.Actions>
+                                <Button onPress={() => props.navigation.navigate("KeyHistoryDetails", { keyId: props.route.params.keyId, listId: item.id, uid: firebase.auth().currentUser.uid })}>View</Button>
+                            </Card.Actions>
                         </Card>
                     )}
                 />
