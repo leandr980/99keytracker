@@ -7,30 +7,28 @@ require("firebase/firestore")
 
 export default function KeyHistoryDetails(props) {
 
-    const [keydetails, setKeydetails] = useState([])
-    const [keyHistory, setKeyHistory] = useState([])
-    const [keyId, setKeyId] = useState("")
-    const [text, setText] = useState("")
+    const [keyHistoryDetails, setKeyHistoryDetails] = useState([])
+    const [keyHistoryId, setKeyHistoryId] = useState("")
 
     //console.log(props.route.params.keyId)
     //console.log(props.route.params.uid)
 
     useEffect(() => {
 
-        if (props.route.params.keyId !== keyId) {
+        if (props.route.params.historyId !== keyHistoryId) {
             firebase.firestore()
                 .collection('keycollection')
                 .doc(props.route.params.uid)
                 .collection('keylist')
                 .doc(props.route.params.keyId)
                 .collection('keyhistory')
-                .doc(props.route.params.listId)
+                .doc(props.route.params.historyId)
                 .get()
                 .then((snapshot) => {
-                    setKeydetails(snapshot.data())
+                    setKeyHistoryDetails(snapshot.data()) //change
                 })
 
-            setKeyId(props.route.params.keyId)
+            setKeyHistoryId(props.route.params.historyId)
 
         }
 
@@ -42,11 +40,16 @@ export default function KeyHistoryDetails(props) {
 
         <View style={styles.container}>
 
-            <Card>
-                <Card.Content>
-                    <Title style={{
+            <Card style={styles.cardstyle}>
+                <Card.Title
+                    style={{
                         fontSize: 30,
-                        fontWeight: 'bold'}}> {keydetails.keyname} </Title>
+                        fontWeight: 'bold'}}
+                    title={keyHistoryDetails.name}/>
+                <Card.Content>
+                    <Paragraph>type</Paragraph>
+                    <Paragraph>name</Paragraph>
+                    <Paragraph>company</Paragraph>
                 </Card.Content>
 
             </Card>
