@@ -64,7 +64,7 @@ export default function Addkey(props) {
         <View style={styles.container}>
             <Card
                 style={ styles.cardstyle}>
-                <Card.Content style={{ flex: 1, justifyContent: 'space-between', margin: 10} }>
+                <Card.Content style={styles.cardcontentstyle }>
 
                     <TextInput
                         style={styles.textinputstyle}
@@ -79,6 +79,8 @@ export default function Addkey(props) {
                         placeholder="Write a location . . ."
                         onChangeText={(keylocation) => setKeylocation(keylocation)}
                     />
+
+                    <Divider/>
 
                     <Button
                         mode='contained'
@@ -97,13 +99,6 @@ const styles = StyleSheet.create({
         flex: 1,
         marginTop: 30,
     },
-    containerInfo: {
-        margin: 10,
-    },
-    containerGallery: {
-        flex: 1,
-        justifyContent: 'center',
-    },
     keyliststyle: {
         flex: 1,
         fontSize: 15,
@@ -121,6 +116,12 @@ const styles = StyleSheet.create({
         bottom: 0,
     },
     textinputstyle: {
+        flex: 1,
         fontSize: 30
+    },
+    cardcontentstyle: {
+        flex: 1,
+        justifyContent: 'space-between',
+        margin: 10
     }
 })
