@@ -50,6 +50,7 @@ export default function KeyHistoryDetails(props) {
                     <Paragraph>type</Paragraph>
                     <Paragraph>name</Paragraph>
                     <Paragraph>company</Paragraph>
+                    <Paragraph>reason</Paragraph>
                 </Card.Content>
 
             </Card>
