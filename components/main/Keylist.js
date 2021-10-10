@@ -56,6 +56,10 @@ function Profile(props) {
                                 <Paragraph> {item.keylocation} </Paragraph>
                                 <Paragraph> Key Status </Paragraph>
                             </Card.Content>
+
+                            <Card.Content style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
+                                <Paragraph> Created on {item.creation.toDate().toDateString()} </Paragraph>
+                            </Card.Content>
                         </Card>
                     )}/>
             </View>

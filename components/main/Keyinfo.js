@@ -58,6 +58,7 @@ export default function Keyinfo(props) {
         <View style={styles.container}>
 
             <Card style={styles.cardstyle}>
+
                 <Card.Title
                     left={() => <MaterialCommunityIcons name="file-key-outline" size={40} />}
                     style={{
@@ -65,15 +66,22 @@ export default function Keyinfo(props) {
                         fontWeight: 'bold'}}
                     title={keydetails.keyname}
                 />
+
                 <Card.Content>
                     <Paragraph> key location: {keydetails.keylocation} </Paragraph>
                     <Paragraph> Key Status </Paragraph>
-                    <Button
-                        mode='contained'
-                        onPress={() => props.navigation.navigate("AddKeyHistory", { keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid })} >
-                        ADD
-                    </Button>
                 </Card.Content>
+
+                <Card.Actions style={{ justifyContent: 'space-between'}}>
+                    <Button
+                        onPress={() => props.navigation.navigate("AddKeyHistory", { keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid })} >
+                        ADD TO HISTORY
+                    </Button>
+                    <Button
+                        onPress={() => props.navigation.navigate("AddKeyHistory", { keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid })} >
+                        EDIT DETAILS
+                    </Button>
+                </Card.Actions>
 
             </Card>
 
@@ -90,6 +98,7 @@ export default function Keyinfo(props) {
                                 <Card.Title
                                 title={item.creation.toDate().toDateString()}
                             />
+
                             <Card.Content style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
                                 <Paragraph> {item.name} </Paragraph>
                                 <Paragraph> {item.user} </Paragraph>
@@ -101,6 +110,7 @@ export default function Keyinfo(props) {
                                     onPress={() => props.navigation.navigate("KeyHistoryDetails", { historyId: item.id, keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid })}
                                 >VIEW HISTORY</Button>
                             </Card.Actions>
+
                         </Card>
                     )}
                 />
