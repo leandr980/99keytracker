@@ -1,5 +1,7 @@
-import React, { useState } from 'react'
-import { View, TextInput, Image, Button, SnapshotViewIOS } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { View, Text, FlatList, StyleSheet, } from 'react-native'
+import { Card, FAB, Searchbar, IconButton, Paragraph, Divider } from 'react-native-paper'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import firebase from 'firebase'
 require("firebase/firestore")
