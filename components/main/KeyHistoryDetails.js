@@ -36,6 +36,8 @@ export default function KeyHistoryDetails(props) {
 
     //console.log(keydetails)
 
+    //console.log(setKeyHistoryDetails.creation.toDate().toDateString())
+
     return (
 
         <View style={styles.container}>
@@ -47,10 +49,10 @@ export default function KeyHistoryDetails(props) {
                         fontWeight: 'bold'}}
                     title={keyHistoryDetails.name}/>
                 <Card.Content>
-                    <Paragraph>type</Paragraph>
-                    <Paragraph>name</Paragraph>
-                    <Paragraph>company</Paragraph>
-                    <Paragraph>reason</Paragraph>
+                    <Paragraph> Type: { keyHistoryDetails.type } </Paragraph>
+                    <Paragraph> Name: { keyHistoryDetails.name } </Paragraph>
+                    <Paragraph> Company: { keyHistoryDetails.company } </Paragraph>
+                    <Paragraph> Notes: { keyHistoryDetails.notes } </Paragraph>
                 </Card.Content>
 
             </Card>
