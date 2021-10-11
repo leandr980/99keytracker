@@ -25,6 +25,7 @@ import KeyinfoScreen from './components/main/Keyinfo'
 import Addkeyscreen from './components/main/Addkey'
 import AddkeyHistoryscreen from './components/main/AddHistory'
 import KeyHistoryDetailsscreen from './components/main/KeyHistoryDetails'
+import SignatureScreen from './components/main/AgentSignature'
 
 console.disableYellowBox = true;
 
@@ -105,6 +106,7 @@ export class App extends Component {
                         <Stack.Screen name="AddKeyHistory" component={AddkeyHistoryscreen}/>
                         <Stack.Screen name="KeyHistoryDetails" component={KeyHistoryDetailsscreen}/>
                         <Stack.Screen name="Keyinfo" component={KeyinfoScreen}/>
+                        <Stack.Screen name="Signature" component={SignatureScreen}/>
                         <Stack.Screen name="Save" component={SaveScreen} navigation={ this.props.navigation}  />
                     </Stack.Navigator>
                 </NavigationContainer >

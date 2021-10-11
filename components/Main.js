@@ -10,7 +10,7 @@ import { fetchUser, fetchUserPosts, fetchKeyInfo, fetchKeyInfoDetails } from '..
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-
+import { mdiKeyChain } from '@mdi/js'
 import FeedScreen from './main/Feed'
 import AddScreen from './main/Add'
 import KeyScreen from './main/Keylist'
@@ -59,7 +59,7 @@ export class Main extends Component {
 
 					options={{
 						tabBarIcon: ({ color, size }) => (
-							<MaterialCommunityIcons name="key-variant" color={color} size={26}
+							<MaterialCommunityIcons name="key-chain" color={color} size={26}
 							/>
 						),
 						headerShown: false

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity } from 'react-native'
 import {Button as ButtonDefault } from 'react-native'
-import { Card, FAB, Searchbar, IconButton, Chip, Paragraph, Button } from 'react-native-paper'
+import { Card, FAB, Searchbar, IconButton, Chip, Paragraph, Button, Divider } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import firebase from 'firebase'
@@ -67,10 +67,12 @@ export default function Keyinfo(props) {
                     title={keydetails.keyname}
                 />
 
-                <Card.Content>
+                <Card.Content >
                     <Paragraph> key location: {keydetails.keylocation} </Paragraph>
-                    <Paragraph> Key Status </Paragraph>
+                    <Paragraph > Key Status </Paragraph>
                 </Card.Content>
+
+                <Divider/>
 
                 <Card.Actions style={{ justifyContent: 'space-between'}}>
                     <Button
@@ -83,7 +85,10 @@ export default function Keyinfo(props) {
                     </Button>
                 </Card.Actions>
 
+
             </Card>
+
+            <Divider />
 
             <View style={styles.containerGallery}>
 
@@ -102,7 +107,9 @@ export default function Keyinfo(props) {
                             <Card.Content style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
                                 <Paragraph> {item.name} </Paragraph>
                                 <Paragraph> {item.user} </Paragraph>
-                            </Card.Content> 
+                            </Card.Content>
+
+                            <Divider/>
 
                             <Card.Actions
                                 style={{justifyContent: 'center'}}>
@@ -122,7 +129,6 @@ export default function Keyinfo(props) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginTop: 20
     },
     containerInfo: {
         margin: 10,
