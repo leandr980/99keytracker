@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, FlatList, StyleSheet, TextInput } from 'react-native'
-import { Card, FAB, Searchbar, IconButton, Paragraph, Divider, Button } from 'react-native-paper'
+import { View, FlatList, StyleSheet, TextInput, ScrollView } from 'react-native'
+import { Card, FAB, Searchbar, IconButton, Paragraph, Divider, Button, Chip, Colors, RadioButton, Text } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import firebase from 'firebase'
@@ -12,12 +12,15 @@ export default function AddHistory(props) {
     const [name, setfeildname] = useState("")
     const [type, setfieldtype] = useState("")
     const [company, setfieldcompany] = useState("")
-    const [reason, setfieldreason] = useState("")
+    const [notes, setfieldnotes] = useState("")
+
+    const [value, setValue] = React.useState('first');
 
     const saveKeyData = () => {
 
-        if (name || type || company || reason === "") {
+        if (!name.trim() || !type.trim() || !company.trim() || !notes.trim()) {
             console.log("empty fields")
+            console.log(name + type + company + notes)
         }
         else {
             firebase.firestore()
@@ -30,7 +33,7 @@ export default function AddHistory(props) {
                     name,
                     type,
                     company,
-                    reason,
+                    notes,
                     creation: firebase.firestore.FieldValue.serverTimestamp()
                 },
                     function (error) {
@@ -48,49 +51,75 @@ export default function AddHistory(props) {
 
     return (
         <View style={styles.container}>
-            <Card
-                style={styles.cardstyle}>
-                <Card.Content style={styles.cardcontentstyle}>
+            <ScrollView>
 
-                    <TextInput
-                        style={styles.textinputstyle}
-                        placeholder="name . . ."
-                        onChangeText={(name) => setfeildname(name)}
-                    />
+                <Card style={styles.cardstyle}>
 
-                    <Divider />
+                    <Card.Content>
 
-                    <TextInput
-                        style={styles.textinputstyle}
-                        placeholder="type . . ."
-                        onChangeText={(user) => setfieldtype(user)}
-                    />
+                        <RadioButton.Group
+                            style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-evenly' }}
+                            onValueChange={newValue => setValue(newValue)} value={value}>
+                            <View>
+                                <Text>First</Text>
+                                <RadioButton value="first" />
+                            </View>
+                            <View>
+                                <Text>Second</Text>
+                                <RadioButton value="second" />
+                            </View>
+                        </RadioButton.Group>
 
-                    <Divider />
+                    </Card.Content>
 
-                    <TextInput
-                        style={styles.textinputstyle}
-                        placeholder="company . . ."
-                        onChangeText={(user) => setfieldcompany(user)}
-                    />
+                    <Card.Content style={styles.cardcontentstyle}>
 
-                    <Divider />
+                        <TextInput
+                            style={styles.textinputstyle}
+                            placeholder="name . . ."
+                            onChangeText={(name) => setfeildname(name)}
+                        />
 
-                    <TextInput
-                        style={styles.textinputstyle}
-                        placeholder="reason . . ."
-                        onChangeText={(user) => setfieldreason(user)}
-                    />
+                        <Divider />
 
-                    <Divider />
+                        <TextInput
+                            style={styles.textinputstyle}
+                            placeholder="type . . ."
+                            onChangeText={(type) => setfieldtype(type)}
+                        />
 
-                    <Button
-                        mode='contained'
-                        onPress={() => saveKeyData()}>
-                        ADD
-                    </Button>
-                </Card.Content>
-            </Card>
+                        <Divider />
+
+                        <TextInput
+                            style={styles.textinputstyle}
+                            placeholder="company . . ."
+                            onChangeText={(company) => setfieldcompany(company)}
+                        />
+
+                        <Divider />
+
+                        <TextInput
+                            style={styles.textinputstyle}
+                            placeholder="notes . . ."
+                            onChangeText={(notes) => setfieldnotes(notes)}
+                        />
+
+                        <Divider />
+
+                        <Button
+                            mode='contained'
+                            onPress={() => saveKeyData()}>
+                            ADD
+                        </Button>
+
+                        <Button
+                            mode='contained'
+                            onPress={() => props.navigation.navigate("Signature")}>
+                            SIGNATURE SCREEN
+                        </Button>
+                    </Card.Content>
+                </Card>
+            </ScrollView>
         </View>
     )
 }
@@ -99,13 +128,13 @@ export default function AddHistory(props) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginTop: 30,
     },
     keyliststyle: {
         flex: 1,
         fontSize: 15,
     },
     cardstyle: {
+        flex: 1,
         borderRadius: 10,
         margin: 10,
         elevation: 10,
@@ -119,10 +148,10 @@ const styles = StyleSheet.create({
     textinputstyle: {
         flex: 1,
         fontSize: 30,
-        padding: 10,
     },
     cardcontentstyle: {
+        flex: 1,
         justifyContent: 'space-between',
         margin: 10
-    }
+    },
 })

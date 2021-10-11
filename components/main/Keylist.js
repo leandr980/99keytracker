@@ -35,7 +35,9 @@ function Profile(props) {
                 </View>
             </Card>
 
-            <Divider/>
+            <Divider />
+
+            <Text style={{ fontSize: 30, fontWeight: 'bold', marginLeft: 20 }}> Recent Items </Text>
 
             <View style={styles.containerGallery}>
                 <FlatList
@@ -52,13 +54,11 @@ function Profile(props) {
                                 }
                                 title={item.keyname}
                             />
-                            <Card.Content style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
+                            <Card.Content>
                                 <Paragraph> {item.keylocation} </Paragraph>
-                                <Paragraph> Key Status </Paragraph>
-                            </Card.Content>
-
-                            <Card.Content style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
                                 <Paragraph> Created on {item.creation.toDate().toDateString()} </Paragraph>
+                                <Divider />
+                                <Paragraph> Key Status </Paragraph>
                             </Card.Content>
                         </Card>
                     )}/>
