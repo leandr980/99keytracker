@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { View, FlatList, StyleSheet, TextInput, ScrollView } from 'react-native'
-import { Card, FAB, Searchbar, IconButton, Paragraph, Divider, Button, Chip, Colors, RadioButton, Text } from 'react-native-paper'
+import { View, FlatList, StyleSheet, } from 'react-native'
+import { Card, FAB, Searchbar, IconButton, Paragraph, Divider, Button, Chip, Colors, RadioButton, Text, TextInput } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import firebase from 'firebase'
@@ -49,62 +49,112 @@ export default function AddHistory(props) {
 
     }
 
+    const [keydetails, setKeydetails] = useState([])
+    const [keyId, setKeyId] = useState("")
+
+    useEffect(() => {
+
+        if (props.route.params.keyId !== keyId) {
+            firebase.firestore()
+                .collection('keycollection')
+                .doc(props.route.params.uid)
+                .collection('keylist')
+                .doc(props.route.params.keyId)
+                .get()
+                .then((snapshot) => {
+                    setKeydetails(snapshot.data())
+                })
+
+            setKeyId(props.route.params.keyId)
+
+        }
+
+    }, [props.route.params.keyId])
+
     return (
         <View style={styles.container}>
-            <ScrollView>
 
-                <Card style={styles.cardstyle}>
+            <Card style={styles.cardstyleinfo}>
 
-                    <Card.Content>
+                <Card.Title
+                    left={() => <MaterialCommunityIcons name="file-key-outline" size={40} />}
+                    style={{
+                        fontSize: 30,
+                        fontWeight: 'bold'
+                    }}
+                    title={keydetails.keyname}
+                />
 
-                        <RadioButton.Group
-                            style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-evenly' }}
-                            onValueChange={newValue => setValue(newValue)} value={value}>
-                            <View>
-                                <Text>First</Text>
-                                <RadioButton value="first" />
-                            </View>
-                            <View>
-                                <Text>Second</Text>
-                                <RadioButton value="second" />
-                            </View>
-                        </RadioButton.Group>
+                <Card.Content >
+                    <Paragraph> key location: {keydetails.keylocation} </Paragraph>
+                    <Paragraph > Key Status </Paragraph>
+                </Card.Content>
 
-                    </Card.Content>
+            </Card>
 
-                    <Card.Content style={styles.cardcontentstyle}>
+            <Divider />
+
+            <Card style={ styles.cardstyle}>
+                <Card.Content style={{ flexDirection: 'row', justifyContent: 'space-between', alignContent: 'center', flexWrap: 'wrap' }}>
+
+                    <Button
+                        icon="account-star"
+                        color={Colors.red500}
+                        size={40}
+                        onPress={() => console.log('Pressed')}
+                    > Landlord </Button>
+
+                    <Button
+                        icon="domain"
+                        color={Colors.red500}
+                        size={40}
+                        onPress={() => console.log('Pressed')}
+                    > Company </Button>
+
+                    <Button
+                        icon="account-tie"
+                        color={Colors.red500}
+                        size={40}
+                        onPress={() => console.log('Pressed')}
+                    > Agent </Button>
+
+                    <Button
+                        icon="help-circle"
+                        color={Colors.red500}
+                        size={40}
+                        onPress={() => console.log('Pressed')}
+                    > Other </Button>
+                </Card.Content>
+
+                <Divider/>
+
+                <Card.Content style={{alignItems: 'center'}}>
+                    <Text> SELECTED </Text>
+                </Card.Content>
+
+            </Card>
+
+            <Card style={styles.cardstyle}>
+                <Card.Content style={styles.cardcontentstyle}>
 
                         <TextInput
-                            style={styles.textinputstyle}
-                            placeholder="name . . ."
+                        style={styles.textinputstyle}
+                        type='outlined'
+                            label="name . . ."
                             onChangeText={(name) => setfeildname(name)}
-                        />
-
-                        <Divider />
+                    />
 
                         <TextInput
                             style={styles.textinputstyle}
-                            placeholder="type . . ."
-                            onChangeText={(type) => setfieldtype(type)}
-                        />
-
-                        <Divider />
-
-                        <TextInput
-                            style={styles.textinputstyle}
-                            placeholder="company . . ."
+                            label="company . . ."
                             onChangeText={(company) => setfieldcompany(company)}
                         />
 
-                        <Divider />
-
                         <TextInput
                             style={styles.textinputstyle}
-                            placeholder="notes . . ."
+                            label="notes . . ."
                             onChangeText={(notes) => setfieldnotes(notes)}
                         />
-
-                        <Divider />
 
                         <Button
                             mode='contained'
@@ -118,8 +168,8 @@ export default function AddHistory(props) {
                             SIGNATURE SCREEN
                         </Button>
                     </Card.Content>
-                </Card>
-            </ScrollView>
+            </Card>
+
         </View>
     )
 }
@@ -134,7 +184,11 @@ const styles = StyleSheet.create({
         fontSize: 15,
     },
     cardstyle: {
-        flex: 1,
+        borderRadius: 10,
+        margin: 10,
+        elevation: 10,
+    },
+    cardstyleinfo: {
         borderRadius: 10,
         margin: 10,
         elevation: 10,
@@ -146,11 +200,9 @@ const styles = StyleSheet.create({
         bottom: 0,
     },
     textinputstyle: {
-        flex: 1,
         fontSize: 30,
     },
     cardcontentstyle: {
-        flex: 1,
         justifyContent: 'space-between',
         margin: 10
     },

@@ -16,7 +16,7 @@ export default function AgentSignature()  {
 
     const style = `.m-signature-pad--footer
     .button {
-      background-color: red;
+      background-color: purple;
       color: #FFF;
     }`;
     return (
