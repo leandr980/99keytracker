@@ -1,9 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { Component } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, LogBox } from 'react-native';
 
 import firebase from 'firebase'
-
 
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
@@ -27,7 +26,8 @@ import AddkeyHistoryscreen from './components/main/AddHistory'
 import KeyHistoryDetailsscreen from './components/main/KeyHistoryDetails'
 import SignatureScreen from './components/main/AgentSignature'
 
-console.disableYellowBox = true;
+//LogBox.ignoreLogs(['Warning: ...']);
+//console.disableYellowBox = true;
 
 const store = createStore(rootReducer, applyMiddleware(thunk))
 
@@ -100,13 +100,44 @@ export class App extends Component {
                 <NavigationContainer>
                     <Stack.Navigator
                         initialRouteName="Main">
-                        <Stack.Screen name="Main" component={MainScreen} options={{ headerShown: false }} />
+                        <Stack.Screen name="Main" component={MainScreen}
+                            options={{ headerShown: false }}  />
                         <Stack.Screen name="Add" component={AddScreen}/>
-                        <Stack.Screen name="AddKey" component={Addkeyscreen}/>
-                        <Stack.Screen name="AddKeyHistory" component={AddkeyHistoryscreen}/>
-                        <Stack.Screen name="KeyHistoryDetails" component={KeyHistoryDetailsscreen}/>
-                        <Stack.Screen name="Keyinfo" component={KeyinfoScreen}/>
-                        <Stack.Screen name="Signature" component={SignatureScreen}/>
+                        <Stack.Screen name="AddKey" component={Addkeyscreen}
+                            options={{
+                                headerStyle: {
+                                    backgroundColor: '#efefef',
+                                    elevation: 0,
+                                }
+                            }}                        />
+                        <Stack.Screen name="AddKeyHistory" component={AddkeyHistoryscreen}
+                            options={{
+                                headerStyle: {
+                                    backgroundColor: '#efefef',
+                                    elevation: 0,
+                                }
+                            }}                        />
+                        <Stack.Screen name="KeyHistoryDetails" component={KeyHistoryDetailsscreen}
+                            options={{
+                                headerStyle: {
+                                    backgroundColor: '#efefef',
+                                    elevation: 0,
+                                }
+                            }}                        />
+                        <Stack.Screen name="Keyinfo" component={KeyinfoScreen}
+                            options={{
+                            headerStyle: {
+                                backgroundColor: '#efefef',
+                                elevation: 0,
+                            }
+                        }}/>
+                        <Stack.Screen name="Signature" component={SignatureScreen}
+                            options={{
+                                headerStyle: {
+                                    backgroundColor: '#efefef',
+                                    elevation: 0,
+                                }
+                            }}                        />
                         <Stack.Screen name="Save" component={SaveScreen} navigation={ this.props.navigation}  />
                     </Stack.Navigator>
                 </NavigationContainer >

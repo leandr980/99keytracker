@@ -63,7 +63,6 @@ export default function KeyHistoryDetails(props) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginTop: 20
     },
     containerInfo: {
         margin: 10,

@@ -59,7 +59,7 @@ export class Main extends Component {
 
 					options={{
 						tabBarIcon: ({ color, size }) => (
-							<MaterialCommunityIcons name="key-chain" color={color} size={26}
+							<MaterialCommunityIcons name="key-variant" color={color} size={26}
 							/>
 						),
 						headerShown: false

@@ -114,6 +114,7 @@ export default function Keyinfo(props) {
                             <Card.Actions
                                 style={{justifyContent: 'center'}}>
                                 <Button
+                                    style={{ flex: 1} }
                                     onPress={() => props.navigation.navigate("KeyHistoryDetails", { historyId: item.id, keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid })}
                                 >VIEW HISTORY</Button>
                             </Card.Actions>
