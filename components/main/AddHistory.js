@@ -14,7 +14,54 @@ export default function AddHistory(props) {
     const [company, setfieldcompany] = useState("")
     const [notes, setfieldnotes] = useState("")
 
-    const [value, setValue] = React.useState('first');
+    const [buttonLandlord, setButtonLandlord] = useState(false)
+    const [buttonCompany, setButtonCompany] = useState(false)
+    const [buttonAgent, setButtonAgent] = useState(false)
+    const [buttonOther, setButtonOther] = useState(false)
+
+    const [buttonSelectedText, setButtonSelectedText] = useState('NONE')
+
+    const iconbuttonpress = (buttonname) => {
+
+        switch (buttonname) {
+
+            case 'landlord':
+                setButtonLandlord(true)
+                setButtonCompany(false)
+                setButtonAgent(false)
+                setButtonOther(false)
+                setButtonSelectedText('LANDLORD')
+                setfieldcompany('LANDLORD')
+                break;
+
+            case 'company':
+                setButtonLandlord(false)
+                setButtonCompany(true)
+                setButtonAgent(false)
+                setButtonOther(false)
+                setButtonSelectedText('COMPANY')
+                setfieldtype('COMPANY')
+                break;
+
+            case 'agent':
+                setButtonLandlord(false)
+                setButtonCompany(false)
+                setButtonAgent(true)
+                setButtonOther(false)
+                setButtonSelectedText('AGENT')
+                setfieldtype('AGENT')
+                break;
+
+            case 'other':
+                setButtonLandlord(false)
+                setButtonCompany(false)
+                setButtonAgent(false)
+                setButtonOther(true)
+                setButtonSelectedText('OTHER')
+                setfieldtype('OTHER')
+                break;
+        }
+    }
 
     const saveKeyData = () => {
 
@@ -95,41 +142,49 @@ export default function AddHistory(props) {
             <Divider />
 
             <Card style={ styles.cardstyle}>
-                <Card.Content style={{ flexDirection: 'row', justifyContent: 'space-between', alignContent: 'center', flexWrap: 'wrap' }}>
+                <Card.Content style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
 
                     <Button
                         icon="account-star"
+                        mode="outlined"
+                        disabled={ buttonLandlord }
                         color={Colors.red500}
                         size={40}
-                        onPress={() => console.log('Pressed')}
+                        onPress={() => iconbuttonpress('landlord')}
                     > Landlord </Button>
 
                     <Button
                         icon="domain"
+                        mode="outlined"
+                        disabled={buttonCompany}
                         color={Colors.red500}
                         size={40}
-                        onPress={() => console.log('Pressed')}
+                        onPress={() => iconbuttonpress('company')}
                     > Company </Button>
 
                     <Button
                         icon="account-tie"
+                        mode="outlined"
+                        disabled={buttonAgent}
                         color={Colors.red500}
                         size={40}
-                        onPress={() => console.log('Pressed')}
+                        onPress={() => iconbuttonpress('agent')}
                     > Agent </Button>
 
                     <Button
                         icon="help-circle"
+                        mode="outlined"
+                        disabled={buttonOther}
                         color={Colors.red500}
                         size={40}
-                        onPress={() => console.log('Pressed')}
+                        onPress={() => iconbuttonpress('other')}
                     > Other </Button>
                 </Card.Content>
 
                 <Divider/>
 
                 <Card.Content style={{alignItems: 'center'}}>
-                    <Text> SELECTED </Text>
+                    <Text> SELECTED: { buttonSelectedText } </Text>
                 </Card.Content>
 
             </Card>
@@ -169,6 +224,10 @@ export default function AddHistory(props) {
                         </Button>
                     </Card.Content>
             </Card>
+
+            <Card>
+            </Card>
+
 
         </View>
     )
