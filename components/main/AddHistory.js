@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, Component } from 'react'
 import { View, FlatList, StyleSheet, } from 'react-native'
 import { Card, FAB, Searchbar, IconButton, Paragraph, Divider, Button, Chip, Colors, RadioButton, Text, TextInput } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import firebase from 'firebase'
+import { ScrollView } from 'react-native'
+import { ListView } from 'react-native'
 require("firebase/firestore")
 require("firebase/firebase-storage")
 
@@ -19,6 +21,8 @@ export default function AddHistory(props) {
     const [buttonAgent, setButtonAgent] = useState(false)
     const [buttonOther, setButtonOther] = useState(false)
 
+    const [showComponent, setShowComponent] = useState(false)
+
     const [buttonSelectedText, setButtonSelectedText] = useState('NONE')
 
     const iconbuttonpress = (buttonname) => {
@@ -32,6 +36,7 @@ export default function AddHistory(props) {
                 setButtonOther(false)
                 setButtonSelectedText('LANDLORD')
                 setfieldcompany('LANDLORD')
+                setShowComponent(false)
                 break;
 
             case 'company':
@@ -41,6 +46,7 @@ export default function AddHistory(props) {
                 setButtonOther(false)
                 setButtonSelectedText('COMPANY')
                 setfieldtype('COMPANY')
+                setShowComponent(false)
                 break;
 
             case 'agent':
@@ -50,6 +56,7 @@ export default function AddHistory(props) {
                 setButtonOther(false)
                 setButtonSelectedText('AGENT')
                 setfieldtype('AGENT')
+                setShowComponent(true)
                 break;
 
             case 'other':
@@ -59,8 +66,13 @@ export default function AddHistory(props) {
                 setButtonOther(true)
                 setButtonSelectedText('OTHER')
                 setfieldtype('OTHER')
+                setShowComponent(false)
                 break;
         }
+    }
+
+    componentHideAndShow = () => {
+        this.set
     }
 
     const saveKeyData = () => {
@@ -118,6 +130,8 @@ export default function AddHistory(props) {
 
     }, [props.route.params.keyId])
 
+
+    //return screen...
     return (
         <View style={styles.container}>
 
@@ -141,63 +155,64 @@ export default function AddHistory(props) {
 
             <Divider />
 
-            <Card style={ styles.cardstyle}>
-                <Card.Content style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
+            <ScrollView>
+                <Card style={styles.cardstyle}>
+                    <Card.Content style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
 
-                    <Button
-                        icon="account-star"
-                        mode="outlined"
-                        disabled={ buttonLandlord }
-                        color={Colors.red500}
-                        size={40}
-                        onPress={() => iconbuttonpress('landlord')}
-                    > Landlord </Button>
+                        <Button
+                            icon="account-star"
+                            mode="outlined"
+                            disabled={buttonLandlord}
+                            color={Colors.red500}
+                            size={40}
+                            onPress={() => iconbuttonpress('landlord')}
+                        > Landlord </Button>
 
-                    <Button
-                        icon="domain"
-                        mode="outlined"
-                        disabled={buttonCompany}
-                        color={Colors.red500}
-                        size={40}
-                        onPress={() => iconbuttonpress('company')}
-                    > Company </Button>
+                        <Button
+                            icon="domain"
+                            mode="outlined"
+                            disabled={buttonCompany}
+                            color={Colors.red500}
+                            size={40}
+                            onPress={() => iconbuttonpress('company')}
+                        > Company </Button>
 
-                    <Button
-                        icon="account-tie"
-                        mode="outlined"
-                        disabled={buttonAgent}
-                        color={Colors.red500}
-                        size={40}
-                        onPress={() => iconbuttonpress('agent')}
-                    > Agent </Button>
+                        <Button
+                            icon="account-tie"
+                            mode="outlined"
+                            disabled={buttonAgent}
+                            color={Colors.red500}
+                            size={40}
+                            onPress={() => iconbuttonpress('agent')}
+                        > Agent </Button>
 
-                    <Button
-                        icon="help-circle"
-                        mode="outlined"
-                        disabled={buttonOther}
-                        color={Colors.red500}
-                        size={40}
-                        onPress={() => iconbuttonpress('other')}
-                    > Other </Button>
-                </Card.Content>
+                        <Button
+                            icon="help-circle"
+                            mode="outlined"
+                            disabled={buttonOther}
+                            color={Colors.red500}
+                            size={40}
+                            onPress={() => iconbuttonpress('other')}
+                        > Other </Button>
+                    </Card.Content>
 
-                <Divider/>
+                    <Divider />
 
-                <Card.Content style={{alignItems: 'center'}}>
-                    <Text> SELECTED: { buttonSelectedText } </Text>
-                </Card.Content>
+                    <Card.Content>
+                        <Text style={{marginVertical: 10}}> SELECTED: {buttonSelectedText} </Text>
+                    </Card.Content>
 
-            </Card>
+                </Card>
 
-            <Card style={styles.cardstyle}>
-                <Card.Content style={styles.cardcontentstyle}>
+                <Card style={styles.cardstyle}>
+                    <Card.Content style={styles.cardcontentstyle}>
 
                         <TextInput
-                        style={styles.textinputstyle}
-                        type='outlined'
+                            style={styles.textinputstyle}
+                            type='outlined'
                             label="name . . ."
                             onChangeText={(name) => setfeildname(name)}
-                    />
+                        />
 
                         <TextInput
                             style={styles.textinputstyle}
@@ -210,23 +225,105 @@ export default function AddHistory(props) {
                             label="notes . . ."
                             onChangeText={(notes) => setfieldnotes(notes)}
                         />
-
-                        <Button
-                            mode='contained'
-                            onPress={() => saveKeyData()}>
-                            ADD
-                        </Button>
-
-                        <Button
-                            mode='contained'
-                            onPress={() => props.navigation.navigate("Signature")}>
-                            SIGNATURE SCREEN
-                        </Button>
                     </Card.Content>
-            </Card>
+                </Card>
 
-            <Card>
-            </Card>
+
+                {
+                    showComponent ? (
+
+                        <Card style={styles.cardstyle}>
+                            <Card.Content>
+                                <Paragraph> Emirates Id front: </Paragraph>
+                            </Card.Content>
+
+                            <Divider />
+
+                            <Card.Actions style={{ justifyContent: 'space-between' }}>
+                                <Button
+                                    onPress={() => props.navigation.navigate("Add")} >
+                                    TAKE NEW PHOTO
+                                </Button>
+
+                                <Button
+                                    onPress={() => props.navigation.navigate("AddKeyHistory", { keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid })} >
+                                    ADD FROM GALLERY
+                                </Button>
+                            </Card.Actions>
+
+                        </Card>
+
+                    ): null
+                }
+
+                {
+                    showComponent ? (
+                        <Card style={styles.cardstyle}>
+                            <Card.Content>
+                                <Paragraph> Emirates Id back: </Paragraph>
+                            </Card.Content>
+
+                            <Divider />
+
+                            <Card.Actions style={{ justifyContent: 'space-between' }}>
+                                <Button
+                                    onPress={() => props.navigation.navigate("AddKeyHistory", { keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid })} >
+                                    TAKE NEW PHOTO
+                                </Button>
+
+                                <Button
+                                    onPress={() => props.navigation.navigate("AddKeyHistory", { keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid })} >
+                                    ADD FROM GALLERY
+                                </Button>
+                            </Card.Actions>
+                        </Card>
+                    ): null
+
+                }
+
+
+                {
+                    showComponent ? (
+                        <Card style={styles.cardstyle}>
+                            <Card.Content>
+                                <Paragraph> Agent Signature: </Paragraph>
+                            </Card.Content>
+
+                            <Divider />
+
+                            <Card.Actions style={{ justifyContent: 'space-between' }}>
+                                <Button
+                                    onPress={() => props.navigation.navigate("Signature")} >
+                                    TAKE NEW SIGNATURE
+                                </Button>
+
+                                <Button
+                                    onPress={() => props.navigation.navigate("Signature")} >
+                                    ADD FROM GALLERY
+                                </Button>
+                            </Card.Actions>
+                        </Card>
+                    ): null
+
+                }
+
+
+
+
+                <Card style={styles.cardstyle}>
+                    <Card.Actions style={{ justifyContent: 'space-between', alignItems: 'center'}}>
+                        <Button
+                            onPress={() => saveKeyData()} >
+                            SAVE
+                        </Button>
+                        <Button
+                            onPress={() => props.navigation.navigate("AddKeyHistory", { keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid })} >
+                            CLEAR
+                        </Button>
+                    </Card.Actions>
+                </Card>
+
+            </ScrollView>
 
 
         </View>
@@ -259,7 +356,7 @@ const styles = StyleSheet.create({
         bottom: 0,
     },
     textinputstyle: {
-        fontSize: 30,
+        marginVertical: 10
     },
     cardcontentstyle: {
         justifyContent: 'space-between',

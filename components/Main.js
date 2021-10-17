@@ -35,20 +35,6 @@ export class Main extends Component {
 		return (
 			<Tab.Navigator initialRouteName="Key List">
 
-				<Tab.Screen name='Photo' component={EmptyScreen}
-					listeners={({ navigation }) => ({
-						tabPress: event => {
-							event.preventDefault();
-							navigation.navigate("Add")
-                        }
-					})}
-
-					options={{
-						tabBarIcon: ({ color, size }) => (
-							<MaterialCommunityIcons name="plus-circle" color={color} size={26} />
-						),
-					}} />
-
 				<Tab.Screen name='Key List' component={KeyScreen} navigation={this.props.navigation}
 					listeners={({ navigation }) => ({
 						tabPress: event => {
