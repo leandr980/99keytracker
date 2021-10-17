@@ -46,7 +46,7 @@ export default function Add({ navigation }) {
     };
 
     if (hascamerapermission=== null || hasgallerypermission === false) {
-        return <View />;
+        return <Text>No access to gallery </Text>;
     }
     if (hascamerapermission === false  || hasgallerypermission === false) {
         return <Text>No access to camera</Text>;

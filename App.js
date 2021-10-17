@@ -102,7 +102,9 @@ export class App extends Component {
                         initialRouteName="Main">
                         <Stack.Screen name="Main" component={MainScreen}
                             options={{ headerShown: false }}  />
-                        <Stack.Screen name="Add" component={AddScreen}/>
+                        <Stack.Screen name="Add" component={AddScreen} />
+
+
                         <Stack.Screen name="AddKey" component={Addkeyscreen}
                             options={{
                                 headerStyle: {
