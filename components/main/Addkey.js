@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { View, TextInput, Image, StyleSheet} from 'react-native'
-import { Card, Divider, Button, Paragraph, Dialog, Portal, Provider} from 'react-native-paper'
+import { View, Image, StyleSheet} from 'react-native'
+import { Card, Divider, Button, Paragraph, Dialog, Portal, Provider, TextInput} from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import firebase from 'firebase'
@@ -61,36 +61,38 @@ export default function Addkey(props) {
     }
 
     return (
-        <View style={styles.container}>
+        <View >
             <Card
                 style={styles.cardstyle}>
 
-                <Card.Content style={{ flex: 7, margin: 10}}>
+                <Card.Content >
                     <TextInput
                         style={styles.textinputstyle}
+                        type='outlined'
                         placeholder="Write key name . . ."
                         onChangeText={(keyname) => setkeyname(keyname)}
                     />
 
-                    <Divider />
                 </Card.Content>
 
-                <Card.Content style={{ flex: 7, margin: 10 }}>
+                <Card.Content >
                     <TextInput
                         style={styles.textinputstyle}
+                        type='outlined'
                         placeholder="Write a location . . ."
                         onChangeText={(keylocation) => setKeylocation(keylocation)}
                     />
 
-                    <Divider />
                 </Card.Content>
 
-                <Button
-                    style={{ flex: 1, margin: 10}}
-                        mode='contained'
+                <Divider/>
+
+                <Card.Actions style={{justifyContent: 'center'} }>
+                    <Button
                         onPress={() => saveKeyData()}>
                         ADD
-                </Button>
+                    </Button>
+                </Card.Actions>
 
             </Card>
         </View>
@@ -106,7 +108,6 @@ const styles = StyleSheet.create({
         fontSize: 15,
     },
     cardstyle: {
-        flex: 1,
         borderRadius: 10,
         margin: 10,
         elevation: 10,
@@ -119,8 +120,7 @@ const styles = StyleSheet.create({
         bottom: 0,
     },
     textinputstyle: {
-        flex: 1,
-        fontSize: 30
+        marginVertical: 10
     },
     cardcontentstyle: {
         flex: 1,
