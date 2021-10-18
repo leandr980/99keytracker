@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity } from 'react-native'
 import {Button as ButtonDefault } from 'react-native'
-import { Card, FAB, Searchbar, IconButton, Chip, Paragraph, Button, Divider } from 'react-native-paper'
+import { Card, FAB, Searchbar, IconButton, Chip, Paragraph, Button, Divider, List } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import firebase from 'firebase'
@@ -109,15 +109,18 @@ export default function Keyinfo(props) {
                                 <Paragraph> {item.user} </Paragraph>
                             </Card.Content>
 
-                            <Divider/>
+                            <Divider />
 
-                            <Card.Actions
-                                style={{justifyContent: 'center'}}>
-                                <Button
-                                    style={{ flex: 1} }
-                                    onPress={() => props.navigation.navigate("KeyHistoryDetails", { historyId: item.id, keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid })}
-                                >VIEW HISTORY</Button>
-                            </Card.Actions>
+                            <Card.Content>
+                                <List.Section>
+                                    <List.Accordion
+                                        title="Uncontrolled Accordion">
+                                        <List.Item title={item.name } />
+                                        <List.Item title="Second item" />
+                                    </List.Accordion>
+                                </List.Section>
+                            </Card.Content>
+
 
                         </Card>
                     )}

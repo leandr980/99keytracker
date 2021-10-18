@@ -1,8 +1,9 @@
 import React, { useState } from "react";
+import { Button } from "react-native";
 import { StyleSheet, Text, View, Image } from "react-native";
 import Signature from "react-native-signature-canvas";
 
-export default function AgentSignature()  {
+export default function AgentSignature(props)  {
     const [signature, setSign] = useState(null);
 
     const handleOK = (signature) => {
@@ -37,6 +38,11 @@ export default function AgentSignature()  {
                 clearText="Clear"
                 confirmText="Save"
                 webStyle={style}
+            />
+
+            <Button
+                title='back'
+                onPress={() => props.navigation.navigate("AddKeyHistory", { signatureimage:  signature})}
             />
         </View>
     );
