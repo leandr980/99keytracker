@@ -1,11 +1,11 @@
 import React, { useEffect, useState, Component } from 'react'
-import { View, FlatList, StyleSheet, } from 'react-native'
-import { Card, FAB, Searchbar, IconButton, Paragraph, Divider, Button, Chip, Colors, RadioButton, Text, TextInput } from 'react-native-paper'
+import { View, FlatList, StyleSheet, ScrollView } from 'react-native'
+import { Card, FAB, Searchbar, IconButton, Paragraph, Divider, Button, Chip, Colors, RadioButton, Text, TextInput, List, Portal, Dialog, Provider, Modal } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import * as ImagePicker from 'expo-image-picker';
+import Signature from "react-native-signature-canvas";
 
 import firebase from 'firebase'
-import { ScrollView } from 'react-native'
-import { ListView } from 'react-native'
 require("firebase/firestore")
 require("firebase/firebase-storage")
 
@@ -24,6 +24,61 @@ export default function AddHistory(props) {
     const [showComponent, setShowComponent] = useState(false)
 
     const [buttonSelectedText, setButtonSelectedText] = useState('NONE')
+
+    const [hasgallerypermission, sethasgallerypermission] = useState(null);
+    const [imageIDfront, setImageIDfront] = useState(null);
+    const [imageIDback, setImageIDback] = useState(null);
+    const [imageSignature, setImageSignature] = useState(null);
+
+    useEffect(() => {
+        (async () => {
+            const gallerystatus = await ImagePicker.requestMediaLibraryPermissionsAsync();
+            sethasgallerypermission(gallerystatus.status === 'granted');
+        })();
+    }, []);
+
+    const pickImage = async (x) => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+        });
+
+        //console.log(result);
+
+        if (!result.cancelled && x === 'idfront') {
+            setImageIDfront(result.uri);
+        }
+
+        if (!result.cancelled && x === 'idback') {
+            setImageIDback(result.uri);
+        }
+
+        if (!result.cancelled && x === 'signature') {
+            setImageSignature(result.uri);
+        }
+    };
+
+    const [visible, setVisible] = React.useState(false);
+    const showModal = () => setVisible(true);
+    const hideModal = () => setVisible(false);
+    const containerStyle = { flex: 1, alignContent: 'center', justifyContent: 'center', backgroundColor: 'white', };
+
+    const handleOK = (signature) => {
+        console.log(signature);
+        setSign(signature);
+    };
+
+    const handleEmpty = () => {
+        console.log("Empty");
+    };
+
+    const style = `.m-signature-pad--footer
+    .button {
+      background-color: purple;
+      color: #FFF;
+    }`;
 
     const iconbuttonpress = (buttonname) => {
 
@@ -71,10 +126,6 @@ export default function AddHistory(props) {
         }
     }
 
-    componentHideAndShow = () => {
-        this.set
-    }
-
     const saveKeyData = () => {
 
         if (!name.trim() || !type.trim() || !company.trim() || !notes.trim()) {
@@ -93,6 +144,7 @@ export default function AddHistory(props) {
                     type,
                     company,
                     notes,
+
                     creation: firebase.firestore.FieldValue.serverTimestamp()
                 },
                     function (error) {
@@ -130,9 +182,14 @@ export default function AddHistory(props) {
 
     }, [props.route.params.keyId])
 
+    if (hasgallerypermission === false) {
+        return <Text>No access to gallery </Text>;
+    }
+
 
     //return screen...
     return (
+        <Provider>
         <View style={styles.container}>
 
             <Card style={styles.cardstyleinfo}>
@@ -156,6 +213,9 @@ export default function AddHistory(props) {
             <Divider />
 
             <ScrollView>
+
+                <Text> New Entry </Text>
+
                 <Card style={styles.cardstyle}>
                     <Card.Content style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
 
@@ -194,6 +254,14 @@ export default function AddHistory(props) {
                             size={40}
                             onPress={() => iconbuttonpress('other')}
                         > Other </Button>
+
+                        <List.Section>
+                            <List.Accordion
+                                title="Uncontrolled Accordion">
+                                <List.Item title="First item" />
+                                <List.Item title="Second item" />
+                            </List.Accordion>
+                        </List.Section>
                     </Card.Content>
 
                     <Divider />
@@ -228,14 +296,15 @@ export default function AddHistory(props) {
                     </Card.Content>
                 </Card>
 
-
                 {
                     showComponent ? (
 
                         <Card style={styles.cardstyle}>
                             <Card.Content>
-                                <Paragraph> Emirates Id front: </Paragraph>
+                                <Paragraph> Emirates ID front: </Paragraph>
                             </Card.Content>
+
+                            <Card.Cover source={{ uri: imageIDfront }} style={{ flex: 1, margin: 10 }} />
 
                             <Divider />
 
@@ -246,8 +315,8 @@ export default function AddHistory(props) {
                                 </Button>
 
                                 <Button
-                                    onPress={() => props.navigation.navigate("AddKeyHistory", { keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid })} >
-                                    ADD FROM GALLERY
+                                    onPress={() => pickImage('idfront')} >
+                                    OPEN GALLERY
                                 </Button>
                             </Card.Actions>
 
@@ -260,20 +329,22 @@ export default function AddHistory(props) {
                     showComponent ? (
                         <Card style={styles.cardstyle}>
                             <Card.Content>
-                                <Paragraph> Emirates Id back: </Paragraph>
+                                <Paragraph> Emirates ID back: </Paragraph>
                             </Card.Content>
+
+                            <Card.Cover source={{ uri: imageIDback }} style={{ flex: 1, margin: 10 }} />
 
                             <Divider />
 
                             <Card.Actions style={{ justifyContent: 'space-between' }}>
                                 <Button
-                                    onPress={() => props.navigation.navigate("AddKeyHistory", { keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid })} >
-                                    TAKE NEW PHOTO
+                                    onPress={() => props.navigation.navigate("Add")} >
+                                    NEW PHOTO
                                 </Button>
 
                                 <Button
-                                    onPress={() => props.navigation.navigate("AddKeyHistory", { keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid })} >
-                                    ADD FROM GALLERY
+                                    onPress={() => pickImage('idback')} >
+                                    OPEN GALLERY
                                 </Button>
                             </Card.Actions>
                         </Card>
@@ -289,25 +360,41 @@ export default function AddHistory(props) {
                                 <Paragraph> Agent Signature: </Paragraph>
                             </Card.Content>
 
+                            <Card.Cover source={{ uri: imageSignature }} style={{ flex: 1, margin: 10 }} />
+
                             <Divider />
 
                             <Card.Actions style={{ justifyContent: 'space-between' }}>
                                 <Button
                                     onPress={() => props.navigation.navigate("Signature")} >
-                                    TAKE NEW SIGNATURE
+                                    NEW SIGNATURE
                                 </Button>
 
                                 <Button
-                                    onPress={() => props.navigation.navigate("Signature")} >
-                                    ADD FROM GALLERY
+                                    onPress={() => pickImage('signature')} >
+                                    OPEN GALLERY
                                 </Button>
+
+                                    <Button onPress={showModal}>Show Dialog</Button>
                             </Card.Actions>
                         </Card>
                     ): null
 
-                }
+                    }
 
-
+                    <Portal>
+                        <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={containerStyle}>
+                            <Text> test </Text>
+                            <Signature
+                                onOK={handleOK}
+                                onEmpty={handleEmpty}
+                                descriptionText="Sign"
+                                clearText="Clear"
+                                confirmText="Save"
+                                webStyle={style}
+                            />
+                        </Modal>
+                    </Portal>
 
 
                 <Card style={styles.cardstyle}>
@@ -326,7 +413,8 @@ export default function AddHistory(props) {
             </ScrollView>
 
 
-        </View>
+            </View>
+            </Provider>
     )
 }
 
@@ -361,5 +449,25 @@ const styles = StyleSheet.create({
     cardcontentstyle: {
         justifyContent: 'space-between',
         margin: 10
+    },
+    preview: {
+        width: 335,
+        height: 114,
+        backgroundColor: "#F8F8F8",
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 15,
+    },
+    previewText: {
+        color: "#FFF",
+        fontSize: 14,
+        height: 40,
+        lineHeight: 40,
+        paddingLeft: 10,
+        paddingRight: 10,
+        backgroundColor: "#69B2FF",
+        width: 120,
+        textAlign: "center",
+        marginTop: 10,
     },
 })
