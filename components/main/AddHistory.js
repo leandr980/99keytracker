@@ -63,11 +63,12 @@ export default function AddHistory(props) {
     const [visible, setVisible] = React.useState(false);
     const showModal = () => setVisible(true);
     const hideModal = () => setVisible(false);
-    const containerStyle = { flex: 1, alignContent: 'center', justifyContent: 'center', backgroundColor: 'white', };
+    const containerStyle = {flex: 1, alignContent: 'center', justifyContent: 'center', backgroundColor: 'white', };
 
     const handleOK = (signature) => {
         console.log(signature);
-        setSign(signature);
+        setImageSignature(signature);
+        hideModal;
     };
 
     const handleEmpty = () => {
@@ -160,6 +161,22 @@ export default function AddHistory(props) {
 
     }
 
+    const clearKeyData = () => {
+        setImageSignature(null)
+        setImageIDfront(null)
+        setImageIDback(null)
+
+        setButtonLandlord(false)
+        setButtonCompany(false)
+        setButtonAgent(false)
+        setButtonOther(false)
+        setButtonSelectedText('NONE')
+
+        if (showComponent === true) {
+            setShowComponent(false)
+        }
+    }
+
     const [keydetails, setKeydetails] = useState([])
     const [keyId, setKeyId] = useState("")
 
@@ -214,7 +231,10 @@ export default function AddHistory(props) {
 
             <ScrollView>
 
-                <Text> New Entry </Text>
+                    <Text style={{
+                        marginHorizontal: 20,
+                        fontSize: 30,
+                        fontWeight: 'bold'}}> New Entry </Text>
 
                 <Card style={styles.cardstyle}>
                     <Card.Content style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
@@ -254,14 +274,6 @@ export default function AddHistory(props) {
                             size={40}
                             onPress={() => iconbuttonpress('other')}
                         > Other </Button>
-
-                        <List.Section>
-                            <List.Accordion
-                                title="Uncontrolled Accordion">
-                                <List.Item title="First item" />
-                                <List.Item title="Second item" />
-                            </List.Accordion>
-                        </List.Section>
                     </Card.Content>
 
                     <Divider />
@@ -360,13 +372,13 @@ export default function AddHistory(props) {
                                 <Paragraph> Agent Signature: </Paragraph>
                             </Card.Content>
 
-                            <Card.Cover source={{ uri: imageSignature }} style={{ flex: 1, margin: 10 }} />
+                            <Card.Cover source={{ uri: imageSignature}} style={{ flex: 1, margin: 10 }} />
 
                             <Divider />
 
                             <Card.Actions style={{ justifyContent: 'space-between' }}>
                                 <Button
-                                    onPress={() => props.navigation.navigate("Signature")} >
+                                    onPress={showModal} >
                                     NEW SIGNATURE
                                 </Button>
 
@@ -374,8 +386,6 @@ export default function AddHistory(props) {
                                     onPress={() => pickImage('signature')} >
                                     OPEN GALLERY
                                 </Button>
-
-                                    <Button onPress={showModal}>Show Dialog</Button>
                             </Card.Actions>
                         </Card>
                     ): null
@@ -384,12 +394,11 @@ export default function AddHistory(props) {
 
                     <Portal>
                         <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={containerStyle}>
-                            <Text> test </Text>
                             <Signature
                                 onOK={handleOK}
                                 onEmpty={handleEmpty}
                                 descriptionText="Sign"
-                                clearText="Clear"
+                                clearText="Clear" 
                                 confirmText="Save"
                                 webStyle={style}
                             />
@@ -400,11 +409,11 @@ export default function AddHistory(props) {
                 <Card style={styles.cardstyle}>
                     <Card.Actions style={{ justifyContent: 'space-between', alignItems: 'center'}}>
                         <Button
-                            onPress={() => saveKeyData()} >
+                                onPress={() => saveKeyData()} >
                             SAVE
                         </Button>
-                        <Button
-                            onPress={() => props.navigation.navigate("AddKeyHistory", { keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid })} >
+                            <Button
+                                onPress={() => clearKeyData()} >
                             CLEAR
                         </Button>
                     </Card.Actions>
@@ -448,7 +457,7 @@ const styles = StyleSheet.create({
     },
     cardcontentstyle: {
         justifyContent: 'space-between',
-        margin: 10
+        
     },
     preview: {
         width: 335,

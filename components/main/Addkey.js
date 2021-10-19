@@ -12,6 +12,11 @@ export default function Addkey(props) {
     const [keyname, setkeyname] = useState("")
     const [keylocation, setKeylocation] = useState("")
 
+    const [name, setfeildname] = useState("")
+    const [type, setfieldtype] = useState("")
+    const [company, setfieldcompany] = useState("")
+    const [notes, setfieldnotes] = useState("")
+
     const [visible, setVisible] = React.useState(false);
     const showDialog = () => setVisible(true);
     const hideDialog = () => setVisible(false);
@@ -85,16 +90,41 @@ export default function Addkey(props) {
 
                 </Card.Content>
 
-                <Divider/>
+            </Card>
 
-                <Card.Actions style={{justifyContent: 'center'} }>
+            <Card style={styles.cardstyle}>
+                <Card.Content style={styles.cardcontentstyle}>
+
+                    <TextInput
+                        style={styles.textinputstyle}
+                        type='outlined'
+                        label="name . . ."
+                        onChangeText={(name) => setfeildname(name)}
+                    />
+
+                    <TextInput
+                        style={styles.textinputstyle}
+                        label="company . . ."
+                        onChangeText={(company) => setfieldcompany(company)}
+                    />
+
+                    <TextInput
+                        style={styles.textinputstyle}
+                        label="notes . . ."
+                        onChangeText={(notes) => setfieldnotes(notes)}
+                    />
+                </Card.Content>
+            </Card>
+
+            <Card style={ styles.cardstyle }>
+                <Card.Actions style={{ justifyContent: 'center' }}>
                     <Button
                         onPress={() => saveKeyData()}>
                         ADD
                     </Button>
                 </Card.Actions>
-
             </Card>
+
         </View>
     )
 }
@@ -123,7 +153,6 @@ const styles = StyleSheet.create({
         marginVertical: 10
     },
     cardcontentstyle: {
-        flex: 1,
         margin: 10
     }
 })

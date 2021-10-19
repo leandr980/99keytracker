@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
-import { View, Text, TextInput, Image, Button, SnapshotViewIOS } from 'react-native'
+import React, { useEffect, useState, Component } from 'react'
+import { View, FlatList, StyleSheet, ScrollView } from 'react-native'
+import { Card, FAB, Searchbar, IconButton, Paragraph, Divider, Button, Chip, Colors, RadioButton, Text, TextInput, List, Portal, Dialog, Provider, Modal } from 'react-native-paper'
 
 import firebase from 'firebase'
 require("firebase/firestore")
@@ -13,8 +14,24 @@ export default function Profile(props) {
 
     return (
         <View style={{ flex: 1, marginTop: 40 }}>
-            <Text> Profile Screen </Text>
-            <Button title= 'Logout' onPress={() => onLogout()}/>
+
+            <Card style={ styles.cardstyle }>
+                <Text> Profile Screen </Text>
+            </Card>
+
+            <Card style={styles.cardstyle}>
+                <Card.Actions>
+                    <Button onPress={() => onLogout()}> LOGOUT </Button>
+                </Card.Actions>
+            </Card>
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    cardstyle: {
+        borderRadius: 10,
+        margin: 10,
+        elevation: 10
+    },
+})
