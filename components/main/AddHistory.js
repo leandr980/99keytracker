@@ -3,6 +3,7 @@ import { View, FlatList, StyleSheet, ScrollView } from 'react-native'
 import { Card, FAB, Searchbar, IconButton, Paragraph, Divider, Button, Chip, Colors, RadioButton, Text, TextInput, List, Portal, Dialog, Provider, Modal } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import * as ImagePicker from 'expo-image-picker';
+import { Camera } from 'expo-camera';
 import Signature from "react-native-signature-canvas";
 
 import firebase from 'firebase'
@@ -12,7 +13,7 @@ require("firebase/firebase-storage")
 export default function AddHistory(props) {
 
     const [name, setfeildname] = useState("")
-    const [type, setfieldtype] = useState("")
+    const [entrytype, setfieldentrytype] = useState("")
     const [company, setfieldcompany] = useState("")
     const [notes, setfieldnotes] = useState("")
 
@@ -25,17 +26,42 @@ export default function AddHistory(props) {
 
     const [buttonSelectedText, setButtonSelectedText] = useState('NONE')
 
-    const [hasgallerypermission, sethasgallerypermission] = useState(null);
-    const [imageIDfront, setImageIDfront] = useState(null);
-    const [imageIDback, setImageIDback] = useState(null);
-    const [imageSignature, setImageSignature] = useState(null);
-
     useEffect(() => {
         (async () => {
             const gallerystatus = await ImagePicker.requestMediaLibraryPermissionsAsync();
             sethasgallerypermission(gallerystatus.status === 'granted');
+
+            const camerastatus = await Camera.requestPermissionsAsync();
+            sethascamerapermission(camerastatus.status === 'granted');
         })();
     }, []);
+
+    const [keydetails, setKeydetails] = useState([])
+    const [keyId, setKeyId] = useState("")
+
+    useEffect(() => {
+
+        if (props.route.params.keyId !== keyId) {
+            firebase.firestore()
+                .collection('keycollection')
+                .doc(props.route.params.uid)
+                .collection('keylist')
+                .doc(props.route.params.keyId)
+                .get()
+                .then((snapshot) => {
+                    setKeydetails(snapshot.data())
+                })
+
+            setKeyId(props.route.params.keyId)
+
+        }
+
+    }, [props.route.params.keyId])
+
+    const [hasgallerypermission, sethasgallerypermission] = useState(null);
+    const [imageIDfront, setImageIDfront] = useState(null);
+    const [imageIDback, setImageIDback] = useState(null);
+    const [imageSignature, setImageSignature] = useState(null);
 
     const pickImage = async (x) => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -60,15 +86,20 @@ export default function AddHistory(props) {
         }
     };
 
-    const [visible, setVisible] = React.useState(false);
-    const showModal = () => setVisible(true);
-    const hideModal = () => setVisible(false);
-    const containerStyle = {flex: 1, alignContent: 'center', justifyContent: 'center', backgroundColor: 'white', };
+    if (hasgallerypermission === false) {
+        return <Text>No access to gallery </Text>;
+    }
+
+
+    const [visibleSignature, setVisibleSignature] = React.useState(false);
+    const showModalSignature = () => setVisibleSignature(true);
+    const hideModalSignature = () => setVisibleSignature(false);
+    const containerStyleSignature = { justifyContent: 'center', backgroundColor: 'white', margin: 20, padding: 5, borderRadius: 10, height: '50%'};
+    const containerStylePhoto = {flex: 1, justifyContent: 'center', backgroundColor: 'white', margin: 20, padding: 5, borderRadius: 10};
 
     const handleOK = (signature) => {
         console.log(signature);
         setImageSignature(signature);
-        hideModal;
     };
 
     const handleEmpty = () => {
@@ -81,6 +112,38 @@ export default function AddHistory(props) {
       color: #FFF;
     }`;
 
+    const [visiblePhotoFront, setVisiblePhotoFront] = React.useState(false);
+    const showModalPhotoFront = () => setVisiblePhotoFront(true);
+    const hideModalPhotoFront = () => setVisiblePhotoFront(false);
+
+    const [visiblePhotoBack, setVisiblePhotoBack] = React.useState(false);
+    const showModalPhotoBack = () => setVisiblePhotoBack(true);
+    const hideModalPhotoBack = () => setVisiblePhotoBack(false);
+
+    const [hascamerapermission, sethascamerapermission] = useState(null);
+    const [camera, setcamera] = useState(null);
+
+
+    const takePicture = async (x) => {
+        if (camera) {
+            const data = await camera.takePictureAsync(null);
+            //console.log(data.uri)
+
+            switch (x) {
+                case 'front':
+                    setImageIDfront(data.uri)
+                    break;
+                case 'back':
+                    setImageIDback(data.uri)
+                    break;
+            }
+        }
+    }
+
+    if (hascamerapermission === false) {
+        return <Text>No access to camera</Text>;
+    }
+
     const iconbuttonpress = (buttonname) => {
 
         switch (buttonname) {
@@ -91,7 +154,7 @@ export default function AddHistory(props) {
                 setButtonAgent(false)
                 setButtonOther(false)
                 setButtonSelectedText('LANDLORD')
-                setfieldcompany('LANDLORD')
+                setfieldentrytype('LANDLORD')
                 setShowComponent(false)
                 break;
 
@@ -101,7 +164,7 @@ export default function AddHistory(props) {
                 setButtonAgent(false)
                 setButtonOther(false)
                 setButtonSelectedText('COMPANY')
-                setfieldtype('COMPANY')
+                setfieldentrytype('COMPANY')
                 setShowComponent(false)
                 break;
 
@@ -111,7 +174,7 @@ export default function AddHistory(props) {
                 setButtonAgent(true)
                 setButtonOther(false)
                 setButtonSelectedText('AGENT')
-                setfieldtype('AGENT')
+                setfieldentrytype('AGENT')
                 setShowComponent(true)
                 break;
 
@@ -121,11 +184,77 @@ export default function AddHistory(props) {
                 setButtonAgent(false)
                 setButtonOther(true)
                 setButtonSelectedText('OTHER')
-                setfieldtype('OTHER')
+                setfieldentrytype('OTHER')
                 setShowComponent(false)
                 break;
         }
     }
+
+    const uploaddata = async () => {
+
+        const responseIDfront = await fetch(imageIDfront);
+        const responseIDback = await fetch(imageIDfront);
+        const responseIDsignature = await fetch(imageSignature);
+        const blobIDfront = await responseIDfront.blob();
+        const blobIDback = await responseIDback.blob();
+        const blobSignature = await responseIDsignature.blob();
+
+        const task = firebase
+            .storage()
+            .ref()
+            .child(`imageID/${firebase.auth().currentUser.uid}/${Math.random().toString(36)}`)
+            .put(
+                blobIDfront,
+                blobIDback,
+            );
+
+        const taskProgress = snapshot => {
+            console.log(`transfered: ${snapshot.bytesTransferred}`)
+        }
+
+        const taskCompleted = () => {
+            task.snapshot.ref.getDownloadURL().then((snapshot) => {
+                savePostData(snapshot);
+                console.log(snapshot)
+            })
+        }
+
+        const taskError = snapshot => {
+            console.log(snapshot)
+        }
+
+        task.on("state_changed", taskProgress, taskError, taskCompleted);
+    }
+
+    /*
+ * try {
+const imageUrls = await Promise.all(pictures.map(picture =>
+new Promise((resolve, reject) => {
+this.props.firebase.uploadImage(...)
+.put(picture)
+.on('state_changed', (snapshot) => {
+  // progress function ....
+  const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+  console.log("Progress: ", progress)
+},
+reject,
+() => {
+  // complete function ....
+  this.props.firebase.uploadImage(...)
+    .child(picture.name)
+    .getDownloadURL()
+    .then(url => {
+      console.log(url);
+      resolve(url);
+    });
+});
+})
+));
+} catch (error) {
+console.error(error);
+}
+ */
+
 
     const saveKeyData = () => {
 
@@ -142,10 +271,12 @@ export default function AddHistory(props) {
                 .collection("keyhistory")
                 .add({
                     name,
-                    type,
+                    entrytype,
                     company,
                     notes,
-
+                    imageIDback,
+                    imageIDfront,
+                    imageSignature,
                     creation: firebase.firestore.FieldValue.serverTimestamp()
                 },
                     function (error) {
@@ -177,36 +308,45 @@ export default function AddHistory(props) {
         }
     }
 
-    const [keydetails, setKeydetails] = useState([])
-    const [keyId, setKeyId] = useState("")
-
-    useEffect(() => {
-
-        if (props.route.params.keyId !== keyId) {
-            firebase.firestore()
-                .collection('keycollection')
-                .doc(props.route.params.uid)
-                .collection('keylist')
-                .doc(props.route.params.keyId)
-                .get()
-                .then((snapshot) => {
-                    setKeydetails(snapshot.data())
-                })
-
-            setKeyId(props.route.params.keyId)
-
-        }
-
-    }, [props.route.params.keyId])
-
-    if (hasgallerypermission === false) {
-        return <Text>No access to gallery </Text>;
-    }
-
-
     //return screen...
     return (
         <Provider>
+
+
+            <Portal>
+                <Modal visible={visibleSignature} onDismiss={hideModalSignature} contentContainerStyle={containerStyleSignature}>
+                    <Signature
+                        onOK={handleOK}
+                        onEmpty={handleEmpty}
+                        descriptionText="Tap outside the area after saving"
+                        clearText="Clear"
+                        confirmText="Save"
+                        webStyle={style}
+                    />
+                </Modal>
+
+                <Modal visible={visiblePhotoFront} onDismiss={hideModalPhotoFront} contentContainerStyle={containerStylePhoto}>
+                    <Camera
+                        ref={ref => setcamera(ref)}
+                        style={styles.fixedratio}
+                        ratio={'1:1'} />
+
+
+                    <Button onPress={() => takePicture('front')}> Take Picture </Button>
+                </Modal>
+
+                <Modal visible={visiblePhotoBack} onDismiss={hideModalPhotoBack} contentContainerStyle={containerStylePhoto}>
+                    <Camera
+                        ref={ref => setcamera(ref)}
+                        style={styles.fixedratio}
+                        ratio={'1:1'} />
+
+
+                    <Button onPress={() => takePicture('back')}> Take Picture </Button>
+                </Modal>
+            </Portal>
+
+
         <View style={styles.container}>
 
             <Card style={styles.cardstyleinfo}>
@@ -322,8 +462,8 @@ export default function AddHistory(props) {
 
                             <Card.Actions style={{ justifyContent: 'space-between' }}>
                                 <Button
-                                    onPress={() => props.navigation.navigate("Add")} >
-                                    TAKE NEW PHOTO
+                                        onPress={showModalPhotoFront} >
+                                    NEW PHOTO
                                 </Button>
 
                                 <Button
@@ -350,7 +490,7 @@ export default function AddHistory(props) {
 
                             <Card.Actions style={{ justifyContent: 'space-between' }}>
                                 <Button
-                                    onPress={() => props.navigation.navigate("Add")} >
+                                        onPress={showModalPhotoBack} >
                                     NEW PHOTO
                                 </Button>
 
@@ -378,7 +518,7 @@ export default function AddHistory(props) {
 
                             <Card.Actions style={{ justifyContent: 'space-between' }}>
                                 <Button
-                                    onPress={showModal} >
+                                    onPress={showModalSignature} >
                                     NEW SIGNATURE
                                 </Button>
 
@@ -392,18 +532,6 @@ export default function AddHistory(props) {
 
                     }
 
-                    <Portal>
-                        <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={containerStyle}>
-                            <Signature
-                                onOK={handleOK}
-                                onEmpty={handleEmpty}
-                                descriptionText="Sign"
-                                clearText="Clear" 
-                                confirmText="Save"
-                                webStyle={style}
-                            />
-                        </Modal>
-                    </Portal>
 
 
                 <Card style={styles.cardstyle}>
@@ -479,4 +607,11 @@ const styles = StyleSheet.create({
         textAlign: "center",
         marginTop: 10,
     },
+    cameracontainer: {
+        flex: 1,
+        flexDirection: 'row'
+    }, fixedratio: {
+
+        aspectRatio: 1
+    }
 })
