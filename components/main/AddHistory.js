@@ -1,5 +1,5 @@
 import React, { useEffect, useState, Component } from 'react'
-import { View, FlatList, StyleSheet, ScrollView } from 'react-native'
+import { View, FlatList, StyleSheet, ScrollView, Image } from 'react-native'
 import { Card, FAB, Searchbar, IconButton, Paragraph, Divider, Button, Chip, Colors, RadioButton, Text, TextInput, List, Portal, Dialog, Provider, Modal } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import * as ImagePicker from 'expo-image-picker';
@@ -132,9 +132,11 @@ export default function AddHistory(props) {
             switch (x) {
                 case 'front':
                     setImageIDfront(data.uri)
+                    console.log(data.uri)
                     break;
                 case 'back':
                     setImageIDback(data.uri)
+                    console.log(data.uri)
                     break;
             }
         }
@@ -190,70 +192,58 @@ export default function AddHistory(props) {
         }
     }
 
+    
+
     const uploaddata = async () => {
 
         const responseIDfront = await fetch(imageIDfront);
         const responseIDback = await fetch(imageIDfront);
         const responseIDsignature = await fetch(imageSignature);
+
         const blobIDfront = await responseIDfront.blob();
         const blobIDback = await responseIDback.blob();
         const blobSignature = await responseIDsignature.blob();
 
-        const task = firebase
-            .storage()
-            .ref()
-            .child(`imageID/${firebase.auth().currentUser.uid}/${Math.random().toString(36)}`)
-            .put(
-                blobIDfront,
-                blobIDback,
-            );
+        const blobarr = [blobIDback, blobIDfront, blobSignature]
+        const downloadurlarr = []
 
-        const taskProgress = snapshot => {
-            console.log(`transfered: ${snapshot.bytesTransferred}`)
+        for (let i = 0; i < blobarr.length; i++) {
+            try {
+                const response = await fetch(imageIDfront);
+                const blob = await response.blob();
+
+                const task = firebase
+                    .storage()
+                    .ref()
+                    .child(`post/${firebase.auth().currentUser.uid}/${Math.random().toString(36)}`)
+                    .put(blobarr[i]);
+
+                const taskProgress = snapshot => {
+                    console.log(`transfered: ${snapshot.bytesTransferred}`)
+                }
+
+                const taskCompleted = () => {
+                    task.snapshot.ref.getDownloadURL().then((snapshot) => {
+                        downloadurlarr.push(snapshot)
+                        console.log(snapshot)
+                    })
+                }
+
+                const taskError = snapshot => {
+                    console.log(snapshot)
+                }
+
+                task.on("state_changed", taskProgress, taskError, taskCompleted);
+            }
+            catch (error) {
+                console.log(error)
+            }
+
         }
 
-        const taskCompleted = () => {
-            task.snapshot.ref.getDownloadURL().then((snapshot) => {
-                savePostData(snapshot);
-                console.log(snapshot)
-            })
-        }
-
-        const taskError = snapshot => {
-            console.log(snapshot)
-        }
-
-        task.on("state_changed", taskProgress, taskError, taskCompleted);
+        console.log(downloadurlarr)
     }
 
-    /*
- * try {
-const imageUrls = await Promise.all(pictures.map(picture =>
-new Promise((resolve, reject) => {
-this.props.firebase.uploadImage(...)
-.put(picture)
-.on('state_changed', (snapshot) => {
-  // progress function ....
-  const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-  console.log("Progress: ", progress)
-},
-reject,
-() => {
-  // complete function ....
-  this.props.firebase.uploadImage(...)
-    .child(picture.name)
-    .getDownloadURL()
-    .then(url => {
-      console.log(url);
-      resolve(url);
-    });
-});
-})
-));
-} catch (error) {
-console.error(error);
-}
- */
 
 
     const saveKeyData = () => {
@@ -537,13 +527,18 @@ console.error(error);
                 <Card style={styles.cardstyle}>
                     <Card.Actions style={{ justifyContent: 'space-between', alignItems: 'center'}}>
                         <Button
-                                onPress={() => saveKeyData()} >
+                                onPress={() => uploaddata()} >
                             SAVE
                         </Button>
                             <Button
                                 onPress={() => clearKeyData()} >
                             CLEAR
-                        </Button>
+                            </Button>
+
+                            <Button
+                                onPress={() => props.navigation.navigate("Add")} >
+                                CLEAR
+                            </Button>
                     </Card.Actions>
                 </Card>
 
