@@ -196,21 +196,18 @@ export default function AddHistory(props) {
 
     const uploaddata = async () => {
 
+        
         const responseIDfront = await fetch(imageIDfront);
         const responseIDback = await fetch(imageIDfront);
-        const responseIDsignature = await fetch(imageSignature);
 
         const blobIDfront = await responseIDfront.blob();
         const blobIDback = await responseIDback.blob();
-        const blobSignature = await responseIDsignature.blob();
 
-        const blobarr = [blobIDback, blobIDfront, blobSignature]
+        const blobarr = [blobIDback, blobIDfront]
         const downloadurlarr = []
 
         for (let i = 0; i < blobarr.length; i++) {
             try {
-                const response = await fetch(imageIDfront);
-                const blob = await response.blob();
 
                 const task = firebase
                     .storage()
@@ -226,6 +223,8 @@ export default function AddHistory(props) {
                     task.snapshot.ref.getDownloadURL().then((snapshot) => {
                         downloadurlarr.push(snapshot)
                         console.log(snapshot)
+
+                        saveKeyData(downloadurlarr[0], downloadurlarr[1])
                     })
                 }
 
@@ -234,19 +233,53 @@ export default function AddHistory(props) {
                 }
 
                 task.on("state_changed", taskProgress, taskError, taskCompleted);
+
             }
             catch (error) {
                 console.log(error)
             }
 
         }
+        
 
-        console.log(downloadurlarr)
+
+        /*
+        try {
+            console.log(imageSignature)
+
+            const imageDatas = imageSignature.split('data:image/jpeg;base64,');
+            const imageData = imageDatas[1];
+
+            const task = firebase
+                .storage()
+                .ref()
+                .child(`post/${firebase.auth().currentUser.uid}/${Math.random().toString(36)}`)
+                .putString(imageData, 'base64');
+
+            const taskProgress = snapshot => {
+                console.log(`transfered: ${snapshot.bytesTransferred}`)
+            }
+
+            const taskCompleted = () => {
+                task.snapshot.ref.getDownloadURL().then((snapshot) => {
+                    //downloadurlarr.push(snapshot)
+                    console.log(snapshot)
+                })
+            }
+
+            const taskError = snapshot => {
+                console.log(snapshot)
+            }
+
+            task.on("state_changed", taskProgress, taskError, taskCompleted);
+        }
+        catch (error) {
+            console.log(error)
+        }
+        */
     }
 
-
-
-    const saveKeyData = () => {
+    const saveKeyData = (downloadurl1, downloadurl2) => {
 
         if (!name.trim() || !type.trim() || !company.trim() || !notes.trim()) {
             console.log("empty fields")
@@ -264,9 +297,8 @@ export default function AddHistory(props) {
                     entrytype,
                     company,
                     notes,
-                    imageIDback,
-                    imageIDfront,
-                    imageSignature,
+                    downloadurl1,
+                    downloadurl2,
                     creation: firebase.firestore.FieldValue.serverTimestamp()
                 },
                     function (error) {
