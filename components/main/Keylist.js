@@ -1,7 +1,7 @@
 // JavaScript source code
 import React, { useEffect, useState } from 'react'
 import { View, Text, FlatList, StyleSheet, } from 'react-native'
-import { Card, FAB, Searchbar, IconButton, Paragraph, Divider, Chip } from 'react-native-paper'
+import { Card, FAB, Searchbar, IconButton, Paragraph, Divider, Chip, Caption } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import firebase from 'firebase'
@@ -31,13 +31,16 @@ function Profile(props) {
                         onChangeText={onChangeSearch}
                         value={searchQuery}
                     />
-                    <Text style={{ fontSize: 30, fontWeight: 'bold' }}> Welcome {currentUser.name} </Text>
+
+                    <Divider style={{marginBottom: 10}}/>
+
+                    <Caption style={{ fontSize: 20, margin: 5 }}> Welcome {currentUser.name} </Caption>
                 </View>
             </Card>
 
-            <Divider />
+            <Text style={{ fontSize: 30, fontWeight: 'bold', marginLeft: 20, marginBottom: 5 }}> Recent Items </Text>
 
-            <Text style={{ fontSize: 30, fontWeight: 'bold', marginLeft: 20 }}> Recent Items </Text>
+            <Divider />
 
             <View style={styles.containerGallery}>
                 <FlatList
@@ -53,19 +56,23 @@ function Profile(props) {
                                     onPress={() => props.navigation.navigate("Keyinfo", { keyId: item.id, uid: firebase.auth().currentUser.uid })} />
                                 }
                                 title={item.keyname}
+                                subtitle={item.keylocation}
                             />
-                            <Card.Content>
-                                <Paragraph> {item.keylocation} </Paragraph>
+                            <Divider style={{ marginBottom: 5 }} />
 
-                                <Divider />
-                            </Card.Content>
-
-                            <Card.Content style={{ flexWrap: 'wrap', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <Paragraph> Key Status: </Paragraph>
+                            <Card.Content style={{ flexWrap: 'wrap', flexDirection: 'row', alignItems: 'center' }}>
                                 <Chip style={{
-                                    marginVertical: 5,
-                                    marginRight: 5,
-                                }} icon="information"> { item.entrytype}</Chip>
+                                    marginTop: 5,
+                                    marginRight: 5
+                                }} icon="information"> {item.entrytype}</Chip>
+                                <Chip style={{
+                                    marginTop: 5,
+                                    marginRight: 5
+                                }} icon="account-star"> {item.name}</Chip>
+                                <Chip style={{
+                                    marginTop: 5,
+                                    marginRight: 5
+                                }} icon="domain"> {item.company}</Chip>
                             </Card.Content>
                         </Card>
                     )}/>
