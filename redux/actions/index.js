@@ -57,6 +57,26 @@ export function fetchKeyInfo() {
             .doc(firebase.auth().currentUser.uid)
             .collection("keylist")
             .orderBy("creation", "asc")
+            .onSnapshot((docSnapshot) => {
+                let keyinfo = docSnapshot.docs.map(doc => {
+                    const data = doc.data();
+                    const id = doc.id;
+                    return { id, ...data }
+
+                })
+                //console.log(keyinfo)
+                dispatch({ type: USER_KEYINFO_STATE_CHANGE, keyinfo })
+            })
+    })
+}
+/*
+export function fetchKeyInfo() {
+    return ((dispatch) => {
+        firebase.firestore()
+            .collection("keycollection")
+            .doc(firebase.auth().currentUser.uid)
+            .collection("keylist")
+            .orderBy("creation", "asc")
             .get()
             .then((snapshot) => {
                 let keyinfo = snapshot.docs.map(doc => {
@@ -70,6 +90,7 @@ export function fetchKeyInfo() {
             })
     })
 }
+*/
 
 export function fetchKeyInfoDetailes() {
     return ((dispatch) => {
