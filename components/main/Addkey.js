@@ -82,17 +82,13 @@ export default function Addkey(props) {
                     <TextInput
                         style={styles.textinputstyle}
                         type='outlined'
-                        placeholder="Write key name . . ."
+                        placeholder="Key name . . ."
                         onChangeText={(keyname) => setkeyname(keyname)}
                     />
-
-                </Card.Content>
-
-                <Card.Content >
                     <TextInput
                         style={styles.textinputstyle}
                         type='outlined'
-                        placeholder="Write a location . . ."
+                        placeholder="Building/Community . . ."
                         onChangeText={(keylocation) => setKeylocation(keylocation)}
                     />
 
@@ -103,24 +99,24 @@ export default function Addkey(props) {
             <Card style={styles.cardstyle}>
                 <Card.Title title='New Key History Entry'/>
 
-                <Card.Content style={styles.cardcontentstyle}>
+                <Card.Content >
 
                     <TextInput
                         style={styles.textinputstyle}
                         type='outlined'
-                        label="name . . ."
+                        label="Name . . ."
                         onChangeText={(name) => setfeildname(name)}
                     />
 
                     <TextInput
                         style={styles.textinputstyle}
-                        label="company . . ."
+                        label="Company . . ."
                         onChangeText={(company) => setfieldcompany(company)}
                     />
 
                     <TextInput
                         style={styles.textinputstyle}
-                        label="notes . . ."
+                        label="Notes . . ."
                         onChangeText={(notes) => setfieldnotes(notes)}
                     />
                 </Card.Content>
@@ -130,7 +126,7 @@ export default function Addkey(props) {
                 <Card.Actions style={{ justifyContent: 'center' }}>
                     <Button
                         onPress={() => saveKeyData()}>
-                        ADD
+                        SAVE
                     </Button>
                 </Card.Actions>
             </Card>
@@ -152,12 +148,6 @@ const styles = StyleSheet.create({
         margin: 10,
         elevation: 10,
         justifyContent: 'space-between'
-    },
-    fab: {
-        position: 'absolute',
-        margin: 16,
-        right: 0,
-        bottom: 0,
     },
     textinputstyle: {
         marginVertical: 10

@@ -276,41 +276,33 @@ export default function AddHistory(props) {
 
     const saveKeyData = () => {
 
-        if (!name.trim() || !entrytype.trim() || !company.trim() || !notes.trim()) {
-            console.log("empty fields")
-            console.log(name + type + company + notes)
-        }
-        else {
-            if (entrytype === 'AGENT') {
-                
-            }
-            else {
-                firebase.firestore()
-                    .collection('keycollection')
-                    .doc(firebase.auth().currentUser.uid)
-                    .collection("keylist")
-                    .doc(props.route.params.keyId)
-                    .collection("keyhistory")
-                    .add({
-                        name,
-                        entrytype,
-                        company,
-                        notes,
-                        creation: firebase.firestore.FieldValue.serverTimestamp()
-                    },
-                        function (error) {
-                            if (error) {
-                                console.log("Data could not be saved." + error);
-                            } else {
-                                console.log("Data saved successfully.");
-                            }
-                        }
-                    )
-            }
-        }
+        firebase.firestore()
+            .collection('keycollection')
+            .doc(firebase.auth().currentUser.uid)
+            .collection("keylist")
+            .doc(props.route.params.keyId)
+            .collection("keyhistory")
+            .add({
+                name,
+                entrytype,
+                company,
+                notes,
+                creation: firebase.firestore.FieldValue.serverTimestamp()
+            },
+                function (error) {
+                    if (error) {
+                        console.log("Data could not be saved." + error);
+                    } else {
+                        console.log("Data saved successfully.");
+                    }
+                }
+            )
 
+        console.log("Document written with ID: ", props.route.params.keyId)
 
     }
+
+
 
     const clearKeyData = () => {
         setImageSignature(null)
@@ -372,19 +364,31 @@ export default function AddHistory(props) {
             <Card style={styles.cardstyleinfo}>
 
                 <Card.Title
-                    left={() => <MaterialCommunityIcons name="file-key-outline" size={40} />}
-                    style={{
-                        fontSize: 30,
-                        fontWeight: 'bold'
-                    }}
-                    title={keydetails.keyname}
-                />
+                        left={() => <MaterialCommunityIcons name="file-key-outline" size={40} />}
+                        style={{
+                            fontSize: 30,
+                            fontWeight: 'bold'
+                        }}
+                        title={keydetails.keyname}
+                        subtitle={keydetails.keylocation }
+                    />
 
-                <Card.Content >
-                    <Paragraph> key location: {keydetails.keylocation} </Paragraph>
-                    <Paragraph > Key Status </Paragraph>
-                </Card.Content>
+                    <Divider style={{ marginBottom: 5 }} />
 
+                    <Card.Content style={{ flexWrap: 'wrap', flexDirection: 'row', alignItems: 'center' }}>
+                        <Chip style={{
+                            marginTop: 5,
+                            marginRight: 5
+                        }} icon="information"> {keydetails.entrytype}</Chip>
+                        <Chip style={{
+                            marginTop: 5,
+                            marginRight: 5
+                        }} icon="account-star"> {keydetails.name}</Chip>
+                        <Chip style={{
+                            marginTop: 5,
+                            marginRight: 5
+                        }} icon="domain"> {keydetails.company}</Chip>
+                    </Card.Content>
             </Card>
 
             <Divider />
@@ -396,8 +400,9 @@ export default function AddHistory(props) {
                         fontSize: 30,
                         fontWeight: 'bold'}}> New Entry </Text>
 
-                <Card style={styles.cardstyle}>
-                    <Card.Content style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
+                    <Card style={styles.cardstyle}>
+
+                        <Card.Content style={{ flexWrap: 'wrap', flexDirection: 'row', alignItems: 'center', }}>
 
                         <Button
                             icon="account-star"
@@ -557,7 +562,7 @@ export default function AddHistory(props) {
                 <Card style={styles.cardstyle}>
                     <Card.Actions style={{ justifyContent: 'space-between', alignItems: 'center'}}>
                         <Button
-                                onPress={() => saveKeyData} >
+                                onPress={() => saveKeyData()} >
                             SAVE
                         </Button>
                             <Button

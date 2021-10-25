@@ -1,6 +1,6 @@
 import React, { useEffect, useState, Component } from 'react'
 import { View, FlatList, StyleSheet, ScrollView } from 'react-native'
-import { Card, FAB, Searchbar, IconButton, Paragraph, Divider, Button, Chip, Colors, RadioButton, Text, TextInput, List, Portal, Dialog, Provider, Modal } from 'react-native-paper'
+import { Card, FAB, Searchbar, IconButton, Paragraph, Divider, Button, Chip, Colors, RadioButton, Text, TextInput, List, Portal, Dialog, Provider, Modal, Caption } from 'react-native-paper'
 
 import firebase from 'firebase'
 require("firebase/firestore")
@@ -22,14 +22,16 @@ function Profile(props) {
             <Card style={styles.cardstyle}>
                 <Card.Title title='Profile' />
 
+                <Divider/>
+
                 <Card.Content>
-                    <Paragraph> { currentUser.name }</Paragraph>
-                    <Paragraph> { currentUser.email }</Paragraph>
+                    <Caption> { currentUser.name }</Caption>
+                    <Caption> { currentUser.email }</Caption>
                 </Card.Content>
             </Card>
 
             <Card style={styles.cardstyle}>
-                <Card.Actions>
+                <Card.Actions style={{justifyContent: 'center'}}>
                     <Button onPress={() => onLogout()}> LOGOUT </Button>
                 </Card.Actions>
             </Card>
