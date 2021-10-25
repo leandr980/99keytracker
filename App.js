@@ -88,8 +88,8 @@ export class App extends Component {
                 <NavigationContainer>
                     <Stack.Navigator initialRouteName="Landing">
                         <Stack.Screen name="Landing" component={LandingScreen} options={{ headerShown: false }} />
-                        <Stack.Screen name="Register" component={RegisterScreen} />
-                        <Stack.Screen name="Login" component={LoginScreen} />
+                        <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
+                        <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
                     </Stack.Navigator>
                 </NavigationContainer >
             )
@@ -107,13 +107,15 @@ export class App extends Component {
 
                         <Stack.Screen name="AddKey" component={Addkeyscreen}
                             options={{
+                                title: 'New Key',
                                 headerStyle: {
                                     backgroundColor: '#efefef',
                                     elevation: 0,
-                                }
+                                },
                             }}                        />
                         <Stack.Screen name="AddKeyHistory" component={AddkeyHistoryscreen}
                             options={{
+                                title: 'New Key History',
                                 headerStyle: {
                                     backgroundColor: '#efefef',
                                     elevation: 0,
@@ -121,6 +123,7 @@ export class App extends Component {
                             }}                        />
                         <Stack.Screen name="KeyHistoryDetails" component={KeyHistoryDetailsscreen}
                             options={{
+                                title: 'Key Details',
                                 headerStyle: {
                                     backgroundColor: '#efefef',
                                     elevation: 0,
@@ -128,6 +131,7 @@ export class App extends Component {
                             }}                        />
                         <Stack.Screen name="Keyinfo" component={KeyinfoScreen}
                             options={{
+                                title: 'Key Info',
                             headerStyle: {
                                 backgroundColor: '#efefef',
                                 elevation: 0,

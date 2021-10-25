@@ -69,12 +69,25 @@ export default function Keyinfo(props) {
 
                 <Card.Content >
                     <Paragraph> key location: {keydetails.keylocation} </Paragraph>
-                    <Paragraph > Key Status </Paragraph>
+                    
                 </Card.Content>
 
-                <Divider/>
+                <Divider />
 
-                <Card.Actions style={{ justifyContent: 'space-between'}}>
+                <Card.Content style={{ flexWrap: 'wrap', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Paragraph > Key Status </Paragraph>
+                    <Chip style={{
+                        marginVertical: 5,
+                        marginRight: 5,
+                    }} icon="information"> {keydetails.entrytype}</Chip>
+                </Card.Content>
+
+
+
+            </Card>
+
+            <Card style={ styles.cardstyle}>
+                <Card.Actions style={{ justifyContent: 'space-between' }}>
                     <Button
                         onPress={() => props.navigation.navigate("AddKeyHistory", { keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid })} >
                         ADD TO HISTORY
@@ -85,8 +98,8 @@ export default function Keyinfo(props) {
                     </Button>
                 </Card.Actions>
 
-
             </Card>
+
 
             <Divider />
 
@@ -98,25 +111,21 @@ export default function Keyinfo(props) {
                     data={keyHistory}
                     renderItem={({ item }) => (
 
-                        <Card
-                            style={styles.cardstyle}>
+                        <Card style={styles.cardstyle}>
                                 <Card.Title
                                 title={item.creation.toDate().toDateString()}
                             />
 
-                            <Card.Content style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
-                                <Paragraph> {item.name} </Paragraph>
-                                <Paragraph> {item.user} </Paragraph>
-                            </Card.Content>
-
                             <Divider />
 
                             <Card.Content>
-                                <List.Section>
+                                <List.Section >
                                     <List.Accordion
-                                        title="Uncontrolled Accordion">
-                                        <List.Item title={item.name } />
-                                        <List.Item title="Second item" />
+                                        title="More Info">
+                                        <List.Item title={item.name} />
+                                        <List.Item title={ item.company }/>
+                                        <List.Item title={ item.entrytype}/>
+                                        <List.Item title={ item.notes}/>
                                     </List.Accordion>
                                 </List.Section>
                             </Card.Content>
