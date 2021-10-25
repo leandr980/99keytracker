@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet } from 'react-native'
+import { View, StyleSheet, Text } from 'react-native'
 import { Card, FAB, Searchbar, IconButton, Paragraph, Divider, Chip, Button, TextInput } from 'react-native-paper'
 
 import firebase from 'firebase/app'
@@ -40,22 +40,29 @@ export class Register extends Component {
 
     render() {
         return (
-            <View style={{ flex: 1, justifyContent: 'center' }}>
+            <View style={{ flex: 1, justifyContent: 'center', marginTop: 30 }}>
                 <Card style={styles.cardstyle}>
+                    <Card.Content style={{ alignItems: 'center', marginBottom: 20 }}>
+                        <Text style={{ fontSize: 30, fontWeight: 'bold' }}> Register </Text>
+                    </Card.Content>
+
                     <Card.Content>
                         <TextInput
+                            style={styles.textinputstyle}
                             type='outlined'
                             label="Name . . ."
                             onChangeText={(name) => this.setState({ name })}
                         />
 
                         <TextInput
+                            style={styles.textinputstyle}
                             type='outlined'
                             label="Email . . ."
                             onChangeText={(email) => this.setState({ email })}
                         />
 
                         <TextInput
+                            style={styles.textinputstyle}
                             type='outlined'
                             label="Password . . ."
                             onChangeText={(password) => this.setState({ password })}
@@ -76,11 +83,11 @@ export class Register extends Component {
 const styles = StyleSheet.create({
     cardstyle: {
         borderRadius: 10,
-        margin: 10,
+        margin: 20,
         elevation: 10
     },
     textinputstyle: {
-        marginVertical: 10
+        marginVertical: 5
     },
 })
 

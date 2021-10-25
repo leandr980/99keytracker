@@ -9,13 +9,13 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 export default function Landing({ navigation }) {
 
     return (
-        <View style={{ flex: 1, justifyContent: 'center' }}>
+        <View style={{ flex: 1, justifyContent: 'center', marginTop: 30 }}>
             <Card style={styles.cardstyle}>
                 <Card.Content style={{alignItems: 'center', marginBottom: 20}}>
                     <Text style={{fontSize: 30, fontWeight: 'bold'}}> 99 Key Tracker </Text>
                 </Card.Content>
 
-                <Card.Content>
+                <Card.Content >
                     <Button onPress={() => navigation.navigate("Register")}> Register </Button>
                     <Button onPress={() => navigation.navigate("Login")}> Login </Button>
                 </Card.Content>
@@ -26,9 +26,10 @@ export default function Landing({ navigation }) {
 
 const styles = StyleSheet.create({
     cardstyle: {
+
         borderRadius: 10,
-        margin: 10,
-        elevation: 10
+        margin: 20,
+        elevation: 10,
     },
 
 })

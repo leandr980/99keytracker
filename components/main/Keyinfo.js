@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity } from 'react-native'
 import {Button as ButtonDefault } from 'react-native'
-import { Card, FAB, Searchbar, IconButton, Chip, Paragraph, Button, Divider, List } from 'react-native-paper'
+import { Card, FAB, Searchbar, IconButton, Chip, Paragraph, Button, Divider, List, Caption } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import firebase from 'firebase'
@@ -24,9 +24,8 @@ export default function Keyinfo(props) {
                 .doc(props.route.params.uid)
                 .collection('keylist')
                 .doc(props.route.params.keyId)
-                .get()
-                .then((snapshot) => {
-                    setKeydetails(snapshot.data())
+                .onSnapshot((docSnapshot) => {
+                    setKeydetails(docSnapshot.data())
                 })
 
             firebase.firestore()
@@ -35,9 +34,8 @@ export default function Keyinfo(props) {
                 .collection('keylist')
                 .doc(props.route.params.keyId)
                 .collection('keyhistory')
-                .get()
-                .then((snapshot) => {
-                    let keyHistory = snapshot.docs.map(doc => {
+                .onSnapshot((docSnapshot) => {
+                    let keyHistory = docSnapshot.docs.map(doc => {
                         const data = doc.data();
                         const id = doc.id;
                         return { id, ...data }
@@ -63,43 +61,29 @@ export default function Keyinfo(props) {
                     left={() => <MaterialCommunityIcons name="file-key-outline" size={40} />}
                     style={{
                         fontSize: 30,
-                        fontWeight: 'bold'}}
+                        fontWeight: 'bold'
+                    }}
                     title={keydetails.keyname}
+                    subtitle={keydetails.keylocation}
                 />
 
-                <Card.Content >
-                    <Paragraph> key location: {keydetails.keylocation} </Paragraph>
-                    
-                </Card.Content>
+                <Divider style={{ marginBottom: 5 }} />
 
-                <Divider />
-
-                <Card.Content style={{ flexWrap: 'wrap', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Paragraph > Key Status </Paragraph>
+                <Card.Content style={{ flexWrap: 'wrap', flexDirection: 'row', alignItems: 'center' }}>
                     <Chip style={{
-                        marginVertical: 5,
-                        marginRight: 5,
+                        marginTop: 5,
+                        marginRight: 5
                     }} icon="information"> {keydetails.entrytype}</Chip>
+                    <Chip style={{
+                        marginTop: 5,
+                        marginRight: 5
+                    }} icon="account-star"> {keydetails.name}</Chip>
+                    <Chip style={{
+                        marginTop: 5,
+                        marginRight: 5
+                    }} icon="domain"> {keydetails.company}</Chip>
                 </Card.Content>
-
-
-
             </Card>
-
-            <Card style={ styles.cardstyle}>
-                <Card.Actions style={{ justifyContent: 'space-between' }}>
-                    <Button
-                        onPress={() => props.navigation.navigate("AddKeyHistory", { keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid })} >
-                        ADD TO HISTORY
-                    </Button>
-                    <Button
-                        onPress={() => props.navigation.navigate("AddKeyHistory", { keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid })} >
-                        EDIT DETAILS
-                    </Button>
-                </Card.Actions>
-
-            </Card>
-
 
             <Divider />
 
@@ -119,15 +103,11 @@ export default function Keyinfo(props) {
                             <Divider />
 
                             <Card.Content>
-                                <List.Section >
-                                    <List.Accordion
-                                        title="More Info">
-                                        <List.Item title={item.name} />
-                                        <List.Item title={ item.company }/>
-                                        <List.Item title={ item.entrytype}/>
-                                        <List.Item title={ item.notes}/>
-                                    </List.Accordion>
-                                </List.Section>
+
+                                <Caption> Name: {item.name} </Caption>
+                                <Caption> Company: {item.company} </Caption>
+                                <Caption> Type: {item.entrytype} </Caption>
+                                <Caption> Notes: {item.notes} </Caption>
                             </Card.Content>
 
 
@@ -135,6 +115,16 @@ export default function Keyinfo(props) {
                     )}
                 />
             </View>
+
+            <FAB
+                style={styles.fab}
+                theme={{ colors: { accent: 'white' } }}
+                color='blue'
+                large
+                icon="plus"
+                label="NEW LOG"
+                onPress={() => props.navigation.navigate("AddKeyHistory", { keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid })}
+            />
         </View>
     )
 }
