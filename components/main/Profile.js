@@ -6,7 +6,11 @@ import firebase from 'firebase'
 require("firebase/firestore")
 require("firebase/firebase-storage")
 
-export default function Profile(props) {
+import { connect } from 'react-redux'
+
+function Profile(props) {
+
+    const { currentUser} = props;
 
     const onLogout = () => {
         firebase.auth().signOut();
@@ -15,8 +19,13 @@ export default function Profile(props) {
     return (
         <View style={{ flex: 1, marginTop: 40 }}>
 
-            <Card style={ styles.cardstyle }>
-                <Text> Profile Screen </Text>
+            <Card style={styles.cardstyle}>
+                <Card.Title title='Profile' />
+
+                <Card.Content>
+                    <Paragraph> { currentUser.name }</Paragraph>
+                    <Paragraph> { currentUser.email }</Paragraph>
+                </Card.Content>
             </Card>
 
             <Card style={styles.cardstyle}>
@@ -35,3 +44,11 @@ const styles = StyleSheet.create({
         elevation: 10
     },
 })
+
+const mapStateToProps = (store) => ({
+    currentUser: store.userState.currentUser,
+    posts: store.userState.posts,
+    keyinfo: store.userState.keyinfo
+})
+
+export default connect(mapStateToProps, null)(Profile)

@@ -192,55 +192,50 @@ export default function AddHistory(props) {
         }
     }
 
-    
-
     const uploaddata = async () => {
 
-        
-        const responseIDfront = await fetch(imageIDfront);
-        const responseIDback = await fetch(imageIDfront);
+            const responseIDfront = await fetch(imageIDfront);
+            const responseIDback = await fetch(imageIDfront);
 
-        const blobIDfront = await responseIDfront.blob();
-        const blobIDback = await responseIDback.blob();
+            const blobIDfront = await responseIDfront.blob();
+            const blobIDback = await responseIDback.blob();
 
-        const blobarr = [blobIDback, blobIDfront]
-        const downloadurlarr = []
+            const blobarr = [blobIDback, blobIDfront]
+            const downloadurlarr = []
 
-        for (let i = 0; i < blobarr.length; i++) {
-            try {
 
-                const task = firebase
-                    .storage()
-                    .ref()
-                    .child(`post/${firebase.auth().currentUser.uid}/${Math.random().toString(36)}`)
-                    .put(blobarr[i]);
+            for (let i = 0; i < blobarr.length; i++) {
+                try {
+                    const task = firebase
+                        .storage()
+                        .ref()
+                        .child(`post/${firebase.auth().currentUser.uid}/${Math.random().toString(36)}`)
+                        .put(blobarr[i]);
 
-                const taskProgress = snapshot => {
-                    console.log(`transfered: ${snapshot.bytesTransferred}`)
-                }
+                    const taskProgress = snapshot => {
+                        console.log(`transfered: ${snapshot.bytesTransferred / snapshot.totalBytes * 100}`)
+                    }
 
-                const taskCompleted = () => {
-                    task.snapshot.ref.getDownloadURL().then((snapshot) => {
-                        downloadurlarr.push(snapshot)
+                    const taskCompleted = () => {
+                        task.snapshot.ref.getDownloadURL().then((snapshot) => {
+                            downloadurlarr.push(snapshot)
+                            console.log(snapshot)
+                        })
+                    }
+
+                    const taskError = snapshot => {
                         console.log(snapshot)
+                    }
 
-                        saveKeyData(downloadurlarr[0], downloadurlarr[1])
-                    })
+                    task.on("state_changed", taskProgress, taskError, taskCompleted)
+
                 }
-
-                const taskError = snapshot => {
-                    console.log(snapshot)
+                catch (error) {
+                    console.log(error)
                 }
-
-                task.on("state_changed", taskProgress, taskError, taskCompleted);
-
-            }
-            catch (error) {
-                console.log(error)
-            }
 
         }
-        
+        return downloadurlarr;
 
 
         /*
@@ -279,36 +274,39 @@ export default function AddHistory(props) {
         */
     }
 
-    const saveKeyData = (downloadurl1, downloadurl2) => {
+    const saveKeyData = () => {
 
-        if (!name.trim() || !type.trim() || !company.trim() || !notes.trim()) {
+        if (!name.trim() || !entrytype.trim() || !company.trim() || !notes.trim()) {
             console.log("empty fields")
             console.log(name + type + company + notes)
         }
         else {
-            firebase.firestore()
-                .collection('keycollection')
-                .doc(firebase.auth().currentUser.uid)
-                .collection("keylist")
-                .doc(props.route.params.keyId)
-                .collection("keyhistory")
-                .add({
-                    name,
-                    entrytype,
-                    company,
-                    notes,
-                    downloadurl1,
-                    downloadurl2,
-                    creation: firebase.firestore.FieldValue.serverTimestamp()
-                },
-                    function (error) {
-                        if (error) {
-                            console.log("Data could not be saved." + error);
-                        } else {
-                            console.log("Data saved successfully.");
+            if (entrytype === 'AGENT') {
+                
+            }
+            else {
+                firebase.firestore()
+                    .collection('keycollection')
+                    .doc(firebase.auth().currentUser.uid)
+                    .collection("keylist")
+                    .doc(props.route.params.keyId)
+                    .collection("keyhistory")
+                    .add({
+                        name,
+                        entrytype,
+                        company,
+                        notes,
+                        creation: firebase.firestore.FieldValue.serverTimestamp()
+                    },
+                        function (error) {
+                            if (error) {
+                                console.log("Data could not be saved." + error);
+                            } else {
+                                console.log("Data saved successfully.");
+                            }
                         }
-                    }
-                )
+                    )
+            }
         }
 
 
@@ -559,17 +557,12 @@ export default function AddHistory(props) {
                 <Card style={styles.cardstyle}>
                     <Card.Actions style={{ justifyContent: 'space-between', alignItems: 'center'}}>
                         <Button
-                                onPress={() => uploaddata()} >
+                                onPress={() => saveKeyData} >
                             SAVE
                         </Button>
                             <Button
                                 onPress={() => clearKeyData()} >
                             CLEAR
-                            </Button>
-
-                            <Button
-                                onPress={() => props.navigation.navigate("Add")} >
-                                CLEAR
                             </Button>
                     </Card.Actions>
                 </Card>
@@ -637,7 +630,8 @@ const styles = StyleSheet.create({
     cameracontainer: {
         flex: 1,
         flexDirection: 'row'
-    }, fixedratio: {
+    },
+    fixedratio: {
 
         aspectRatio: 1
     }

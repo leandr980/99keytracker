@@ -1,7 +1,7 @@
 // JavaScript source code
 import React, { useEffect, useState } from 'react'
 import { View, Text, FlatList, StyleSheet, } from 'react-native'
-import { Card, FAB, Searchbar, IconButton, Paragraph, Divider } from 'react-native-paper'
+import { Card, FAB, Searchbar, IconButton, Paragraph, Divider, Chip } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import firebase from 'firebase'
@@ -56,9 +56,16 @@ function Profile(props) {
                             />
                             <Card.Content>
                                 <Paragraph> {item.keylocation} </Paragraph>
-                                <Paragraph> Created on {item.creation.toDate().toDateString()} </Paragraph>
+
                                 <Divider />
-                                <Paragraph> Key Status </Paragraph>
+                            </Card.Content>
+
+                            <Card.Content style={{ flexWrap: 'wrap', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <Paragraph> Key Status: </Paragraph>
+                                <Chip style={{
+                                    marginVertical: 5,
+                                    marginRight: 5,
+                                }} icon="information"> { item.entrytype}</Chip>
                             </Card.Content>
                         </Card>
                     )}/>

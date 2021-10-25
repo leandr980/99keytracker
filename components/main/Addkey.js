@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View, Image, StyleSheet} from 'react-native'
+import { View, Image, StyleSheet, ScrollView} from 'react-native'
 import { Card, Divider, Button, Paragraph, Dialog, Portal, Provider, TextInput} from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
@@ -13,7 +13,7 @@ export default function Addkey(props) {
     const [keylocation, setKeylocation] = useState("")
 
     const [name, setfeildname] = useState("")
-    const [type, setfieldtype] = useState("")
+    //const [entrytype, setfieldentrytype] = useState("")
     const [company, setfieldcompany] = useState("")
     const [notes, setfieldnotes] = useState("")
 
@@ -23,28 +23,15 @@ export default function Addkey(props) {
 
     const saveKeyData = () => {
 
-        if (keyname || keylocation === "") {
+        if (!keyname.trim() === "") {
             console.log("blank")
-            setVisible(true)
-            return (
-                <Provider>
-                    <View>
-                        <Portal>
-                            <Dialog visible={visible} onDismiss={hideDialog}>
-                                <Dialog.Title>Alert</Dialog.Title>
-                                <Dialog.Content>
-                                    <Paragraph>Some Fields are missing or empty</Paragraph>
-                                </Dialog.Content>
-                                <Dialog.Actions>
-                                    <Button onPress={hideDialog}>Done</Button>
-                                </Dialog.Actions>
-                            </Dialog>
-                        </Portal>
-                    </View>
-                </Provider>
-            );
         }
         else {
+
+            //setfieldentrytype('NEW ENTRY')
+
+            const entrytype = 'NEW ENTRY'
+
             firebase.firestore()
                 .collection('keycollection')
                 .doc(firebase.auth().currentUser.uid)
@@ -52,23 +39,44 @@ export default function Addkey(props) {
                 .add({
                     keyname,
                     keylocation,
+                    entrytype,
+                    name,
+                    company,
                     creation: firebase.firestore.FieldValue.serverTimestamp()
-                },
-                    function (error) {
-                        if (error) {
-                            console.log("Data could not be saved." + error);
-                        } else {
-                            console.log("Data saved successfully.");
-                        }
-                    }
-                )
+                })
+                .then(function (docRef) {
+                    console.log("Document written with ID: ", docRef.id);
+
+                    firebase.firestore()
+                        .collection('keycollection')
+                        .doc(firebase.auth().currentUser.uid)
+                        .collection("keylist")
+                        .doc(docRef.id)
+                        .collection("keyhistory")
+                        .add({
+                            name,
+                            entrytype,
+                            company,
+                            notes,
+                            creation: firebase.firestore.FieldValue.serverTimestamp()
+                        },
+                            function (error) {
+                                if (error) {
+                                    console.log("Data could not be saved." + error);
+                                } else {
+                                    console.log("Data saved successfully.");
+                                }
+                            }
+                        )
+                })
         }
     }
 
     return (
-        <View >
+        <ScrollView>
             <Card
                 style={styles.cardstyle}>
+                <Card.Title title='Key Details'/>
 
                 <Card.Content >
                     <TextInput
@@ -93,6 +101,8 @@ export default function Addkey(props) {
             </Card>
 
             <Card style={styles.cardstyle}>
+                <Card.Title title='New Key History Entry'/>
+
                 <Card.Content style={styles.cardcontentstyle}>
 
                     <TextInput
@@ -125,7 +135,7 @@ export default function Addkey(props) {
                 </Card.Actions>
             </Card>
 
-        </View>
+        </ScrollView>
     )
 }
 
