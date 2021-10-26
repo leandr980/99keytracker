@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
     cardstyle: {
         borderRadius: 10,
         margin: 10,
-        elevation: 10
+        elevation: 5
     },
     fab: {
         position: 'absolute',

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity } from 'react-native'
 import {Button as ButtonDefault } from 'react-native'
-import { Card, FAB, Searchbar, IconButton, Chip, Paragraph, Button, Divider, List, Caption } from 'react-native-paper'
+import { Card, FAB, Searchbar, IconButton, Chip, Paragraph, Button, Divider, Caption, Provider, Portal, Dialog } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import firebase from 'firebase'
@@ -11,10 +11,11 @@ export default function Keyinfo(props) {
 
     const [keydetails, setKeydetails] = useState([])
     const [keyHistory, setKeyHistory] = useState([])
+
     const [keyId, setKeyId] = useState("")
 
-    //console.log(props.route.params.keyId)
-    //console.log(props.route.params.uid)
+    const [visabledialogue, setvisabledialogue] = useState(false)
+    const hideDialog = () => setvisabledialogue(false);
 
     useEffect(() => {
 
@@ -34,6 +35,7 @@ export default function Keyinfo(props) {
                 .collection('keylist')
                 .doc(props.route.params.keyId)
                 .collection('keyhistory')
+                .orderBy("creation", "desc")
                 .onSnapshot((docSnapshot) => {
                     let keyHistory = docSnapshot.docs.map(doc => {
                         const data = doc.data();
@@ -49,83 +51,119 @@ export default function Keyinfo(props) {
 
     }, [props.route.params.keyId])
 
-    //console.log(keydetails)
+    const deletehistory = () => {
+        setvisabledialogue(true)
+
+    }
+
+    const deletehistorydialogue = (itemid) => {
+
+        firebase.firestore()
+            .collection('keycollection')
+            .doc(props.route.params.uid)
+            .collection('keylist')
+            .doc(props.route.params.keyId)
+            .collection('keyhistory')
+            .doc(itemid)
+            .delete()
+            .then(() => {
+                console.log("Document successfully deleted!");
+            }).catch((error) => {
+                console.error("Error removing document: ", error);
+            })
+    }
 
     return (
+        <Provider>
 
-        <View style={styles.container}>
+            <Portal>
+                <Dialog visible={visabledialogue} onDismiss={hideDialog}>
+                    <Dialog.Title>Alert</Dialog.Title>
+                    <Dialog.Content>
+                        <Paragraph>Are you sure you want to delete this log?</Paragraph>
+                    </Dialog.Content>
+                    <Dialog.Actions style={{justifyContent: 'space-between'}}>
+                        <Button onPress={hideDialog}>CONFIRM</Button>
+                        <Button onPress={hideDialog}>CANCEL</Button>
+                    </Dialog.Actions>
+                </Dialog>
+            </Portal>
 
-            <Card style={styles.cardstyle}>
+            <View style={styles.container}>
 
-                <Card.Title
-                    left={() => <MaterialCommunityIcons name="file-key-outline" size={40} />}
-                    style={{
-                        fontSize: 30,
-                        fontWeight: 'bold'
-                    }}
-                    title={keydetails.keyname}
-                    subtitle={keydetails.keylocation}
-                />
+                <Card style={styles.cardstyle}>
 
-                <Divider style={{ marginBottom: 5 }} />
+                    <Card.Title
+                        left={() => <MaterialCommunityIcons name="file-key-outline" size={40} />}
+                        style={{
+                            fontSize: 30,
+                            fontWeight: 'bold'
+                        }}
+                        title={keydetails.keyname}
+                        subtitle={keydetails.keylocation}
+                    />
 
-                <Card.Content style={{ flexWrap: 'wrap', flexDirection: 'row', alignItems: 'center' }}>
-                    <Chip style={{
-                        marginTop: 5,
-                        marginRight: 5
-                    }} icon="information"> {keydetails.entrytype}</Chip>
-                    <Chip style={{
-                        marginTop: 5,
-                        marginRight: 5
-                    }} icon="account-star"> {keydetails.name}</Chip>
-                    <Chip style={{
-                        marginTop: 5,
-                        marginRight: 5
-                    }} icon="domain"> {keydetails.company}</Chip>
-                </Card.Content>
-            </Card>
+                    <Divider style={{ marginBottom: 5 }} />
 
-            <Divider />
+                    <Card.Content style={{ flexWrap: 'wrap', flexDirection: 'row', alignItems: 'center' }}>
+                        <Chip style={{
+                            marginTop: 5,
+                            marginRight: 5
+                        }} icon="information"> {keydetails.entrytype}</Chip>
+                        <Chip style={{
+                            marginTop: 5,
+                            marginRight: 5
+                        }} icon="account-star"> {keydetails.name}</Chip>
+                        <Chip style={{
+                            marginTop: 5,
+                            marginRight: 5
+                        }} icon="domain"> {keydetails.company}</Chip>
+                    </Card.Content>
+                </Card>
 
-            <View style={styles.containerGallery}>
+                <Divider />
 
-                <FlatList
-                    numColumns={1}
-                    horizontal={false}
-                    data={keyHistory}
-                    renderItem={({ item }) => (
+                <View style={styles.containerGallery}>
 
-                        <Card style={styles.cardstyle}>
+                    <FlatList
+                        numColumns={1}
+                        horizontal={false}
+                        data={keyHistory}
+
+                        renderItem={({ item, index }) => (
+
+                            <Card style={styles.cardstyle}>
                                 <Card.Title
-                                title={item.creation.toDate().toDateString()}
-                            />
+                                    title={index}
+                                />
 
-                            <Divider />
+                                <Divider />
 
-                            <Card.Content>
+                                <Card.Content>
 
-                                <Caption> Name: {item.name} </Caption>
-                                <Caption> Company: {item.company} </Caption>
-                                <Caption> Type: {item.entrytype} </Caption>
-                                <Caption> Notes: {item.notes} </Caption>
-                            </Card.Content>
+                                    <Caption> Name: {item.name} </Caption>
+                                    <Caption> Company: {item.company} </Caption>
+                                    <Caption> Type: {item.entrytype} </Caption>
+                                    <Caption> Notes: {item.notes} </Caption>
+                                </Card.Content>
 
 
-                        </Card>
-                    )}
+                            </Card>
+                        )}
+                    />
+                </View>
+
+                <FAB
+                    style={styles.fab}
+                    theme={{ colors: { accent: 'white' } }}
+                    color='blue'
+                    large
+                    icon="plus"
+                    label="NEW LOG"
+                    onPress={() => props.navigation.navigate("AddKeyHistory", { keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid })}
                 />
             </View>
-
-            <FAB
-                style={styles.fab}
-                theme={{ colors: { accent: 'white' } }}
-                color='blue'
-                large
-                icon="plus"
-                label="NEW LOG"
-                onPress={() => props.navigation.navigate("AddKeyHistory", { keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid })}
-            />
-        </View>
+        </Provider>
     )
 }
 
