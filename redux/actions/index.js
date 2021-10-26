@@ -35,7 +35,7 @@ export function fetchUserPosts() {
             .collection("posts")
             .doc(firebase.auth().currentUser.uid)
             .collection("userPosts")
-            .orderBy("creation", "asc")
+            .orderBy("creation", "desc")
             .get()
             .then((snapshot) => {
                 let posts = snapshot.docs.map(doc => {
@@ -56,7 +56,7 @@ export function fetchKeyInfo() {
             .collection("keycollection")
             .doc(firebase.auth().currentUser.uid)
             .collection("keylist")
-            .orderBy("creation", "asc")
+            .orderBy("creation", "desc")
             .onSnapshot((docSnapshot) => {
                 let keyinfo = docSnapshot.docs.map(doc => {
                     const data = doc.data();
@@ -77,6 +77,7 @@ export function fetchKeyInfoDetailes() {
             .doc(firebase.auth().currentUser.uid)
             .collection("keylist")
             .doc(props.route.params.uid)
+            .orderBy("creation", "asc")
             .onSnapshot((docSnapshot) => {
                 let keyinfodetails = docSnapshot.data
                 return keyinfodetails

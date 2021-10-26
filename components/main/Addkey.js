@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { View, Image, StyleSheet, ScrollView} from 'react-native'
-import { Card, Divider, Button, Paragraph, Dialog, Portal, Provider, TextInput} from 'react-native-paper'
+import { Card, Divider, Button, Paragraph, TextInput, Provider, Dialog, Portal, HelperText} from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import firebase from 'firebase'
@@ -17,13 +17,11 @@ export default function Addkey(props) {
     const [company, setfieldcompany] = useState("")
     const [notes, setfieldnotes] = useState("")
 
-    const [visible, setVisible] = React.useState(false);
-    const showDialog = () => setVisible(true);
-    const hideDialog = () => setVisible(false);
+    const creation = firebase.firestore.FieldValue.serverTimestamp()
 
     const saveKeyData = () => {
 
-        if (!keyname.trim() === "") {
+        if (!keyname.trim() || !keylocation.trim() || !name.trim() || !company.trim() === "") {
             console.log("blank")
         }
         else {
@@ -42,7 +40,7 @@ export default function Addkey(props) {
                     entrytype,
                     name,
                     company,
-                    creation: firebase.firestore.FieldValue.serverTimestamp()
+                    creation
                 })
                 .then(function (docRef) {
                     console.log("Document written with ID: ", docRef.id);
@@ -72,66 +70,78 @@ export default function Addkey(props) {
         }
     }
 
+    const hasErrors = () => {
+        return !text.includes('');
+    }
+
     return (
-        <ScrollView>
-            <Card
-                style={styles.cardstyle}>
-                <Card.Title title='Key Details'/>
+        <Provider>
 
-                <Card.Content >
-                    <TextInput
-                        style={styles.textinputstyle}
-                        type='outlined'
-                        placeholder="Key name . . ."
-                        onChangeText={(keyname) => setkeyname(keyname)}
-                    />
-                    <TextInput
-                        style={styles.textinputstyle}
-                        type='outlined'
-                        placeholder="Building/Community . . ."
-                        onChangeText={(keylocation) => setKeylocation(keylocation)}
-                    />
 
-                </Card.Content>
+            <ScrollView>
+                <Card
+                    style={styles.cardstyle}>
+                    <Card.Title title='Key Details' />
 
-            </Card>
+                    <Card.Content >
+                        <TextInput
+                            style={styles.textinputstyle}
+                            type='outlined'
+                            placeholder="Key name . . ."
+                            onChangeText={(keyname) => setkeyname(keyname)}
+                        />
+                        <HelperText type="error" visible={hasErrors}>
+                            Field cannot be empty.
+                        </HelperText>
 
-            <Card style={styles.cardstyle}>
-                <Card.Title title='New Key History Entry'/>
+                        <TextInput
+                            style={styles.textinputstyle}
+                            type='outlined'
+                            placeholder="Building/Community . . ."
+                            onChangeText={(keylocation) => setKeylocation(keylocation)}
+                        />
 
-                <Card.Content >
+                    </Card.Content>
 
-                    <TextInput
-                        style={styles.textinputstyle}
-                        type='outlined'
-                        label="Name . . ."
-                        onChangeText={(name) => setfeildname(name)}
-                    />
+                </Card>
 
-                    <TextInput
-                        style={styles.textinputstyle}
-                        label="Company . . ."
-                        onChangeText={(company) => setfieldcompany(company)}
-                    />
+                <Card style={styles.cardstyle}>
+                    <Card.Title title='New Key History Entry' />
 
-                    <TextInput
-                        style={styles.textinputstyle}
-                        label="Notes . . ."
-                        onChangeText={(notes) => setfieldnotes(notes)}
-                    />
-                </Card.Content>
-            </Card>
+                    <Card.Content >
 
-            <Card style={ styles.cardstyle }>
-                <Card.Actions style={{ justifyContent: 'center' }}>
-                    <Button
-                        onPress={() => saveKeyData()}>
-                        SAVE
-                    </Button>
-                </Card.Actions>
-            </Card>
+                        <TextInput
+                            style={styles.textinputstyle}
+                            type='outlined'
+                            label="Name . . ."
+                            onChangeText={(name) => setfeildname(name)}
+                        />
 
-        </ScrollView>
+                        <TextInput
+                            style={styles.textinputstyle}
+                            label="Company . . ."
+                            onChangeText={(company) => setfieldcompany(company)}
+                        />
+
+                        <TextInput
+                            style={styles.textinputstyle}
+                            label="Notes . . ."
+                            onChangeText={(notes) => setfieldnotes(notes)}
+                        />
+                    </Card.Content>
+                </Card>
+
+                <Card style={styles.cardstyle}>
+                    <Card.Actions style={{ justifyContent: 'center' }}>
+                        <Button
+                            onPress={() => saveKeyData()}>
+                            SAVE
+                        </Button>
+                    </Card.Actions>
+                </Card>
+
+            </ScrollView>
+        </Provider>
     )
 }
 

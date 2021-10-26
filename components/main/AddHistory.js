@@ -17,6 +17,8 @@ export default function AddHistory(props) {
     const [company, setfieldcompany] = useState("")
     const [notes, setfieldnotes] = useState("")
 
+    const creation = firebase.firestore.FieldValue.serverTimestamp()
+
     const [buttonLandlord, setButtonLandlord] = useState(false)
     const [buttonCompany, setButtonCompany] = useState(false)
     const [buttonAgent, setButtonAgent] = useState(false)
@@ -236,42 +238,6 @@ export default function AddHistory(props) {
 
         }
         return downloadurlarr;
-
-
-        /*
-        try {
-            console.log(imageSignature)
-
-            const imageDatas = imageSignature.split('data:image/jpeg;base64,');
-            const imageData = imageDatas[1];
-
-            const task = firebase
-                .storage()
-                .ref()
-                .child(`post/${firebase.auth().currentUser.uid}/${Math.random().toString(36)}`)
-                .putString(imageData, 'base64');
-
-            const taskProgress = snapshot => {
-                console.log(`transfered: ${snapshot.bytesTransferred}`)
-            }
-
-            const taskCompleted = () => {
-                task.snapshot.ref.getDownloadURL().then((snapshot) => {
-                    //downloadurlarr.push(snapshot)
-                    console.log(snapshot)
-                })
-            }
-
-            const taskError = snapshot => {
-                console.log(snapshot)
-            }
-
-            task.on("state_changed", taskProgress, taskError, taskCompleted);
-        }
-        catch (error) {
-            console.log(error)
-        }
-        */
     }
 
     const saveKeyData = () => {
@@ -287,7 +253,7 @@ export default function AddHistory(props) {
                 entrytype,
                 company,
                 notes,
-                creation: firebase.firestore.FieldValue.serverTimestamp()
+                creation
             },
                 function (error) {
                     if (error) {
@@ -299,6 +265,26 @@ export default function AddHistory(props) {
             )
 
         console.log("Document written with ID: ", props.route.params.keyId)
+
+        firebase.firestore()
+            .collection('keycollection')
+            .doc(firebase.auth().currentUser.uid)
+            .collection("keylist")
+            .doc(props.route.params.keyId)
+            .update({
+                name: name,
+                entrytype: entrytype,
+                company: company,
+                notes: notes
+            },
+                function (error) {
+                    if (error) {
+                        console.log("Data could not be saved." + error);
+                    } else {
+                        console.log("Data saved successfully.");
+                    }
+                }
+            )
 
     }
 
@@ -323,8 +309,6 @@ export default function AddHistory(props) {
     //return screen...
     return (
         <Provider>
-
-
             <Portal>
                 <Modal visible={visibleSignature} onDismiss={hideModalSignature} contentContainerStyle={containerStyleSignature}>
                     <Signature
@@ -359,18 +343,18 @@ export default function AddHistory(props) {
             </Portal>
 
 
-        <View style={styles.container}>
+            <View style={styles.container}>
 
-            <Card style={styles.cardstyleinfo}>
+                <Card style={styles.cardstyleinfo}>
 
-                <Card.Title
+                    <Card.Title
                         left={() => <MaterialCommunityIcons name="file-key-outline" size={40} />}
                         style={{
                             fontSize: 30,
                             fontWeight: 'bold'
                         }}
                         title={keydetails.keyname}
-                        subtitle={keydetails.keylocation }
+                        subtitle={keydetails.keylocation}
                     />
 
                     <Divider style={{ marginBottom: 5 }} />
@@ -389,97 +373,96 @@ export default function AddHistory(props) {
                             marginRight: 5
                         }} icon="domain"> {keydetails.company}</Chip>
                     </Card.Content>
-            </Card>
+                </Card>
 
-            <Divider />
+                <Divider />
 
-            <ScrollView>
+                <ScrollView>
 
                     <Text style={{
                         marginHorizontal: 20,
                         fontSize: 30,
-                        fontWeight: 'bold'}}> New Entry </Text>
+                        fontWeight: 'bold'
+                    }}> New Entry </Text>
 
                     <Card style={styles.cardstyle}>
 
                         <Card.Content style={{ flexWrap: 'wrap', flexDirection: 'row', alignItems: 'center', }}>
 
-                        <Button
-                            icon="account-star"
-                            mode="outlined"
-                            disabled={buttonLandlord}
-                            color={Colors.red500}
-                            size={40}
-                            onPress={() => iconbuttonpress('landlord')}
-                        > Landlord </Button>
+                            <Button
+                                icon="account-star"
+                                mode="outlined"
+                                disabled={buttonLandlord}
+                                color={Colors.red500}
+                                size={40}
+                                onPress={() => iconbuttonpress('landlord')}
+                            > Landlord </Button>
 
-                        <Button
-                            icon="domain"
-                            mode="outlined"
-                            disabled={buttonCompany}
-                            color={Colors.red500}
-                            size={40}
-                            onPress={() => iconbuttonpress('company')}
-                        > Company </Button>
+                            <Button
+                                icon="domain"
+                                mode="outlined"
+                                disabled={buttonCompany}
+                                color={Colors.red500}
+                                size={40}
+                                onPress={() => iconbuttonpress('company')}
+                            > Company </Button>
 
-                        <Button
-                            icon="account-tie"
-                            mode="outlined"
-                            disabled={buttonAgent}
-                            color={Colors.red500}
-                            size={40}
-                            onPress={() => iconbuttonpress('agent')}
-                        > Agent </Button>
+                            <Button
+                                icon="account-tie"
+                                mode="outlined"
+                                disabled={buttonAgent}
+                                color={Colors.red500}
+                                size={40}
+                                onPress={() => iconbuttonpress('agent')}
+                            > Agent </Button>
 
-                        <Button
-                            icon="help-circle"
-                            mode="outlined"
-                            disabled={buttonOther}
-                            color={Colors.red500}
-                            size={40}
-                            onPress={() => iconbuttonpress('other')}
-                        > Other </Button>
-                    </Card.Content>
+                            <Button
+                                icon="help-circle"
+                                mode="outlined"
+                                disabled={buttonOther}
+                                color={Colors.red500}
+                                size={40}
+                                onPress={() => iconbuttonpress('other')}
+                            > Other </Button>
+                        </Card.Content>
 
-                    <Divider />
+                        <Divider />
 
-                    <Card.Content>
-                        <Text style={{marginVertical: 10}}> SELECTED: {buttonSelectedText} </Text>
-                    </Card.Content>
+                        <Card.Content>
+                            <Text style={{ marginVertical: 10 }}> SELECTED: {buttonSelectedText} </Text>
+                        </Card.Content>
 
-                </Card>
+                    </Card>
 
-                <Card style={styles.cardstyle}>
-                    <Card.Content style={styles.cardcontentstyle}>
+                    <Card style={styles.cardstyle}>
+                        <Card.Content style={styles.cardcontentstyle}>
 
-                        <TextInput
-                            style={styles.textinputstyle}
-                            type='outlined'
-                            label="name . . ."
-                            onChangeText={(name) => setfeildname(name)}
-                        />
+                            <TextInput
+                                style={styles.textinputstyle}
+                                type='outlined'
+                                label="name . . ."
+                                onChangeText={(name) => setfeildname(name)}
+                            />
 
-                        <TextInput
-                            style={styles.textinputstyle}
-                            label="company . . ."
-                            onChangeText={(company) => setfieldcompany(company)}
-                        />
+                            <TextInput
+                                style={styles.textinputstyle}
+                                label="company . . ."
+                                onChangeText={(company) => setfieldcompany(company)}
+                            />
 
-                        <TextInput
-                            style={styles.textinputstyle}
-                            label="notes . . ."
-                            onChangeText={(notes) => setfieldnotes(notes)}
-                        />
-                    </Card.Content>
-                </Card>
+                            <TextInput
+                                style={styles.textinputstyle}
+                                label="notes . . ."
+                                onChangeText={(notes) => setfieldnotes(notes)}
+                            />
+                        </Card.Content>
+                    </Card>
 
-                {
-                    showComponent ? (
 
+                    {showComponent ? (
                         <Card style={styles.cardstyle}>
-                            <Card.Content>
-                                <Paragraph> Emirates ID front: </Paragraph>
-                            </Card.Content>
+
+                            <Card.Title title='Emirates ID Back:' />
 
                             <Card.Cover source={{ uri: imageIDfront }} style={{ flex: 1, margin: 10 }} />
 
@@ -487,7 +470,7 @@ export default function AddHistory(props) {
 
                             <Card.Actions style={{ justifyContent: 'space-between' }}>
                                 <Button
-                                        onPress={showModalPhotoFront} >
+                                    onPress={showModalPhotoFront} >
                                     NEW PHOTO
                                 </Button>
 
@@ -496,18 +479,13 @@ export default function AddHistory(props) {
                                     OPEN GALLERY
                                 </Button>
                             </Card.Actions>
-
                         </Card>
+                    ) : null}
 
-                    ): null
-                }
-
-                {
-                    showComponent ? (
+                    { showComponent ? (
                         <Card style={styles.cardstyle}>
-                            <Card.Content>
-                                <Paragraph> Emirates ID back: </Paragraph>
-                            </Card.Content>
+
+                            <Card.Title title='Emirates ID front:' />
 
                             <Card.Cover source={{ uri: imageIDback }} style={{ flex: 1, margin: 10 }} />
 
@@ -515,7 +493,7 @@ export default function AddHistory(props) {
 
                             <Card.Actions style={{ justifyContent: 'space-between' }}>
                                 <Button
-                                        onPress={showModalPhotoBack} >
+                                    onPress={showModalPhotoBack} >
                                     NEW PHOTO
                                 </Button>
 
@@ -525,19 +503,14 @@ export default function AddHistory(props) {
                                 </Button>
                             </Card.Actions>
                         </Card>
-                    ): null
+                    ) : null}
 
-                }
-
-
-                {
-                    showComponent ? (
+                    {showComponent ? (
                         <Card style={styles.cardstyle}>
-                            <Card.Content>
-                                <Paragraph> Agent Signature: </Paragraph>
-                            </Card.Content>
 
-                            <Card.Cover source={{ uri: imageSignature}} style={{ flex: 1, margin: 10 }} />
+                            <Card.Title title='Signature:' />
+
+                            <Card.Cover source={{ uri: imageSignature }} style={{ flex: 1, margin: 10 }} />
 
                             <Divider />
 
@@ -553,30 +526,24 @@ export default function AddHistory(props) {
                                 </Button>
                             </Card.Actions>
                         </Card>
-                    ): null
+                    ) : null}
 
-                    }
-
-
-
-                <Card style={styles.cardstyle}>
-                    <Card.Actions style={{ justifyContent: 'space-between', alignItems: 'center'}}>
-                        <Button
+                    <Card style={styles.cardstyle}>
+                        <Card.Actions style={{ justifyContent: 'space-between', alignItems: 'center' }}>
+                            <Button
                                 onPress={() => saveKeyData()} >
-                            SAVE
-                        </Button>
+                                SAVE
+                            </Button>
                             <Button
                                 onPress={() => clearKeyData()} >
-                            CLEAR
+                                CLEAR
                             </Button>
-                    </Card.Actions>
-                </Card>
+                        </Card.Actions>
+                    </Card>
 
-            </ScrollView>
-
-
+                </ScrollView>
             </View>
-            </Provider>
+        </Provider>
     )
 }
 
