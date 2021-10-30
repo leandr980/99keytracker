@@ -20,6 +20,7 @@ export default function Keyinfo(props) {
     useEffect(() => {
 
         if (props.route.params.keyId !== keyId) {
+
             firebase.firestore()
                 .collection('keycollection')
                 .doc(props.route.params.uid)

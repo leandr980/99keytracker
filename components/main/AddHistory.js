@@ -5,6 +5,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import * as ImagePicker from 'expo-image-picker';
 import { Camera } from 'expo-camera';
 import Signature from "react-native-signature-canvas";
+import base64 from 'base-64'
+import utf8 from 'utf8'
 
 import firebase from 'firebase'
 require("firebase/firestore")
@@ -96,7 +98,7 @@ export default function AddHistory(props) {
     const [visibleSignature, setVisibleSignature] = React.useState(false);
     const showModalSignature = () => setVisibleSignature(true);
     const hideModalSignature = () => setVisibleSignature(false);
-    const containerStyleSignature = { justifyContent: 'center', backgroundColor: 'white', margin: 20, padding: 5, borderRadius: 10, height: '50%'};
+    const containerStyleSignature = {flex: 1, justifyContent: 'center', backgroundColor: 'white', margin: 20, padding: 5, borderRadius: 10};
     const containerStylePhoto = {flex: 1, justifyContent: 'center', backgroundColor: 'white', margin: 20, padding: 5, borderRadius: 10};
 
     const handleOK = (signature) => {
@@ -205,7 +207,6 @@ export default function AddHistory(props) {
             const blobarr = [blobIDback, blobIDfront]
             const downloadurlarr = []
 
-
             for (let i = 0; i < blobarr.length; i++) {
                 try {
                     const task = firebase
@@ -238,6 +239,40 @@ export default function AddHistory(props) {
 
         }
         return downloadurlarr;
+    }
+
+    const uploadsignature = async () => {
+
+        const responseSignature = await fetch(imageSignature);
+        const blobSignature = await responseSignature.blob();
+
+        try {
+            const task = firebase
+                .storage()
+                .ref()
+                .child(`post/${firebase.auth().currentUser.uid}/${Math.random().toString(36)}`)
+                .put(blobSignature, 'base64', { contentType: 'image/jpg' })
+
+            const taskProgress = snapshot => {
+                console.log(`transfered: ${snapshot.bytesTransferred / snapshot.totalBytes * 100}`)
+            }
+
+            const taskCompleted = () => {
+                task.snapshot.ref.getDownloadURL().then((snapshot) => {
+                    console.log(snapshot)
+                })
+            }
+
+            const taskError = snapshot => {
+                console.log(snapshot)
+            }
+
+            task.on("state_changed", taskProgress, taskError, taskCompleted)
+
+        }
+        catch (error) {
+            console.log(error)
+        }
     }
 
     const saveKeyData = () => {
@@ -318,6 +353,8 @@ export default function AddHistory(props) {
                         clearText="Clear"
                         confirmText="Save"
                         webStyle={style}
+                        imageType="image/jpeg"
+                        backgroundColor={'rgb(255,255,255)'}
                     />
                 </Modal>
 
@@ -531,7 +568,7 @@ export default function AddHistory(props) {
                     <Card style={styles.cardstyle}>
                         <Card.Actions style={{ justifyContent: 'space-between', alignItems: 'center' }}>
                             <Button
-                                onPress={() => saveKeyData()} >
+                                onPress={() => uploadsignature()} >
                                 SAVE
                             </Button>
                             <Button
