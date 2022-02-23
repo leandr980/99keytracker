@@ -15,7 +15,7 @@ require("firebase/firebase-storage")
 export default function AddHistory(props) {
 
     const [name, setfeildname] = useState("")
-    const [entrytype, setfieldentrytype] = useState("")
+    const [entrytype, setfieldentrytype] = useState("") 
     const [company, setfieldcompany] = useState("")
     const [notes, setfieldnotes] = useState("")
 
@@ -239,40 +239,6 @@ export default function AddHistory(props) {
 
         }
         return downloadurlarr;
-    }
-
-    const uploadsignature = async () => {
-
-        const responseSignature = await fetch(imageSignature);
-        const blobSignature = await responseSignature.blob();
-
-        try {
-            const task = firebase
-                .storage()
-                .ref()
-                .child(`post/${firebase.auth().currentUser.uid}/${Math.random().toString(36)}`)
-                .put(blobSignature, 'base64', { contentType: 'image/jpg' })
-
-            const taskProgress = snapshot => {
-                console.log(`transfered: ${snapshot.bytesTransferred / snapshot.totalBytes * 100}`)
-            }
-
-            const taskCompleted = () => {
-                task.snapshot.ref.getDownloadURL().then((snapshot) => {
-                    console.log(snapshot)
-                })
-            }
-
-            const taskError = snapshot => {
-                console.log(snapshot)
-            }
-
-            task.on("state_changed", taskProgress, taskError, taskCompleted)
-
-        }
-        catch (error) {
-            console.log(error)
-        }
     }
 
     const saveKeyData = () => {
@@ -536,29 +502,6 @@ export default function AddHistory(props) {
 
                                 <Button
                                     onPress={() => pickImage('idback')} >
-                                    OPEN GALLERY
-                                </Button>
-                            </Card.Actions>
-                        </Card>
-                    ) : null}
-
-                    {showComponent ? (
-                        <Card style={styles.cardstyle}>
-
-                            <Card.Title title='Signature:' />
-
-                            <Card.Cover source={{ uri: imageSignature }} style={{ flex: 1, margin: 10 }} />
-
-                            <Divider />
-
-                            <Card.Actions style={{ justifyContent: 'space-between' }}>
-                                <Button
-                                    onPress={showModalSignature} >
-                                    NEW SIGNATURE
-                                </Button>
-
-                                <Button
-                                    onPress={() => pickImage('signature')} >
                                     OPEN GALLERY
                                 </Button>
                             </Card.Actions>
