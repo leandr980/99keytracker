@@ -1,7 +1,7 @@
 // JavaScript source code
 import React, { useEffect, useState } from 'react'
-import { View, Text, FlatList, StyleSheet, } from 'react-native'
-import { Card, FAB, Searchbar, IconButton, Paragraph, Divider, Chip, Caption } from 'react-native-paper'
+import { View, Text, FlatList, StyleSheet, ImageBackground, } from 'react-native'
+import { Card, FAB, Searchbar, IconButton, Paragraph, Divider, Chip, Caption, Button } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import firebase from 'firebase'
@@ -9,6 +9,8 @@ require ("firebase/firestore")
 
 import { connect } from 'react-redux'
     
+//homepage
+
 function Profile(props) {
 
     const { currentUser, keyinfo } = props;
@@ -22,6 +24,10 @@ function Profile(props) {
 
     return (
         <View style={styles.container}>
+            <ImageBackground 
+            style={{flex: 1}}
+            imageStyle={{resizeMode: 'repeat'}}
+            source={require('../../assets/bg-image/99-whatsapp-bg-small.jpg')}>
 
             <Card style={styles.cardstyle}>
                 <View style={styles.containerInfo}>
@@ -52,9 +58,6 @@ function Profile(props) {
                         <Card style={styles.cardstyle}>
                             <Card.Title
                                 left={() => <MaterialCommunityIcons name="folder-key-outline" size={40} />}
-                                right={() => <IconButton {...props} icon="chevron-right"
-                                    onPress={() => props.navigation.navigate("Keyinfo", { keyId: item.id, uid: firebase.auth().currentUser.uid })} />
-                                }
                                 title={item.keyname}
                                 subtitle={item.keylocation}
                             />
@@ -74,7 +77,14 @@ function Profile(props) {
                                     marginRight: 5
                                 }} icon="domain"> {item.company}</Chip>
                             </Card.Content>
-                        </Card>
+                            
+                            <Card.Actions style={{ justifyContent: 'center' }}>
+                                <Button onPress={() => props.navigation.navigate("Keyinfo", { keyId: item.id, uid: firebase.auth().currentUser.uid })} >
+                                    VIEW HISTORY
+                                </Button>
+                            </Card.Actions>
+                            
+                            </Card>
                     )}/>
             </View>
 
@@ -87,6 +97,8 @@ function Profile(props) {
                 label="NEW KEY"
                 onPress={() => props.navigation.navigate('AddKey')}
             />
+
+            </ImageBackground>
             </View>
             )
 }

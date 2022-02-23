@@ -56,8 +56,8 @@ export class Login extends Component {
                     </Card.Content>
 
                     <Card.Actions style={{justifyContent: 'space-between'}}>
-                        <Button onPress={() => this.onSignUp()}> SIGN IN </Button>
                         <Button onPress={() => { this.props.navigation.goBack() }}> GO BACK </Button>
+                        <Button onPress={() => this.onSignUp()}> SIGN IN </Button>
                     </Card.Actions>
 
                 </Card>

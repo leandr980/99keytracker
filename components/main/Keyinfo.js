@@ -119,6 +119,8 @@ export default function Keyinfo(props) {
                             marginTop: 5,
                             marginRight: 5
                         }} icon="domain"> {keydetails.company}</Chip>
+
+
                     </Card.Content>
                 </Card>
 
@@ -135,7 +137,8 @@ export default function Keyinfo(props) {
 
                             <Card style={styles.cardstyle}>
                                 <Card.Title
-                                    title={index}
+                                    title={item.creation.toDate().toString()}
+                                    
                                 />
 
                                 <Divider />
