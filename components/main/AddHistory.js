@@ -1,5 +1,5 @@
 import React, { useEffect, useState, Component } from 'react'
-import { View, FlatList, StyleSheet, ScrollView, Image } from 'react-native'
+import { View, FlatList, StyleSheet, ScrollView, Image, ImageBackground } from 'react-native'
 import { Card, FAB, Searchbar, IconButton, Paragraph, Divider, Button, Chip, Colors, RadioButton, Text, TextInput, List, Portal, Dialog, Provider, Modal } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import * as ImagePicker from 'expo-image-picker';
@@ -347,6 +347,10 @@ export default function AddHistory(props) {
 
 
             <View style={styles.container}>
+            <ImageBackground 
+            style={{flex: 1}}
+            imageStyle={{resizeMode: 'repeat'}}
+            source={require('../../assets/bg-image/99-whatsapp-bg-small.jpg')}>
 
                 <Card style={styles.cardstyleinfo}>
 
@@ -511,7 +515,7 @@ export default function AddHistory(props) {
                     <Card style={styles.cardstyle}>
                         <Card.Actions style={{ justifyContent: 'space-between', alignItems: 'center' }}>
                             <Button
-                                onPress={() => uploadsignature()} >
+                                onPress={() => saveKeyData()} >
                                 SAVE
                             </Button>
                             <Button
@@ -522,6 +526,7 @@ export default function AddHistory(props) {
                     </Card>
 
                 </ScrollView>
+                </ImageBackground>
             </View>
         </Provider>
     )
@@ -539,12 +544,12 @@ const styles = StyleSheet.create({
     cardstyle: {
         borderRadius: 10,
         margin: 10,
-        elevation: 10,
+        elevation: 5,
     },
     cardstyleinfo: {
         borderRadius: 10,
         margin: 10,
-        elevation: 10,
+        elevation: 5,
     },
     fab: {
         position: 'absolute',
