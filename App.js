@@ -25,6 +25,10 @@ import Addkeyscreen from './components/main/Addkey'
 import AddkeyHistoryscreen from './components/main/AddHistory'
 import KeyHistoryDetailsscreen from './components/main/KeyHistoryDetails'
 import SignatureScreen from './components/main/AgentSignature'
+import NewHistoryLandlord from './components/main/NewHistoryLandlord'
+import NewHistoryCompany from './components/main/NewHistoryCompany'
+import NewHistoryAgent from './components/main/NewHistoryAgent'
+import NewHistoryOther from './components/main/NewHistoryOther'
 
 //LogBox.ignoreLogs(['Warning: ...']);
 //console.disableYellowBox = true;
@@ -112,7 +116,7 @@ export class App extends Component {
                                     backgroundColor: '#efefef',
                                     elevation: 0,
                                 },
-                            }}                        />
+                            }}/>
                         <Stack.Screen name="AddKeyHistory" component={AddkeyHistoryscreen}
                             options={{
                                 title: 'New Key History',
@@ -120,7 +124,7 @@ export class App extends Component {
                                     backgroundColor: '#efefef',
                                     elevation: 0,
                                 }
-                            }}                        />
+                            }}/>
                         <Stack.Screen name="KeyHistoryDetails" component={KeyHistoryDetailsscreen}
                             options={{
                                 title: 'Key Details',
@@ -128,7 +132,7 @@ export class App extends Component {
                                     backgroundColor: '#efefef',
                                     elevation: 0,
                                 }
-                            }}                        />
+                            }}/>
                         <Stack.Screen name="Keyinfo" component={KeyinfoScreen}
                             options={{
                                 title: 'Key Info',
@@ -143,7 +147,40 @@ export class App extends Component {
                                     backgroundColor: '#efefef',
                                     elevation: 0,
                                 }
-                            }}                        />
+                            }}/>
+                            
+                        <Stack.Screen name="Landlord" component={NewHistoryLandlord}
+                            options={{
+                                headerStyle: {
+                                    backgroundColor: '#efefef',
+                                    elevation: 0,
+                                }
+                            }}/>
+                            
+                        <Stack.Screen name="Company" component={NewHistoryCompany}
+                            options={{
+                                headerStyle: {
+                                    backgroundColor: '#efefef',
+                                    elevation: 0,
+                                }
+                            }}/>
+                            
+                        <Stack.Screen name="Agent" component={NewHistoryAgent}
+                            options={{
+                                headerStyle: {
+                                    backgroundColor: '#efefef',
+                                    elevation: 0,
+                                }
+                            }}/>
+                            
+                        <Stack.Screen name="Other" component={NewHistoryOther}
+                            options={{
+                                headerStyle: {
+                                    backgroundColor: '#efefef',
+                                    elevation: 0,
+                                }
+                            }}/>
+                            
                         <Stack.Screen name="Save" component={SaveScreen} navigation={ this.props.navigation}  />
                     </Stack.Navigator>
                 </NavigationContainer >
