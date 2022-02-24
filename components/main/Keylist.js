@@ -29,7 +29,7 @@ function Profile(props) {
             imageStyle={{resizeMode: 'repeat'}}
             source={require('../../assets/bg-image/99-whatsapp-bg-small.jpg')}>
 
-            <Card style={styles.cardstyle}>
+            <Card style={styles.maincardstyle}>
                 <View style={styles.containerInfo}>
                     <Searchbar
                         style={{ elevation: 0 }}
@@ -62,6 +62,10 @@ function Profile(props) {
                                 subtitle={item.keylocation}
                             />
                             <Divider style={{ marginBottom: 5 }} />
+
+                            <Card.Content> 
+                                <Text>Added: </Text>
+                                </Card.Content>
 
                             <Card.Content style={{ flexWrap: 'wrap', flexDirection: 'row', alignItems: 'center' }}>
                                 <Chip style={{
@@ -122,6 +126,13 @@ const styles = StyleSheet.create({
         flex: 1,
         fontSize: 15,
     },
+
+    maincardstyle: {
+        borderBottomLeftRadius: 10,
+        borderBottomRightRadius: 10,
+        elevation: 5,
+    },
+
     cardstyle: {
         borderRadius: 10,
         margin: 10,

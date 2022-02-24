@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native'
 import {Button as ButtonDefault } from 'react-native'
-import { Card, FAB, Searchbar, IconButton, Chip, Paragraph, Button, Divider, Caption, Provider, Portal, Dialog } from 'react-native-paper'
+import { Card, FAB, Searchbar, IconButton, Chip, Paragraph, Button, Divider, Caption, Provider, Portal, Dialog, Avatar, Modal, RadioButton, TouchableRipple } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import firebase from 'firebase'
@@ -43,7 +43,10 @@ export default function Keyinfo(props) {
                         const id = doc.id;
                         return { id, ...data }
                     })
-                    setKeyHistory(keyHistory)
+                    if (!docSnapshot.metadata.hasPendingWrites) {  // <======
+                        setKeyHistory(keyHistory)
+                     }
+                    
                 })
 
             setKeyId(props.route.params.keyId)
@@ -51,6 +54,11 @@ export default function Keyinfo(props) {
         }
 
     }, [props.route.params.keyId])
+
+    const [visibleCategory, setVisibleCategory] = React.useState(false);
+    const showModalCategory = () => setVisibleCategory(true);
+    const hideModalCategory = () => setVisibleCategory(false);
+    const [checked, setChecked] = React.useState();
 
     const deletehistory = () => {
         setvisabledialogue(true)
@@ -75,24 +83,76 @@ export default function Keyinfo(props) {
     }
 
     return (
-        <Provider>
+        <Provider >
 
-            <Portal>
-                <Dialog visible={visabledialogue} onDismiss={hideDialog}>
-                    <Dialog.Title>Alert</Dialog.Title>
+            <Portal >
+                <Dialog visible={visibleCategory} onDismiss={hideModalCategory}>
+
+                    <Dialog.Title>Choose an option</Dialog.Title>
+
                     <Dialog.Content>
-                        <Paragraph>Are you sure you want to delete this log?</Paragraph>
+
+                        <TouchableRipple onPress={() => setChecked('Landlord')}>
+                            <View style={styles.row}>
+                                <Paragraph>Landlord</Paragraph>
+                                <View pointerEvents="none">
+                                    <RadioButton
+                                        value="Landlord"
+                                        status={checked === 'Landlord' ? 'checked' : 'unchecked'}/>
+                                </View>
+                            </View>
+                        </TouchableRipple>
+                        
+                        <TouchableRipple onPress={() => setChecked('Company')}>
+                            <View style={styles.row}>
+                                <Paragraph>Company</Paragraph>
+                                <View pointerEvents="none">
+                                    <RadioButton
+                                        value="Company"
+                                        status={checked === 'Company' ? 'checked' : 'unchecked'}/>
+                                </View>
+                            </View>
+                        </TouchableRipple>
+
+                        <TouchableRipple onPress={() => setChecked('Agent')}>
+                            <View style={styles.row}>
+                                <Paragraph>Agent</Paragraph>
+                                <View pointerEvents="none">
+                                    <RadioButton
+                                        value="Agent"
+                                        status={checked === 'Agent' ? 'checked' : 'unchecked'}/>
+                                </View>
+                            </View>
+                        </TouchableRipple>
+
+                        <TouchableRipple onPress={() => setChecked('Other')}>
+                            <View style={styles.row}>
+                                <Paragraph>Other</Paragraph>
+                                <View pointerEvents="none">
+                                    <RadioButton
+                                        value="Other"
+                                        status={checked === 'Other' ? 'checked' : 'unchecked'}/>
+                                </View>
+                            </View>
+                        </TouchableRipple>
+
                     </Dialog.Content>
-                    <Dialog.Actions style={{justifyContent: 'space-between'}}>
-                        <Button onPress={hideDialog}>CONFIRM</Button>
-                        <Button onPress={hideDialog}>CANCEL</Button>
+                    
+                    <Dialog.Actions>
+                        <Button onPress={() => props.navigation.navigate(checked, { keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid })}
+                        >Done</Button>
                     </Dialog.Actions>
-                </Dialog>
+                </Dialog>                
             </Portal>
 
             <View style={styles.container}>
 
-                <Card style={styles.cardstyle}>
+            <ImageBackground 
+            style={{flex: 1}}
+            imageStyle={{resizeMode: 'repeat'}}
+            source={require('../../assets/bg-image/99-whatsapp-bg-small.jpg')}>
+
+                <Card style={styles.maincardstyle}>
 
                     <Card.Title
                         left={() => <MaterialCommunityIcons name="file-key-outline" size={40} />}
@@ -124,8 +184,6 @@ export default function Keyinfo(props) {
                     </Card.Content>
                 </Card>
 
-                <Divider />
-
                 <View style={styles.containerGallery}>
 
                     <FlatList
@@ -137,9 +195,7 @@ export default function Keyinfo(props) {
 
                             <Card style={styles.cardstyle}>
                                 <Card.Title
-                                    title={item.creation.toDate().toString()}
-                                    
-                                />
+                                    title={item.creation.toDate().toString()}/>
 
                                 <Divider />
 
@@ -150,7 +206,6 @@ export default function Keyinfo(props) {
                                     <Caption> Type: {item.entrytype} </Caption>
                                     <Caption> Notes: {item.notes} </Caption>
                                 </Card.Content>
-
 
                             </Card>
                         )}
@@ -164,12 +219,18 @@ export default function Keyinfo(props) {
                     large
                     icon="plus"
                     label="NEW LOG"
-                    onPress={() => props.navigation.navigate("AddKeyHistory", { keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid })}
+
+                    onPress={showModalCategory}
+                    
                 />
+
+                </ImageBackground>
             </View>
         </Provider>
     )
 }
+
+//onPress={() => props.navigation.navigate("AddKeyHistory", { keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid })}
 
 const styles = StyleSheet.create({
     container: {
@@ -187,6 +248,13 @@ const styles = StyleSheet.create({
         flex: 1,
         fontSize: 15,
     },
+
+    maincardstyle: {
+        borderBottomLeftRadius: 10,
+        borderBottomRightRadius: 10,
+        elevation: 5,
+    },
+
     cardstyle: {
         borderRadius: 10,
         margin: 10,
@@ -198,4 +266,11 @@ const styles = StyleSheet.create({
         right: 0,
         bottom: 0,
     },
+    row: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingVertical: 8,
+        paddingHorizontal: 16,
+      },
 })
