@@ -19,7 +19,7 @@ export default function NewHistoryLandlord(props) {
     const [keyId, setKeyId] = useState("")
 
     const [name, setfeildname] = useState("")
-    const [company, setfieldcompany] = useState("")
+    const [number, setfieldnumber] = useState("")
     const [notes, setfieldnotes] = useState("")
 
     const [visiblePhotoFront, setVisiblePhotoFront] = React.useState(false);
@@ -129,7 +129,7 @@ export default function NewHistoryLandlord(props) {
             .add({
                 name,
                 entrytype,
-                company,
+                number,
                 notes,
                 creation
             },
@@ -167,8 +167,124 @@ export default function NewHistoryLandlord(props) {
 
     }
 
+    // Uploading picture to firebase storage
+    const uploadImage = async (uri) => {
+
+        
+
+        const response = await fetch(uri);
+        const blob = await response.blob();
+
+        const task = firebase
+            .storage()
+            .ref()
+            .child(`post/${firebase.auth().currentUser.uid}/${Math.random().toString(36)}`)
+            .put(blob);
+
+        const taskProgress = snapshot => {
+            console.log(`transfered: ${snapshot.bytesTransferred}`)
+        }
+
+        const taskCompleted = () => {
+            task.snapshot.ref.getDownloadURL().then((snapshot) => {
+                return(snapshot);
+                console.log(snapshot)
+            })
+        }
+
+        const taskError = snapshot => {
+            console.log(snapshot)
+        }
+
+        task.on("state_changed", taskProgress, taskError, taskCompleted);
+    }
+
+    //linking emirates ID with key history
+    const savePostData = (downloadURL) => {
+
+        firebase.firestore()
+            .collection('keycollection')
+            .doc(firebase.auth().currentUser.uid)
+            .collection("keylist")
+            .doc(props.route.params.keyId)
+            .collection("keyhistory")
+            .add({
+                downloadURL
+            },
+                function (error) {
+                    if (error) {
+                        console.log("Data could not be saved." + error);
+                    } else {
+                        console.log("Data saved successfully.");
+                    }
+                }
+        ).then((function () {
+            props.navigation.popToTop()
+        }))
+    }
+        
+        const images = []
+        const [urls, setUrls] = useState([]);
+        const [progress, setProgress] = useState(0);
+
+        const handleUpload = async() => {
+
+            const response1 = await fetch(imageIDfront);
+            const blob1 = await response1.blob();
+    
+            const response2 = await fetch(imageIDback);
+            const blob2 = await response2.blob();
+    
+            images.push(blob1)
+            images.push(blob2)
+
+            const promises = [];
+            images.map((image) => {
+              const uploadTask = firebase
+              .storage()
+              .ref()
+              .child(`post/${firebase.auth().currentUser.uid}/${Math.random().toString(36)}`)
+              .put(image);
+              promises.push(uploadTask);
+              uploadTask.on(
+                "state_changed",
+                (snapshot) => {
+                  const progress = Math.round(
+                    (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+                  );
+                  setProgress(progress);
+                },
+                (error) => {
+                  console.log(error);
+                },
+                async () => {
+                  await firebase
+                  .storage()
+                  .ref()
+                  .child(`post/${firebase.auth().currentUser.uid}/${Math.random().toString(36)}`)
+                    .getDownloadURL()
+                    .then((urls) => {
+                      setUrls((prevState) => [...prevState, urls]);
+                    });
+                }
+              );
+            });
+        
+            Promise.all(promises)
+              .then(() => console.log('images uploaded'))
+              .catch((err) => console.log(err));
+          };
+
+          
+
+
     // Clear All Fields
     const clearKeyData = () => {
+        handleUpload();
+        console.log("images: ", images);
+        console.log("urls", urls);
+
+
     }
 
     return (
@@ -235,7 +351,7 @@ export default function NewHistoryLandlord(props) {
 
                     <Text style={{
                         marginHorizontal: 20,
-                        fontSize: 30,
+                        fontSize: 30, 
                         fontWeight: 'bold'
                     }}> New Landlord Entry </Text>
 
@@ -252,7 +368,7 @@ export default function NewHistoryLandlord(props) {
                             <TextInput
                                 style={styles.textinputstyle}
                                 label="Phone Number . . ."
-                                onChangeText={(company) => setfieldcompany(company)}
+                                onChangeText={(number) => setfieldnumber(number)}
                             />
 
                             <TextInput
