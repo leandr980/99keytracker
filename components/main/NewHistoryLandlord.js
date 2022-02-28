@@ -1,7 +1,7 @@
 // JavaScript source code
 import React, { useEffect, useState, Component } from 'react'
 import { View, FlatList, StyleSheet, ScrollView, Image, ImageBackground } from 'react-native'
-import { Card, FAB, Searchbar, IconButton, Paragraph, Divider, Button, Chip, Colors, RadioButton, Text, TextInput, List, Portal, Dialog, Provider, Modal } from 'react-native-paper'
+import { Card, FAB, Searchbar, IconButton, Paragraph, Divider, Button, Chip, Colors, RadioButton, Text, TextInput, List, Portal, Dialog, Provider, Modal, ProgressBar } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import * as ImagePicker from 'expo-image-picker';
 import { Camera } from 'expo-camera';
@@ -222,12 +222,13 @@ export default function NewHistoryLandlord(props) {
             props.navigation.popToTop()
         }))
     }
-        
-        const images = []
-        const [urls, setUrls] = useState([]);
-        const [progress, setProgress] = useState(0);
+
+    const images = []
+    const [urls, setUrls] = useState([]);
+    const [progress, setProgress] = useState(0);
 
         const handleUpload = async() => {
+
 
             const response1 = await fetch(imageIDfront);
             const blob1 = await response1.blob();
@@ -238,12 +239,14 @@ export default function NewHistoryLandlord(props) {
             images.push(blob1)
             images.push(blob2)
 
+
+
             const promises = [];
             images.map((image) => {
               const uploadTask = firebase
               .storage()
               .ref()
-              .child(`post/${firebase.auth().currentUser.uid}/${Math.random().toString(36)}`)
+              .child(`post/${firebase.auth().currentUser.uid}/${image}`)
               .put(image);
               promises.push(uploadTask);
               uploadTask.on(
@@ -257,13 +260,13 @@ export default function NewHistoryLandlord(props) {
                 (error) => {
                   console.log(error);
                 },
-                async () => {
+                async () => {   
                   await firebase
                   .storage()
                   .ref()
-                  .child(`post/${firebase.auth().currentUser.uid}/${Math.random().toString(36)}`)
-                    .getDownloadURL()
-                    .then((urls) => {
+                  .child(`post/${firebase.auth().currentUser.uid}/${image}`)
+                  .getDownloadURL()
+                  .then((urls) => {
                       setUrls((prevState) => [...prevState, urls]);
                     });
                 }
@@ -275,15 +278,17 @@ export default function NewHistoryLandlord(props) {
               .catch((err) => console.log(err));
           };
 
+
+
           
 
 
     // Clear All Fields
     const clearKeyData = () => {
         handleUpload();
-        console.log("images: ", images);
-        console.log("urls", urls);
-
+        console.log(images[0])
+          console.log("images: ", images);
+          console.log("urls", urls);
 
     }
 
@@ -383,8 +388,6 @@ export default function NewHistoryLandlord(props) {
                         <Card.Title title='Emirates ID Front:' />
                         <Card.Cover source={{ uri: imageIDfront }} style={{ flex: 1, margin: 10 }} />
                         
-                        <Divider />
-                        
                         <Card.Actions style={{ justifyContent: 'space-between' }}>
                             <Button
                             onPress={showModalPhotoFront} >
@@ -418,6 +421,13 @@ export default function NewHistoryLandlord(props) {
                     </Card>
 
                     <Card style={styles.cardstyle}>
+
+                        <Card.Content>
+                            <Paragraph>{progress}</Paragraph>
+                        </Card.Content>
+
+                        <Divider styles={{marginBottom: 5, marginTop: 5}}/>
+
                         <Card.Actions style={{ justifyContent: 'space-between', alignItems: 'center' }}>
                             <Button
                                 onPress={() => saveKeyData()} >
