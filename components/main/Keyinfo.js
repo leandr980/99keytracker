@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native'
 import {Button as ButtonDefault } from 'react-native'
-import { Card, FAB, Searchbar, IconButton, Chip, Paragraph, Button, Divider, Caption, Provider, Portal, Dialog, Avatar, Modal, RadioButton, TouchableRipple } from 'react-native-paper'
+import { Card, FAB, Searchbar, IconButton, Chip, Paragraph, Button, Divider, Caption, Provider, Portal, Dialog, RadioButton, TouchableRipple, List } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import firebase from 'firebase'
@@ -62,7 +62,6 @@ export default function Keyinfo(props) {
 
     const deletehistory = () => {
         setvisabledialogue(true)
-
     }
 
     const deletehistorydialogue = (itemid) => {
@@ -206,6 +205,20 @@ export default function Keyinfo(props) {
                                     <Caption> Type: {item.entrytype} </Caption>
                                     <Caption> Notes: {item.notes} </Caption>
                                 </Card.Content>
+
+                                <List.Section >
+
+                                    <List.Accordion title='View Media'>
+                                        <Divider/>
+                                        <List.Item title='Emirates ID Front'>
+                                            <Image
+                                            />
+                                        </List.Item>
+                                        <List.Item title='Emirates ID Back'/>
+                                        <List.Item title='Signature'/>
+                                    </List.Accordion>                                    
+                                    
+                                </List.Section>
 
                             </Card>
                         )}
