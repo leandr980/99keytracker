@@ -152,7 +152,7 @@ export default function NewHistoryLandlord(props) {
             .update({
                 name: name,
                 entrytype: entrytype,
-                company: company,
+                number: number,
                 notes: notes
             },
                 function (error) {
@@ -168,7 +168,8 @@ export default function NewHistoryLandlord(props) {
 
     // Uploading pictures to firebase storage and generating downloadURLs
     const images = []
-    const [urls, setUrls] = useState([]);
+    //const [urls, setUrls] = useState([]);
+    const urls = [];
     const [progress, setProgress] = useState(0);
     
     const handleUpload = async() => {
@@ -185,8 +186,8 @@ export default function NewHistoryLandlord(props) {
         images.forEach((item) => {
             item.id = Math.random().toString(36);});
 
-            console.log(images[0].id + '1')
-            console.log(images[1].id + '2')
+            //console.log(images[0].id + '1')
+            //console.log(images[1].id + '2')
 
             const promises = [];
             images.map((image) => {
@@ -216,23 +217,31 @@ export default function NewHistoryLandlord(props) {
                                     .ref()
                                     .child(`post/${firebase.auth().currentUser.uid}/${image.id}`)
                                     .getDownloadURL()
-                                    .then((urls) => {
-                                        setUrls((prevState) => [...prevState, urls]);
+                                    .then((snapshot) => {
+                                        urls.push(snapshot)
                                     });
                                 }
+
+                                
+
                                 );
                             });
                             
                             Promise.all(promises)
                             .then(() => console.log('images uploaded'))
                             .catch((err) => console.log(err));
+
+                            const downloadURL1 = urls[0];
+                            const downloadURL2 = urls[1];
+                    
+                            console.log(downloadURL1 + 'url 1')
+                            console.log(downloadURL2 + 'url 2')
+
                         };
 
     // Clear All Fields
-    const clearKeyData = () => {
+    const clearKeyData = async() => {
         handleUpload();
-
-        console.log(urls)
 
     }
 
@@ -366,11 +375,12 @@ export default function NewHistoryLandlord(props) {
 
                     <Card style={styles.cardstyle}>
 
-                        <Card.Content>
+                        <Card.Content style= {{marginBottom: 10}}>
                             <Paragraph>{progress}</Paragraph>
+                            <ProgressBar progress={progress}/>
                         </Card.Content>
 
-                        <Divider styles={{marginBottom: 5, marginTop: 5}}/>
+                        <Divider styles={{margin: 10}}/>
 
                         <Card.Actions style={{ justifyContent: 'space-between', alignItems: 'center' }}>
                             <Button
