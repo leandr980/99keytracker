@@ -163,16 +163,15 @@ export default function NewHistoryLandlord(props) {
                     }
                 }
             )
-
     }
 
     // Uploading pictures to firebase storage and generating downloadURLs
-    const images = []
-    //const [urls, setUrls] = useState([]);
-    const urls = [];
     const [progress, setProgress] = useState(0);
-    
+
     const handleUpload = async() => {
+        const urls = []
+        
+        const images = []
         
         const response1 = await fetch(imageIDfront);
         const blob1 = await response1.blob();
@@ -183,12 +182,13 @@ export default function NewHistoryLandlord(props) {
         images.push(blob1)
         images.push(blob2)
 
+
+        for (const imageitem of images) {
+            console.log(imageitem)
+        }
+
         images.forEach((item) => {
             item.id = Math.random().toString(36);});
-
-            //console.log(images[0].id + '1')
-            //console.log(images[1].id + '2')
-
             const promises = [];
             images.map((image) => {
                 const uploadTask = firebase
@@ -198,7 +198,6 @@ export default function NewHistoryLandlord(props) {
                 .put(image);
 
                 promises.push(uploadTask);
-
                 uploadTask.on(
 
                     "state_changed",
@@ -220,29 +219,31 @@ export default function NewHistoryLandlord(props) {
                                     .then((snapshot) => {
                                         urls.push(snapshot)
                                     });
-                                }
 
-                                
-
+                                    /*
+                                    const downloadURL1 = urls[0];
+                                    const downloadURL2 = urls[1];
+                            
+                                    console.log('url in promise')
+                                    console.log(downloadURL1 + 'url 1')
+                                    console.log(downloadURL2 + 'url 2')
+                                    */
+                                    
+                                   }
                                 );
                             });
-                            
-                            Promise.all(promises)
+                            await Promise.all(promises)
                             .then(() => console.log('images uploaded'))
+                            .then(() => console.log(urls[0], 'url1'))
+                            .then(() => console.log(urls[1], 'url2'))
                             .catch((err) => console.log(err));
-
-                            const downloadURL1 = urls[0];
-                            const downloadURL2 = urls[1];
-                    
-                            console.log(downloadURL1 + 'url 1')
-                            console.log(downloadURL2 + 'url 2')
+                            return urls
 
                         };
 
     // Clear All Fields
-    const clearKeyData = async() => {
-        handleUpload();
-
+    const clearKeyData = async () => {
+        
     }
 
     return (
