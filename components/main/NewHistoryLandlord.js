@@ -168,7 +168,9 @@ export default function NewHistoryLandlord(props) {
     // Uploading pictures to firebase storage and generating downloadURLs
     const [progress, setProgress] = useState(0);
 
+    
     const handleUpload = async() => {
+        
         const urls = []
         
         const images = []
@@ -181,69 +183,77 @@ export default function NewHistoryLandlord(props) {
     
         images.push(blob1)
         images.push(blob2)
-
-
-        for (const imageitem of images) {
-            console.log(imageitem)
-        }
+        /*
 
         images.forEach((item) => {
             item.id = Math.random().toString(36);});
+            
             const promises = [];
-            images.map((image) => {
+            
+            for (const image of images) {
+                
                 const uploadTask = firebase
                 .storage()
                 .ref()
                 .child(`post/${firebase.auth().currentUser.uid}/${image.id}`)
                 .put(image);
+        }
 
-                promises.push(uploadTask);
-                uploadTask.on(
+        */
 
-                    "state_changed",
-                    (snapshot) => {
-                        const progress = Math.round(
+        images.forEach((item) => {
+            item.id = Math.random().toString(36);});
+            const promises = [];
 
-                            (snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-                            setProgress(progress);},
-                            
-                            (error) => {
-                                console.log(error);},
-                                
-                                async () => {   
-                                    await firebase
-                                    .storage()
-                                    .ref()
-                                    .child(`post/${firebase.auth().currentUser.uid}/${image.id}`)
-                                    .getDownloadURL()
-                                    .then((snapshot) => {
-                                        urls.push(snapshot)
-                                    });
+        for await (const image of images) {
+            promises.push(
+                new Promise((resolve) => {
 
-                                    /*
-                                    const downloadURL1 = urls[0];
-                                    const downloadURL2 = urls[1];
-                            
-                                    console.log('url in promise')
-                                    console.log(downloadURL1 + 'url 1')
-                                    console.log(downloadURL2 + 'url 2')
-                                    */
-                                    
-                                   }
-                                );
-                            });
-                            await Promise.all(promises)
-                            .then(() => console.log('images uploaded'))
-                            .then(() => console.log(urls[0], 'url1'))
-                            .then(() => console.log(urls[1], 'url2'))
-                            .catch((err) => console.log(err));
-                            return urls
+                    const task = firebase
+        .storage()
+        .ref()
+        .child(`post/${firebase.auth().currentUser.uid}/${image.id}`)
+        .put(image);
 
-                        };
+    const taskProgress = snapshot => {
+        console.log(`transfered: ${snapshot.bytesTransferred}`)
+    }
+
+    const taskCompleted = () => {
+        task.snapshot.ref.getDownloadURL().then((snapshot) => {
+            urls.push(snapshot);
+            console.log(snapshot)
+        })
+    }
+
+    const taskError = snapshot => {
+        console.log(snapshot)
+    }
+
+
+    task.on("state_changed", taskProgress, taskError, taskCompleted);
+                })
+            )
+
+
+        }
+
+
+        
+
+
+        
+    }
+                        
+                        
 
     // Clear All Fields
     const clearKeyData = async () => {
+
         
+
+        await handleUpload()
+        console.log(urls, 'urls')
     }
 
     return (
