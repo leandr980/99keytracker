@@ -186,8 +186,12 @@ export default function NewHistoryLandlord(props) {
         const promises = [];
 
         images.map((image) => {
-          const uploadTask = storage.ref(`post/${firebase.auth().currentUser.uid}/${image.id}`)
-          .put(image);
+          const uploadTask = firebase
+                .storage()
+                .ref()
+                .child(`post/${firebase.auth().currentUser.uid}/${image.id}`)
+                .put(image);
+
           promises.push(uploadTask);
           uploadTask.on(
             "state_changed",
@@ -206,7 +210,7 @@ export default function NewHistoryLandlord(props) {
                 .child(`post/${firebase.auth().currentUser.uid}/${image.id}`)
                 .getDownloadURL()
                 .then((snapshot) => {
-                  setUrls(urls.push(snapshot));
+                  urls.push(snapshot);
                 });
             }
           );
