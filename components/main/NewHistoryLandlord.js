@@ -167,10 +167,9 @@ export default function NewHistoryLandlord(props) {
 
     // Uploading pictures to firebase storage and generating downloadURLs
     const [progress, setProgress] = useState(0);
-
     
-    const handleUpload = async() => {
-        
+    const handleUpload = async () => {
+
         const urls = []
         
         const images = []
@@ -183,77 +182,49 @@ export default function NewHistoryLandlord(props) {
     
         images.push(blob1)
         images.push(blob2)
-        /*
 
-        images.forEach((item) => {
-            item.id = Math.random().toString(36);});
-            
-            const promises = [];
-            
-            for (const image of images) {
-                
-                const uploadTask = firebase
-                .storage()
-                .ref()
+        const promises = [];
+
+        images.map((image) => {
+          const uploadTask = storage.ref(`post/${firebase.auth().currentUser.uid}/${image.id}`)
+          .put(image);
+          promises.push(uploadTask);
+          uploadTask.on(
+            "state_changed",
+            (snapshot) => {
+              const progress = Math.round(
+                (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+              );
+              setProgress(progress);
+            },
+            (error) => {
+              console.log(error);
+            },
+            async () => {
+              await firebase
+                .ref("images")
                 .child(`post/${firebase.auth().currentUser.uid}/${image.id}`)
-                .put(image);
-        }
-
-        */
-
-        images.forEach((item) => {
-            item.id = Math.random().toString(36);});
-            const promises = [];
-
-        for await (const image of images) {
-            promises.push(
-                new Promise((resolve) => {
-
-                    const task = firebase
-        .storage()
-        .ref()
-        .child(`post/${firebase.auth().currentUser.uid}/${image.id}`)
-        .put(image);
-
-    const taskProgress = snapshot => {
-        console.log(`transfered: ${snapshot.bytesTransferred}`)
+                .getDownloadURL()
+                .then((snapshot) => {
+                  setUrls(urls.push(snapshot));
+                });
+            }
+          );
+        });
+    
+        Promise.all(promises)
+        await Promise.all(promises)
+        .then(() => console.log('images uploaded'))
+        .then(() => console.log(urls[0], 'url1'))
+        .then(() => console.log(urls[1], 'url2'))
+        .then(() => {urls})
+        .catch((err) => console.log(err));
     }
-
-    const taskCompleted = () => {
-        task.snapshot.ref.getDownloadURL().then((snapshot) => {
-            urls.push(snapshot);
-            console.log(snapshot)
-        })
-    }
-
-    const taskError = snapshot => {
-        console.log(snapshot)
-    }
-
-
-    task.on("state_changed", taskProgress, taskError, taskCompleted);
-                })
-            )
-
-
-        }
-
-
-        
-
-
-        
-    }
-                        
                         
 
     // Clear All Fields
-    const clearKeyData = async () => {
-
-        
-
-        await handleUpload()
-        console.log(urls, 'urls')
+    const clearKeyData = () => {
+        console.log(handleUpload())
     }
 
     return (
