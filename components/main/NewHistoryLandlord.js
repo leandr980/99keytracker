@@ -185,6 +185,7 @@ export default function NewHistoryLandlord(props) {
         images.forEach((item) => {
             item.id = Math.random().toString(36);});
 
+<<<<<<< HEAD
             images.forEach ((image) => {
                 const task = firebase
                 .storage()
@@ -257,6 +258,38 @@ export default function NewHistoryLandlord(props) {
                 .then(() => console.log(urls[0], 'url1'))
                 .then(() => console.log(urls[1], 'url2'))
                 .catch((err) => console.log(err));
+=======
+        images.map((image) => {
+          const uploadTask = firebase
+                .storage()
+                .ref()
+                .child(`post/${firebase.auth().currentUser.uid}/${image.id}`)
+                .put(image);
+
+          promises.push(uploadTask);
+          uploadTask.on(
+            "state_changed",
+            (snapshot) => {
+              const progress = Math.round(
+                (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+              );
+              setProgress(progress);
+            },
+            (error) => {
+              console.log(error);
+            },
+            async () => {
+              await firebase
+                .ref("images")
+                .child(`post/${firebase.auth().currentUser.uid}/${image.id}`)
+                .getDownloadURL()
+                .then((snapshot) => {
+                  urls.push(snapshot);
+                });
+            }
+          );
+        });
+>>>>>>> e80f45b92846ea3f9bb9adfe643d1516c6c538b8
     
                 */
             }
