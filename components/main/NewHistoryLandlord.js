@@ -171,7 +171,6 @@ export default function NewHistoryLandlord(props) {
     const handleUpload = async () => {
 
         const urls = []
-        
         const images = []
         
         const response1 = await fetch(imageIDfront);
@@ -183,48 +182,88 @@ export default function NewHistoryLandlord(props) {
         images.push(blob1)
         images.push(blob2)
 
+        images.forEach((item) => {
+            item.id = Math.random().toString(36);});
+
+            images.forEach ((image) => {
+                const task = firebase
+                .storage()
+                .ref()
+                .child(`post/${firebase.auth().currentUser.uid}/${image.id}`)
+                .put(image);
+                
+                const taskProgress = snapshot => {
+                    console.log(`transfered: ${snapshot.bytesTransferred}`)
+                }
+                
+                const taskCompleted = () => {
+                    task.snapshot.ref.getDownloadURL().then((snapshot) => {    
+                        urls.push(snapshot);
+                    })
+                }
+
+                const taskError = snapshot => {
+                    console.log(snapshot)
+                }
+                
+                task.on("state_changed", taskProgress, taskError, taskCompleted);   
+            }) 
+
+            console.log(urls)
+
+
+        /*
+
         const promises = [];
 
-        images.map((image) => {
-          const uploadTask = storage.ref(`post/${firebase.auth().currentUser.uid}/${image.id}`)
-          .put(image);
-          promises.push(uploadTask);
-          uploadTask.on(
-            "state_changed",
-            (snapshot) => {
-              const progress = Math.round(
-                (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-              );
-              setProgress(progress);
-            },
-            (error) => {
-              console.log(error);
-            },
-            async () => {
-              await firebase
-                .ref("images")
-                .child(`post/${firebase.auth().currentUser.uid}/${image.id}`)
-                .getDownloadURL()
-                .then((snapshot) => {
-                  setUrls(urls.push(snapshot));
-                });
-            }
-          );
-        });
-    
-        Promise.all(promises)
-        await Promise.all(promises)
-        .then(() => console.log('images uploaded'))
-        .then(() => console.log(urls[0], 'url1'))
-        .then(() => console.log(urls[1], 'url2'))
-        .then(() => {urls})
-        .catch((err) => console.log(err));
-    }
-                        
+        images.forEach((item) => {
+            item.id = Math.random().toString(36);});
 
+            
+        for ( const image of images) {
+            const uploadTask =  firebase
+            .storage()
+            .ref()
+            .child(`post/${firebase.auth().currentUser.uid}/${image.id}`)
+            .put(image);
+            
+            promises.push(uploadTask);
+            
+            uploadTask.on(
+                "state_changed",
+                (snapshot) => {
+                    const progress = Math.round(
+                        (snapshot.bytesTransferred / snapshot.totalBytes) * 100); 
+                        setProgress(progress);},
+
+                    (error) => {console.log(error);},
+                    async () => {
+                        await firebase
+                        .storage()
+                        .ref()
+                        .child(`post/${firebase.auth().currentUser.uid}/${image.id}`)
+                        .getDownloadURL()
+                        .then((snapshot) => {
+                            urls.push(snapshot);
+                        });
+
+                        console.log(urls)
+                    });
+                }
+
+                await Promise.all(promises)
+        
+                .then(() => console.log('images uploaded'))
+                .then(() => console.log(urls[0], 'url1'))
+                .then(() => console.log(urls[1], 'url2'))
+                .catch((err) => console.log(err));
+    
+                */
+            }
+                        
     // Clear All Fields
     const clearKeyData = () => {
-        console.log(handleUpload())
+        handleUpload()
     }
 
     return (
@@ -370,7 +409,7 @@ export default function NewHistoryLandlord(props) {
                                 SAVE
                             </Button>
                             <Button
-                                onPress={() => clearKeyData()} >
+                                onPress={() => handleUpload()} >
                                 CLEAR
                             </Button>
                         </Card.Actions>
