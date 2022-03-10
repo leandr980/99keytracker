@@ -138,7 +138,11 @@ export default function Keyinfo(props) {
                     </Dialog.Content>
                     
                     <Dialog.Actions>
-                        <Button onPress={() => props.navigation.navigate(checked, { keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid })}
+                        <Button onPress={ () => {
+                            props.navigation.navigate(checked, { keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid }),hideModalCategory()
+                        } 
+                        }
+                        
                         >Done</Button>
                     </Dialog.Actions>
                 </Dialog>                

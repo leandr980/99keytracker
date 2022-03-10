@@ -11,7 +11,7 @@ require("firebase/firestore")
 require("firebase/firebase-storage")
 
 
-export default function NewHistoryLandlord(props) {
+export default function NewHistoryLandlord(props, { navigation }) {
 
     const creation = firebase.firestore.FieldValue.serverTimestamp()
 
@@ -167,7 +167,9 @@ export default function NewHistoryLandlord(props) {
                         console.log("Data saved successfully.");
                     }
                 }
-            )
+            ).then((function () {
+                props.navigation.pop()
+            }))
     }
 
     const [progress, setProgress] = useState(0);
@@ -236,6 +238,7 @@ export default function NewHistoryLandlord(props) {
         const url2 = urls[1]
 
         saveKeyData(url1,url2)
+        
     }
 
     // Clear All Fields
@@ -337,7 +340,7 @@ export default function NewHistoryLandlord(props) {
 
                     <Card style={styles.cardstyle}>
                         <Card.Title title='Emirates ID Front:' />
-                        <Card.Cover source={{ uri: imageIDfront }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center", height: 400}} />
+                        <Card.Cover source={{ uri: imageIDfront }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center"}} />
                         
                         <Card.Actions style={{ justifyContent: 'space-between' }}>
                             <Button
@@ -354,7 +357,7 @@ export default function NewHistoryLandlord(props) {
 
                     <Card style={styles.cardstyle}>
                         <Card.Title title='Emirates ID Back:' />
-                        <Card.Cover source={{ uri: imageIDback }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center", height: 400}} />
+                        <Card.Cover source={{ uri: imageIDback }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center"}} />
                         
                         <Divider />
                         
