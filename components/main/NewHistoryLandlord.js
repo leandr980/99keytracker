@@ -1,7 +1,7 @@
 // JavaScript source code
 import React, { useEffect, useState, Component } from 'react'
 import { View, FlatList, StyleSheet, ScrollView, Image, ImageBackground } from 'react-native'
-import { Card, FAB, Searchbar, IconButton, Paragraph, Divider, Button, Chip, Colors, RadioButton, Text, TextInput, List, Portal, Dialog, Provider, Modal, ProgressBar } from 'react-native-paper'
+import { Card,  IconButton, Paragraph, Divider, Button, Chip, Text, TextInput, Portal, Dialog, Provider, Modal, ProgressBar } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import * as ImagePicker from 'expo-image-picker';
 import { Camera } from 'expo-camera';
@@ -245,24 +245,24 @@ export default function NewHistoryLandlord(props) {
 
     return (
     <Provider>
-
         <Portal>
-            <Modal visible={visiblePhotoFront} onDismiss={hideModalPhotoFront} contentContainerStyle={containerStylePhoto}>
-                <Camera
-                    ref={ref => setcamera(ref)}
-                   style={styles.fixedratio}
-                    ratio={'1:1'} />
 
-                <Button onPress={() => takePicture('front')}> Take Picture </Button>
-            </Modal>
+            <Dialog visible={visiblePhotoFront} onDismiss={hideModalPhotoFront} contentContainerStyle={containerStylePhoto}>
+                <Camera 
+                ref={ref => setcamera(ref)}
+                style={styles.fixedratio}
+                ratio={'1:1'} />
+                <IconButton icon="camera" size={60} onPress={() => takePicture('front')}/> 
+            </Dialog>
 
-            <Modal visible={visiblePhotoBack} onDismiss={hideModalPhotoBack} contentContainerStyle={containerStylePhoto}>
+            <Dialog visible={visiblePhotoBack} onDismiss={hideModalPhotoBack} contentContainerStyle={containerStylePhoto}>
                 <Camera
-                    ref={ref => setcamera(ref)}
-                    style={styles.fixedratio}
-                    ratio={'1:1'} />
-                <Button onPress={() => takePicture('back')}> Take Picture </Button>
-            </Modal>
+                ref={ref => setcamera(ref)}
+                style={styles.fixedratio}
+                ratio={'1:1'} />
+                <IconButton icon="camera" size={60} onPress={() => takePicture('back')}/>
+            </Dialog>
+
         </Portal>
 
         <View style={styles.container}>
@@ -337,7 +337,7 @@ export default function NewHistoryLandlord(props) {
 
                     <Card style={styles.cardstyle}>
                         <Card.Title title='Emirates ID Front:' />
-                        <Card.Cover source={{ uri: imageIDfront }} style={{ flex: 1, margin: 10 }} />
+                        <Card.Cover source={{ uri: imageIDfront }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center", height: 400}} />
                         
                         <Card.Actions style={{ justifyContent: 'space-between' }}>
                             <Button
@@ -354,7 +354,7 @@ export default function NewHistoryLandlord(props) {
 
                     <Card style={styles.cardstyle}>
                         <Card.Title title='Emirates ID Back:' />
-                        <Card.Cover source={{ uri: imageIDback }} style={{ flex: 1, margin: 10 }} />
+                        <Card.Cover source={{ uri: imageIDback }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center", height: 400}} />
                         
                         <Divider />
                         
