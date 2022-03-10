@@ -204,18 +204,33 @@ export default function Keyinfo(props) {
                                     <Caption> Company: {item.company} </Caption>
                                     <Caption> Type: {item.entrytype} </Caption>
                                     <Caption> Notes: {item.notes} </Caption>
+
                                 </Card.Content>
 
                                 <List.Section >
 
                                     <List.Accordion title='View Media'>
+
                                         <Divider/>
-                                        <List.Item title='Emirates ID Front'>
-                                            <Image
-                                            />
-                                        </List.Item>
-                                        <List.Item title='Emirates ID Back'/>
-                                        <List.Item title='Signature'/>
+
+                                        <Card style={styles.cardstyle}>
+                                            <Card.Cover source={{ uri: item.imageIDfrontURL }} 
+                                            style={{resizeMode: "contain", margin: 10,aspectRatio: 4/3, alignSelf: "center"}}/>
+                                            <Card.Title title={"Emirates ID Front"}/>
+                                        </Card>
+
+                                        <Card style={styles.cardstyle}>
+                                            <Card.Cover source={{ uri: item.imageIDbackURL }}
+                                            style={{margin: 10, aspectRatio: 4/3, alignSelf: "center"}}/>
+                                            <Card.Title title={"Emirates ID Front"}/>
+                                        </Card>
+
+                                        <Card style={styles.cardstyle}>
+                                            <Card.Cover source={{ uri: item.imageIDfrontURL }}
+                                            style={{margin: 10, aspectRatio: 4/3, alignSelf: "center"}}/>
+                                            <Card.Title title={"Signature"}/>
+                                        </Card>
+
                                     </List.Accordion>                                    
                                     
                                 </List.Section>
