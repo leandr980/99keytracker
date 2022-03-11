@@ -1,11 +1,13 @@
 // JavaScript source code
-import React, { useEffect, useState, Component } from 'react'
-import { View, FlatList, StyleSheet, ScrollView, Image, ImageBackground } from 'react-native'
+import React, { useEffect, useState, Component, useRef } from 'react'
+import { View, FlatList, StyleSheet, ScrollView, Image, ImageBackground, TouchableHighlight, TouchableOpacity } from 'react-native'
 import { Card,  IconButton, Paragraph, Divider, Button, Chip, Text, TextInput, Portal, Dialog, Provider, Modal, ProgressBar } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import * as ImagePicker from 'expo-image-picker';
 import { Camera } from 'expo-camera';
 import Signature from "react-native-signature-canvas";
+import SignatureCapture from 'react-native-signature-capture';
+import {SignatureView} from 'react-native-signature-capture-view';
 
 import firebase from 'firebase'
 require("firebase/firestore")
@@ -120,7 +122,7 @@ export default function NewHistroyAgent(props) {
     }
 
     // Save Data to Firebase
-    const saveKeyData = (imageIDbackURL, imageIDfrontURL) => {
+    const saveKeyData = (imageIDbackURL, imageIDfrontURL, signatureURL) => {
 
         // Saving data to keyhistory db
         firebase.firestore()
@@ -136,7 +138,8 @@ export default function NewHistroyAgent(props) {
                 notes,
                 creation,
                 imageIDbackURL,
-                imageIDfrontURL
+                imageIDfrontURL,
+                signatureURL
 
             },
                 function (error) {
@@ -208,6 +211,28 @@ export default function NewHistroyAgent(props) {
         })
         .catch((err) => console.log(err))
     }
+
+    /*
+    const b64toBlob = (b64Data, contentType='image/jpg', sliceSize=512) => {
+        const byteCharacters = Buffer.from(b64Data, 'base64');
+        const byteArrays = [];
+      
+        for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+          const slice = byteCharacters.slice(offset, offset + sliceSize);
+      
+          const byteNumbers = new Array(slice.length);
+          for (let i = 0; i < slice.length; i++) {
+            byteNumbers[i] = slice.charCodeAt(i);
+          }
+      
+          const byteArray = new Uint8Array(byteNumbers);
+          byteArrays.push(byteArray);
+        }
+      
+        const blob = new Blob(byteArrays, {type: contentType});
+        return blob;
+      }
+      */
     
     //loop images into uploadimage
     const downloadURLarray = async () => {
@@ -226,6 +251,13 @@ export default function NewHistroyAgent(props) {
         images.push(blob1)
         images.push(blob2)
 
+        //const blob3 = b64toBlob(text);
+        //const blobUrl = URL.createObjectURL(blob);
+        const b64toBlob = (base64, type = 'application/octet-stream') => 
+        fetch(`data:${type};base64,${base64}`).then(res => res.blob())
+
+        images.push(b64toBlob)
+
         for (const image of images) {
             const dd = await uploadimage(image)
             urls.push(dd)
@@ -236,8 +268,9 @@ export default function NewHistroyAgent(props) {
 
         const url1 = urls[0]
         const url2 = urls[1]
+        const url3 = urls[2]
 
-        saveKeyData(url1,url2)
+        saveKeyData(url1,url2,url3)
     }
 
     // Clear All Fields
@@ -250,23 +283,9 @@ export default function NewHistroyAgent(props) {
     const hideModalSignature = () => setVisibleSignature(false);
     const [imageSignagure, setSignature] = useState(null);
 
-    const handleOK = (imageSignagure) => {
-        console.log(imageSignagure);
-        setSignature(imageSignagure);
-      };
+    const signatureRef = useRef(null);
+    const [text,setText] = useState('')
     
-      const handleEmpty = () => {
-        console.log("Empty");
-      };
-
-      const style = `.m-signature-pad--footer
-    .button {
-      background-color: red;
-      color: #FFF;
-    }
-    body,html {height: 300px; width: 300px;}
-    `;
-
     return (
     <Provider>
         <Portal>
@@ -288,23 +307,48 @@ export default function NewHistroyAgent(props) {
             </Dialog>
 
             <Modal visible={visibleSignature} onDismiss={hideModalSignature} contentContainerStyle={containerStylePhoto}>
+                <View style={{ flex: 1}}>
+                    <SignatureView
+                    style={{
+                        borderWidth:2,
+                        aspectRatio: 4/3
+                    }}
+                    ref={signatureRef}
+                    // onSave is automatically called whenever signature-pad onEnd is called and saveSignature is called
+                    onSave={(val) => {
+                        //  a base64 encoded image
+                        console.log('saved signature')
+                        console.log(val);
+                        setText(val)
+                    }}
+                    
+                    onClear={() => {
+                        console.log('cleared signature')
+                        setText('')
+                    }}
+                    />
+                        
+                    <View style={{flexDirection: 'row', justifyContent:'center', height: 50}}>
+                    
+                        <TouchableOpacity
+                        style={{ justifyContent:'center',alignItems:'center', flex:1}}
+                        onPress={() => {
+                            signatureRef.current.clearSignature();
+                        }}>
+                            <Text>Clear</Text>
+                            </TouchableOpacity>
+                            
+                        <TouchableOpacity
+                        style={{ justifyContent:'center',alignItems:'center', flex:1}}
+                        onPress={() => {
+                            signatureRef.current.saveSignature();
+                        }}>
+                            <Text>Save</Text>
+                        </TouchableOpacity>
 
-
-<View style={{flex: 1, alignItems: 'center'}}>
-<Signature
-            onOK={handleOK}
-            onEmpty={handleEmpty}
-            descriptionText="Sign"
-            clearText="Clear"
-            confirmText="Save"
-            webStyle={style}
-            />
-            <Text>hi</Text>
-</View>
-             
-            
+                    </View>
+                </View>
             </Modal>
-
         </Portal>
 
         <View style={styles.container}>
@@ -415,7 +459,7 @@ export default function NewHistroyAgent(props) {
 
                     <Card style={styles.cardstyle}>
                         <Card.Title title='Agent Signature:' />
-                        <Card.Cover source={{ uri: imageSignagure }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center", height: 400}} />
+                        <Card.Cover source={text ? { uri: text } : null} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center", height: 400}} />
 
                         <Divider />
                         

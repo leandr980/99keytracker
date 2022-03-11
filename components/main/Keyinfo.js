@@ -219,19 +219,22 @@ export default function Keyinfo(props) {
 
                                         <Card style={styles.cardstyle}>
                                             <Card.Cover source={{ uri: item.imageIDfrontURL }} 
+                                            defaultSource={require('../../assets/99nomedia.jpg')}
                                             style={{resizeMode: "contain", margin: 10,aspectRatio: 4/3, alignSelf: "center"}}/>
                                             <Card.Title title={"Emirates ID Front"}/>
                                         </Card>
 
                                         <Card style={styles.cardstyle}>
                                             <Card.Cover source={{ uri: item.imageIDbackURL }}
+                                            defaultSource={require('../../assets/99nomedia.jpg')}
                                             style={{margin: 10, aspectRatio: 4/3, alignSelf: "center"}}/>
                                             <Card.Title title={"Emirates ID Front"}/>
                                         </Card>
 
                                         <Card style={styles.cardstyle}>
-                                            <Card.Cover source={{ uri: item.imageIDfrontURL }}
-                                            style={{margin: 10, aspectRatio: 4/3, alignSelf: "center"}}/>
+                                            <Card.Cover source={{ uri: item.signatureURL }}
+                                            defaultSource={require('../../assets/99nomedia.jpg')}
+                                            style={{margin: 10, aspectRatio: 4/3, alignSelf: "center", backgroundColor: '#f1eff0'}}/>
                                             <Card.Title title={"Signature"}/>
                                         </Card>
 
