@@ -5,6 +5,7 @@ import { Card,  IconButton, Paragraph, Divider, Button, Chip, Text, TextInput, P
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import * as ImagePicker from 'expo-image-picker';
 import { Camera } from 'expo-camera';
+import Signature from "react-native-signature-canvas";
 
 import firebase from 'firebase'
 require("firebase/firestore")
@@ -32,13 +33,9 @@ export default function NewHistroyAgent(props) {
     const showModalPhotoBack = () => setVisiblePhotoBack(true);
     const hideModalPhotoBack = () => setVisiblePhotoBack(false);
 
-    const [visibleSignature, setVisibleSignature] = React.useState(false);
-    const showModalSignature = () => setVisibleSignature(true);
-    const hideModalSignature = () => setVisibleSignature(false);
-
     const [imageIDfront, setImageIDfront] = useState(null);
     const [imageIDback, setImageIDback] = useState(null);
-    const [imageSignagure, setSignature] = useState(null);
+    
 
     const containerStylePhoto = {flex: 1, justifyContent: 'center', backgroundColor: 'white', margin: 20, padding: 5, borderRadius: 10};
 
@@ -248,6 +245,28 @@ export default function NewHistroyAgent(props) {
         handleUpload()
     }
 
+    const [visibleSignature, setVisibleSignature] = React.useState(false);
+    const showModalSignature = () => setVisibleSignature(true);
+    const hideModalSignature = () => setVisibleSignature(false);
+    const [imageSignagure, setSignature] = useState(null);
+
+    const handleOK = (imageSignagure) => {
+        console.log(imageSignagure);
+        setSignature(imageSignagure);
+      };
+    
+      const handleEmpty = () => {
+        console.log("Empty");
+      };
+
+      const style = `.m-signature-pad--footer
+    .button {
+      background-color: red;
+      color: #FFF;
+    }
+    body,html {height: 300px; width: 300px;}
+    `;
+
     return (
     <Provider>
         <Portal>
@@ -268,13 +287,23 @@ export default function NewHistroyAgent(props) {
                 <IconButton icon="camera" size={60} onPress={() => takePicture('back')}/>
             </Dialog>
 
-            <Dialog visible={visibleSignature} onDismiss={visibleSignature} contentContainerStyle={containerStylePhoto}>
-                <Camera
-                ref={ref => setcamera(ref)}
-                style={styles.fixedratio}
-                ratio={'1:1'} />
-                <IconButton icon="camera" size={60} onPress={() => takePicture('back')}/>
-            </Dialog>
+            <Modal visible={visibleSignature} onDismiss={hideModalSignature} contentContainerStyle={containerStylePhoto}>
+
+
+<View style={{flex: 1, alignItems: 'center'}}>
+<Signature
+            onOK={handleOK}
+            onEmpty={handleEmpty}
+            descriptionText="Sign"
+            clearText="Clear"
+            confirmText="Save"
+            webStyle={style}
+            />
+            <Text>hi</Text>
+</View>
+             
+            
+            </Modal>
 
         </Portal>
 
@@ -387,12 +416,12 @@ export default function NewHistroyAgent(props) {
                     <Card style={styles.cardstyle}>
                         <Card.Title title='Agent Signature:' />
                         <Card.Cover source={{ uri: imageSignagure }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center", height: 400}} />
-                        
+
                         <Divider />
                         
                         <Card.Actions style={{ justifyContent: 'space-between' }}>
                             <Button
-                            onPress={showModalPhotoBack} >
+                            onPress={showModalSignature} >
                                 NEW SIGNATURE
                                 </Button>
                                 
@@ -414,11 +443,11 @@ export default function NewHistroyAgent(props) {
 
                         <Card.Actions style={{ justifyContent: 'space-between', alignItems: 'center' }}>
                             <Button
-                                onPress={() => saveKeyData()} >
+                                onPress={() => downloadURLarray()} >
                                 SAVE
                             </Button>
                             <Button
-                                onPress={() => downloadURLarray()} >
+                                onPress={() => console.log('clear button pressed')} >
                                 CLEAR
                             </Button>
                         </Card.Actions>
