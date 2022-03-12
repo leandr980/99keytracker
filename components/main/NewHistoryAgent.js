@@ -5,8 +5,7 @@ import { Card,  IconButton, Paragraph, Divider, Button, Chip, Text, TextInput, P
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import * as ImagePicker from 'expo-image-picker';
 import { Camera } from 'expo-camera';
-import Signature from "react-native-signature-canvas";
-import SignatureCapture from 'react-native-signature-capture';
+
 import {SignatureView} from 'react-native-signature-capture-view';
 
 import firebase from 'firebase'
@@ -211,29 +210,45 @@ export default function NewHistroyAgent(props) {
         })
         .catch((err) => console.log(err))
     }
-
-    /*
-    const b64toBlob = (b64Data, contentType='image/jpg', sliceSize=512) => {
-        const byteCharacters = Buffer.from(b64Data, 'base64');
-        const byteArrays = [];
-      
-        for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-          const slice = byteCharacters.slice(offset, offset + sliceSize);
-      
-          const byteNumbers = new Array(slice.length);
-          for (let i = 0; i < slice.length; i++) {
-            byteNumbers[i] = slice.charCodeAt(i);
-          }
-      
-          const byteArray = new Uint8Array(byteNumbers);
-          byteArrays.push(byteArray);
-        }
-      
-        const blob = new Blob(byteArrays, {type: contentType});
-        return blob;
-      }
-      */
     
+    const uploadsignature  = async (signaturebase64) => {
+        console.log('upload signature func start')
+
+        const substringbase64 = signaturebase64.substring(22)
+
+        return new Promise (async (resolve) => {
+            substringbase64.id = Math.random().toString(36)
+            const uploadTask = firebase
+            .storage()
+            .ref()
+            .child(`post/${firebase.auth().currentUser.uid}/${substringbase64.id}`)
+            .putString(substringbase64, 'base64', {contentType:'image/png'});
+
+            uploadTask.on ("state_changed",
+
+                (snapshot) => {
+                    const progress = Math.round(
+                        (snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                    setProgress(progress);},
+
+                (error) => { console.log(error); },
+
+                async () => {
+                    await firebase
+                        .storage()
+                        .ref()
+                        .child(`post/${firebase.auth().currentUser.uid}/${substringbase64.id}`)
+                        .getDownloadURL()
+                        .then((snapshot) => {
+                            resolve(snapshot);
+                            //console.log(snapshot)
+                        });}
+            )
+        })
+        .catch((err) => console.log(err))
+
+    }
+
     //loop images into uploadimage
     const downloadURLarray = async () => {
 
@@ -250,13 +265,6 @@ export default function NewHistroyAgent(props) {
     
         images.push(blob1)
         images.push(blob2)
-
-        //const blob3 = b64toBlob(text);
-        //const blobUrl = URL.createObjectURL(blob);
-        const b64toBlob = (base64, type = 'application/octet-stream') => 
-        fetch(`data:${type};base64,${base64}`).then(res => res.blob())
-
-        images.push(b64toBlob)
 
         for (const image of images) {
             const dd = await uploadimage(image)
@@ -315,11 +323,11 @@ export default function NewHistroyAgent(props) {
                     }}
                     ref={signatureRef}
                     // onSave is automatically called whenever signature-pad onEnd is called and saveSignature is called
-                    onSave={(val) => {
+                    onSave={(text) => {
                         //  a base64 encoded image
                         console.log('saved signature')
-                        console.log(val);
-                        setText(val)
+                        console.log(text);
+                        setText(text)
                     }}
                     
                     onClear={() => {
@@ -491,7 +499,7 @@ export default function NewHistroyAgent(props) {
                                 SAVE
                             </Button>
                             <Button
-                                onPress={() => console.log('clear button pressed')} >
+                                onPress={() => uploadsignature(text)} >
                                 CLEAR
                             </Button>
                         </Card.Actions>
