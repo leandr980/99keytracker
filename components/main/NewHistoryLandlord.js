@@ -243,7 +243,9 @@ export default function NewHistoryLandlord(props, { navigation }) {
 
     // Clear All Fields
     const clearKeyData = () => {
-        handleUpload()
+        setImageIDback(null)
+        setImageIDfront(null)
+        setfeildname("")
     }
 
     return (
@@ -385,11 +387,11 @@ export default function NewHistoryLandlord(props, { navigation }) {
 
                         <Card.Actions style={{ justifyContent: 'space-between', alignItems: 'center' }}>
                             <Button
-                                onPress={() => saveKeyData()} >
+                                onPress={() => downloadURLarray()} >
                                 SAVE
                             </Button>
                             <Button
-                                onPress={() => downloadURLarray()} >
+                                onPress={() => clearKeyData()} >
                                 CLEAR
                             </Button>
                         </Card.Actions>
