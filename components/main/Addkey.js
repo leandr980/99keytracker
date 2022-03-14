@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View, Image, StyleSheet, ScrollView} from 'react-native'
+import { View, Image, StyleSheet, ScrollView, ImageBackground} from 'react-native'
 import { Card, Divider, Button, Paragraph, TextInput, Provider, Dialog, Portal, HelperText} from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
@@ -76,71 +76,69 @@ export default function Addkey(props) {
 
     return (
         <Provider>
+            <ImageBackground 
+            style={{flex: 1}}
+            imageStyle={{resizeMode: 'repeat'}}
+            source={require('../../assets/bg-image/99-whatsapp-bg-small.jpg')}>
 
+                <ScrollView>
 
-            <ScrollView>
-                <Card
-                    style={styles.cardstyle}>
-                    <Card.Title title='Key Details' />
-
-                    <Card.Content >
-                        <TextInput
+                    <Card style={styles.cardstyle}>
+                        <Card.Title title='Key Details' />
+                        <Card.Content >
+                            <TextInput
                             style={styles.textinputstyle}
                             type='outlined'
                             placeholder="Key name . . ."
-                            onChangeText={(keyname) => setkeyname(keyname)}
-                        />
-                        <HelperText type="error" visible={hasErrors}>
-                            Field cannot be empty.
-                        </HelperText>
-
-                        <TextInput
+                            onChangeText={(keyname) => setkeyname(keyname)}/>
+                            
+                            <HelperText type="error" visible={hasErrors}>
+                                Field cannot be empty.
+                            </HelperText>
+                            
+                            <TextInput
                             style={styles.textinputstyle}
                             type='outlined'
                             placeholder="Building/Community . . ."
                             onChangeText={(keylocation) => setKeylocation(keylocation)}
                         />
-
-                    </Card.Content>
-
-                </Card>
-
-                <Card style={styles.cardstyle}>
-                    <Card.Title title='New Key History Entry' />
-
-                    <Card.Content >
-
-                        <TextInput
+                        </Card.Content>
+                    </Card>
+                    
+                    <Card style={styles.cardstyle}>
+                        <Card.Title title='New Key History Entry' />
+                        <Card.Content >
+                            <TextInput
                             style={styles.textinputstyle}
                             type='outlined'
                             label="Name . . ."
-                            onChangeText={(name) => setfeildname(name)}
-                        />
-
-                        <TextInput
+                            onChangeText={(name) => setfeildname(name)}/>
+                            
+                            <TextInput
                             style={styles.textinputstyle}
                             label="Company . . ."
                             onChangeText={(company) => setfieldcompany(company)}
-                        />
-
-                        <TextInput
+                            />
+                            
+                            <TextInput
                             style={styles.textinputstyle}
                             label="Notes . . ."
                             onChangeText={(notes) => setfieldnotes(notes)}
-                        />
-                    </Card.Content>
-                </Card>
+                            />
+                        </Card.Content>
+                    </Card>
 
-                <Card style={styles.cardstyle}>
-                    <Card.Actions style={{ justifyContent: 'center' }}>
-                        <Button
-                            onPress={() => saveKeyData()}>
-                            SAVE
-                        </Button>
-                    </Card.Actions>
-                </Card>
+                    <Card style={styles.cardstyle}>
+                        <Card.Actions style={{ justifyContent: 'center' }}>
+                            <Button
+                                onPress={() => saveKeyData()}>
+                                SAVE
+                            </Button>
+                        </Card.Actions>
+                    </Card>
 
-            </ScrollView>
+                </ScrollView>
+            </ImageBackground>
         </Provider>
     )
 }

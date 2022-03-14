@@ -80,17 +80,7 @@ export default function Keyinfo(props) {
             }).catch((error) => {
                 console.error("Error removing document: ", error);
             })
-    }
-
-    const [isSwitchOn, setIsSwitchOn] = React.useState(false);
-    const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
-
-    
-
-    const rightcontent = props =>  <Chip onPress={() => console.log('delete pressed')}>
-        DELETE
-        </Chip>
-
+    } 
 
     return (
         <Provider >
@@ -196,10 +186,6 @@ export default function Keyinfo(props) {
 
 
                     </Card.Content>
-
-                    <Card.Content>
-                        <Switch value={isSwitchOn} onValueChange={onToggleSwitch} />
-                    </Card.Content>
                 </Card>
 
                 <View style={styles.containerGallery}>
@@ -214,7 +200,6 @@ export default function Keyinfo(props) {
                             <Card style={styles.cardstyle}>
                                 <Card.Title
                                     title={ format(new Date(item.creation.toDate().toString()), 'PPPP')}
-                                    right={rightcontent}
                                     />
 
                                 <Divider />
