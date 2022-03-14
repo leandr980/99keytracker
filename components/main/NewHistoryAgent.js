@@ -431,7 +431,7 @@ export default function NewHistroyAgent(props) {
 
                     <Card style={styles.cardstyle}>
                         <Card.Title title='Emirates ID Front:' />
-                        <Card.Cover source={{ uri: imageIDfront }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center", height: 400}} />
+                        <Card.Cover source={{ uri: imageIDfront }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center"}} />
                         
                         <Card.Actions style={{ justifyContent: 'space-between' }}>
                             <Button
@@ -448,7 +448,7 @@ export default function NewHistroyAgent(props) {
 
                     <Card style={styles.cardstyle}>
                         <Card.Title title='Emirates ID Back:' />
-                        <Card.Cover source={{ uri: imageIDback }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center", height: 400}} />
+                        <Card.Cover source={{ uri: imageIDback }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center"}} />
                         
                         <Divider />
                         
@@ -467,7 +467,7 @@ export default function NewHistroyAgent(props) {
 
                     <Card style={styles.cardstyle}>
                         <Card.Title title='Agent Signature:' />
-                        <Card.Cover source={text ? { uri: text } : null} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center", height: 400}} />
+                        <Card.Cover source={text ? { uri: text } : null} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center"}} />
 
                         <Divider />
                         
