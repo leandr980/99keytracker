@@ -1,7 +1,7 @@
 // JavaScript source code
 import React, { useEffect, useState, Component } from 'react'
 import { View, FlatList, StyleSheet, ScrollView, Image, ImageBackground } from 'react-native'
-import { Card,  IconButton, Paragraph, Divider, Button, Chip, Text, TextInput, Portal, Dialog, Provider, Modal, ProgressBar } from 'react-native-paper'
+import { Card,  IconButton, Paragraph, Divider, Button, Chip, Text, TextInput, Portal, Dialog, Provider, ProgressBar, Switch } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import * as ImagePicker from 'expo-image-picker';
 import { Camera } from 'expo-camera';
@@ -247,6 +247,7 @@ export default function NewHistoryLandlord(props, { navigation }) {
         setImageIDfront(null)
         setfeildname("")
     }
+    
 
     return (
     <Provider>
@@ -304,6 +305,8 @@ export default function NewHistoryLandlord(props, { navigation }) {
                             marginRight: 5
                         }} icon="domain"> {keydetails.company}</Chip>
                     </Card.Content>
+
+
                 </Card>
 
                 <Divider />
