@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native'
 import {Button as ButtonDefault } from 'react-native'
-import { Card, FAB, Searchbar, IconButton, Chip, Paragraph, Button, Divider, Caption, Provider, Portal, Dialog, RadioButton, TouchableRipple, List } from 'react-native-paper'
+import { Card, FAB, IconButton, Chip, Paragraph, Button, Divider, Caption, Provider, Portal, Dialog, RadioButton, TouchableRipple, List, Switch, Banner } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import { compareAsc, format } from 'date-fns'
 
 import firebase from 'firebase'
 require("firebase/firestore")
@@ -80,6 +81,16 @@ export default function Keyinfo(props) {
                 console.error("Error removing document: ", error);
             })
     }
+
+    const [isSwitchOn, setIsSwitchOn] = React.useState(false);
+    const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
+
+    
+
+    const rightcontent = props =>  <Chip onPress={() => console.log('delete pressed')}>
+        DELETE
+        </Chip>
+
 
     return (
         <Provider >
@@ -185,6 +196,10 @@ export default function Keyinfo(props) {
 
 
                     </Card.Content>
+
+                    <Card.Content>
+                        <Switch value={isSwitchOn} onValueChange={onToggleSwitch} />
+                    </Card.Content>
                 </Card>
 
                 <View style={styles.containerGallery}>
@@ -198,7 +213,9 @@ export default function Keyinfo(props) {
 
                             <Card style={styles.cardstyle}>
                                 <Card.Title
-                                    title={item.creation.toDate().toString()}/>
+                                    title={ format(new Date(item.creation.toDate().toString()), 'PPPP')}
+                                    right={rightcontent}
+                                    />
 
                                 <Divider />
 
@@ -243,6 +260,8 @@ export default function Keyinfo(props) {
                                 </List.Section>
 
                             </Card>
+
+
                         )}
                     />
                 </View>
