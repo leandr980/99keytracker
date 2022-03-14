@@ -63,10 +63,6 @@ function Profile(props) {
                             />
                             <Divider style={{ marginBottom: 5 }} />
 
-                            <Card.Content> 
-                                <Text>Added: </Text>
-                                </Card.Content>
-
                             <Card.Content style={{ flexWrap: 'wrap', flexDirection: 'row', alignItems: 'center' }}>
                                 <Chip style={{
                                     marginTop: 5,
