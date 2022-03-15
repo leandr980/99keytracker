@@ -22,7 +22,7 @@ export default function NewHistoryLandlord(props, { navigation }) {
     const [number, setfieldnumber] = useState("")
     const [notes, setfieldnotes] = useState("")
 
-    const entrytype = "landlord"
+    const entrytype = "Landlord"
 
     const [visiblePhotoFront, setVisiblePhotoFront] = React.useState(false);
     const showModalPhotoFront = () => setVisiblePhotoFront(true);
@@ -336,7 +336,7 @@ export default function NewHistoryLandlord(props, { navigation }) {
                             />
 
                             <TextInput
-                                style={styles.textinputstyle}
+                                style={{marginVertical: 10, height: 200}}
                                 label="Notes . . ."
                                 onChangeText={(notes) => setfieldnotes(notes)}
                             />
