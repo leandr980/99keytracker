@@ -325,7 +325,7 @@ export default function NewHistoryCompany(props, { navigation }) {
                             <TextInput
                                 style={styles.textinputstyle}
                                 type='outlined'
-                                label="Name . . ."
+                                label="Company Name . . ."
                                 onChangeText={(name) => setfeildname(name)}
                             />
 

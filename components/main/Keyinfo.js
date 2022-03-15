@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native'
-import {Button as ButtonDefault } from 'react-native'
+import {Dimensions} from 'react-native'
 import { Card, FAB, IconButton, Chip, Paragraph, Button, Divider, Caption, Provider, Portal, Dialog, RadioButton, TouchableRipple, List, Switch, Banner } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { compareAsc, format } from 'date-fns'
 
 import firebase from 'firebase'
+import NewHistoryLandlord from './NewHistoryLandlord'
 require("firebase/firestore")
 
 export default function Keyinfo(props) {
@@ -15,8 +16,8 @@ export default function Keyinfo(props) {
 
     const [keyId, setKeyId] = useState("")
 
-    const [visabledialogue, setvisabledialogue] = useState(false)
-    const hideDialog = () => setvisabledialogue(false);
+    const windowHeight = Dimensions.get('window').height
+    const windowWidth = Dimensions.get('window').width
 
     useEffect(() => {
 
@@ -86,6 +87,7 @@ export default function Keyinfo(props) {
         <Provider >
 
             <Portal >
+
                 <Dialog visible={visibleCategory} onDismiss={hideModalCategory}>
 
                     <Dialog.Title>Choose an option</Dialog.Title>
@@ -195,59 +197,65 @@ export default function Keyinfo(props) {
                         horizontal={false}
                         data={keyHistory}
 
-                        renderItem={({ item, index }) => (
+                        renderItem={({ item, index }) => 
 
-                            <Card style={styles.cardstyle}>
-                                <Card.Title
-                                    title={ format(new Date(item.creation.toDate().toString()), 'PPPP')}
-                                    />
+                        {switch(item.entrytype){
+                            case "landlord" :
+                                return( 
 
-                                <Divider />
+                                    <Card style={styles.cardstyle}>
+                                        <Card.Title
+                                            title={ format(new Date(item.creation.toDate().toString()), 'PPPP')}
+                                            />
+        
+                                        <Divider />
+        
+                                        <Card.Content>
+        
+                                            <Caption> Name: {item.name} </Caption>
+                                            <Caption> Company: {item.company} </Caption>
+                                            <Caption> Type: {item.entrytype} </Caption>
+                                            <Caption> Notes: {item.notes} </Caption>
+        
+                                        </Card.Content>
+        
+                                        <List.Section>
+        
+                                            <List.Accordion title='View Media'>
+        
+                                                <Divider/>
 
-                                <Card.Content>
+                                                <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center'}}>
 
-                                    <Caption> Name: {item.name} </Caption>
-                                    <Caption> Company: {item.company} </Caption>
-                                    <Caption> Type: {item.entrytype} </Caption>
-                                    <Caption> Notes: {item.notes} </Caption>
-
-                                </Card.Content>
-
-                                <List.Section >
-
-                                    <List.Accordion title='View Media'>
-
-                                        <Divider/>
-
-                                        <Card style={styles.cardstyle}>
-                                            <Card.Cover source={{ uri: item.imageIDfrontURL }} 
-                                            defaultSource={require('../../assets/99nomedia.jpg')}
-                                            style={{resizeMode: "contain", margin: 10,aspectRatio: 4/3, alignSelf: "center"}}/>
-                                            <Card.Title title={"Emirates ID Front"}/>
-                                        </Card>
-
-                                        <Card style={styles.cardstyle}>
-                                            <Card.Cover source={{ uri: item.imageIDbackURL }}
-                                            defaultSource={require('../../assets/99nomedia.jpg')}
-                                            style={{margin: 10, aspectRatio: 4/3, alignSelf: "center"}}/>
-                                            <Card.Title title={"Emirates ID Front"}/>
-                                        </Card>
-
-                                        <Card style={styles.cardstyle}>
-                                            <Card.Cover source={{ uri: item.signatureURL }}
-                                            defaultSource={require('../../assets/99nomedia.jpg')}
-                                            style={{margin: 10, aspectRatio: 4/3, alignSelf: "center", backgroundColor: '#f1eff0'}}/>
-                                            <Card.Title title={"Signature"}/>
-                                        </Card>
-
-                                    </List.Accordion>                                    
-                                    
-                                </List.Section>
-
-                            </Card>
-
-
-                        )}
+                                                <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: windowWidth/2.5}}>
+                                                    <Card.Cover source={{ uri: item.imageIDfrontURL}} 
+                                                    defaultSource={require('../../assets/99nomedia.jpg')}
+                                                    style={{margin: 10, aspectRatio: 4/3, alignSelf: "center",  width: windowWidth/2}}/>
+                                                    <Card.Title title={"Emirates ID Front"}/>
+                                                </Card>
+        
+                                                <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: windowWidth/2.5}}>
+                                                    <Card.Cover source={{ uri: item.imageIDbackURL }}
+                                                    defaultSource={require('../../assets/99nomedia.jpg')}
+                                                    style={{margin: 10, aspectRatio: 4/3, alignSelf: "center", width: windowWidth/2}}/>
+                                                    <Card.Title title={"Emirates ID Front"}/>
+                                                </Card>
+                                                </View>
+        
+                                            </List.Accordion>                                    
+                                            
+                                        </List.Section>
+        
+                                    </Card>
+        
+        
+                                )
+                                break;
+                        }}
+                        
+                        
+                        
+                        }
                     />
                 </View>
 
@@ -260,7 +268,6 @@ export default function Keyinfo(props) {
                     label="NEW LOG"
 
                     onPress={showModalCategory}
-                    
                 />
 
                 </ImageBackground>
@@ -268,8 +275,6 @@ export default function Keyinfo(props) {
         </Provider>
     )
 }
-
-//onPress={() => props.navigation.navigate("AddKeyHistory", { keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid })}
 
 const styles = StyleSheet.create({
     container: {
@@ -295,6 +300,7 @@ const styles = StyleSheet.create({
     },
 
     cardstyle: {
+        flex: 1,
         borderRadius: 10,
         margin: 10,
         elevation: 5
