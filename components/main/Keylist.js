@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { View, Text, FlatList, StyleSheet, ImageBackground, } from 'react-native'
 import { Card, FAB, Searchbar, IconButton, Paragraph, Divider, Chip, Caption, Button } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import { compareAsc, format } from 'date-fns'
 
 import firebase from 'firebase'
 require ("firebase/firestore")
@@ -53,39 +54,211 @@ function Profile(props) {
                     numColumns={1}
                     horizontal={false}
                     data={keyinfo}
-                    renderItem={({ item }) => (
+                    renderItem={({ item }) => 
+                    
+                    {switch(item.entrytype){
 
-                        <Card style={styles.cardstyle}>
-                            <Card.Title
-                                left={() => <MaterialCommunityIcons name="folder-key-outline" size={40} />}
-                                title={item.keyname}
-                                subtitle={item.keylocation}
-                            />
-                            <Divider style={{ marginBottom: 5 }} />
+                        //NEW ENTRTY CARD LAYOUT
+                        case 'NEW ENTRY':
+                            return(
+                                <Card style={styles.cardstyle}>
+                                    <Card.Title
+                                        left={() => <MaterialCommunityIcons name="folder-key-outline" size={40} />}
+                                        title={item.keyname}
+                                        subtitle={item.keylocation}
+                                    />
+                                    <Divider style={{ marginBottom: 5 }} />
+        
+                                    <Card.Content>
+                                        <Caption>
+                                            {format(new Date(item.creation.toDate().toString()), 'PPPP')}
+                                        </Caption>
+                                    </Card.Content>
+            
+                                    <Card.Content style={{ flexWrap: 'wrap', flexDirection: 'row', alignItems: 'center' }}>
+                                        <Chip style={{
+                                            marginTop: 5,
+                                            marginRight: 5,
+                                            backgroundColor: (`#8eecf5`)
+                                        }} icon="information"> {item.entrytype}</Chip>
+                                        <Chip style={{
+                                            marginTop: 5,
+                                            marginRight: 5
+                                        }} icon="account-star"> {item.name}</Chip>
+                                        <Chip style={{
+                                            marginTop: 5,
+                                            marginRight: 5
+                                        }} icon="domain"> {item.company}</Chip>
+                                    </Card.Content>
+                                        
+                                    <Card.Actions style={{ justifyContent: 'center' }}>
+                                        <Button onPress={() => props.navigation.navigate("Keyinfo", { keyId: item.id, uid: firebase.auth().currentUser.uid })} >
+                                            VIEW HISTORY
+                                        </Button>
+                                    </Card.Actions>
+                                </Card>)
 
-                            <Card.Content style={{ flexWrap: 'wrap', flexDirection: 'row', alignItems: 'center' }}>
-                                <Chip style={{
-                                    marginTop: 5,
-                                    marginRight: 5
-                                }} icon="information"> {item.entrytype}</Chip>
-                                <Chip style={{
-                                    marginTop: 5,
-                                    marginRight: 5
-                                }} icon="account-star"> {item.name}</Chip>
-                                <Chip style={{
-                                    marginTop: 5,
-                                    marginRight: 5
-                                }} icon="domain"> {item.company}</Chip>
-                            </Card.Content>
-                            
-                            <Card.Actions style={{ justifyContent: 'center' }}>
-                                <Button onPress={() => props.navigation.navigate("Keyinfo", { keyId: item.id, uid: firebase.auth().currentUser.uid })} >
-                                    VIEW HISTORY
-                                </Button>
-                            </Card.Actions>
-                            
-                            </Card>
-                    )}/>
+                        //LANDLORD CARD LAYOUT
+                        case 'LANDLORD':
+                            return(
+                                <Card style={styles.cardstyle}>
+                                    <Card.Title
+                                        left={() => <MaterialCommunityIcons name="folder-key-outline" size={40} />}
+                                        title={item.keyname}
+                                        subtitle={item.keylocation}
+                                    />
+                                    <Divider style={{ marginBottom: 5 }} />
+        
+                                    <Card.Content>
+                                        <Caption>
+                                            {format(new Date(item.creation.toDate().toString()), 'PPPP')}
+                                        </Caption>
+                                    </Card.Content>
+            
+                                    <Card.Content style={{ flexWrap: 'wrap', flexDirection: 'row', alignItems: 'center' }}>
+                                        <Chip style={{
+                                            marginTop: 5,
+                                            marginRight: 5,
+                                            backgroundColor: (`#ffd60a`)
+                                        }} icon="information"> {item.entrytype}</Chip>
+                                        <Chip style={{
+                                            marginTop: 5,
+                                            marginRight: 5
+                                        }} icon="account-star"> {item.name}</Chip>
+                                        <Chip style={{
+                                            marginTop: 5,
+                                            marginRight: 5
+                                        }} icon="domain"> {item.company}</Chip>
+                                    </Card.Content>
+                                        
+                                    <Card.Actions style={{ justifyContent: 'center' }}>
+                                        <Button onPress={() => props.navigation.navigate("Keyinfo", { keyId: item.id, uid: firebase.auth().currentUser.uid })} >
+                                            VIEW HISTORY
+                                        </Button>
+                                    </Card.Actions>
+                                </Card>)
+
+                        //COMPANY CARD LAYOUT
+                        case 'COMPANY':
+                            return(
+                                <Card style={styles.cardstyle}>
+                                    <Card.Title
+                                        left={() => <MaterialCommunityIcons name="folder-key-outline" size={40} />}
+                                        title={item.keyname}
+                                        subtitle={item.keylocation}
+                                    />
+                                    <Divider style={{ marginBottom: 5 }} />
+        
+                                    <Card.Content>
+                                        <Caption>
+                                            {format(new Date(item.creation.toDate().toString()), 'PPPP')}
+                                        </Caption>
+                                    </Card.Content>
+            
+                                    <Card.Content style={{ flexWrap: 'wrap', flexDirection: 'row', alignItems: 'center' }}>
+                                        <Chip style={{
+                                            marginTop: 5,
+                                            marginRight: 5,
+                                            backgroundColor: (`#fb8500`)
+                                        }} icon="information"> {item.entrytype}</Chip>
+                                        <Chip style={{
+                                            marginTop: 5,
+                                            marginRight: 5
+                                        }} icon="account-star"> {item.name}</Chip>
+                                        <Chip style={{
+                                            marginTop: 5,
+                                            marginRight: 5
+                                        }} icon="domain"> {item.company}</Chip>
+                                    </Card.Content>
+                                        
+                                    <Card.Actions style={{ justifyContent: 'center' }}>
+                                        <Button onPress={() => props.navigation.navigate("Keyinfo", { keyId: item.id, uid: firebase.auth().currentUser.uid })} >
+                                            VIEW HISTORY
+                                        </Button>
+                                    </Card.Actions>
+                                </Card>)
+
+                        //AGENT CARD LAYOUT
+                        case 'AGENT':
+                            return(
+                                <Card style={styles.cardstyle}>
+                                    <Card.Title
+                                        left={() => <MaterialCommunityIcons name="folder-key-outline" size={40} />}
+                                        title={item.keyname}
+                                        subtitle={item.keylocation}
+                                    />
+                                    <Divider style={{ marginBottom: 5 }} />
+        
+                                    <Card.Content>
+                                        <Caption>
+                                            {format(new Date(item.creation.toDate().toString()), 'PPPP')}
+                                        </Caption>
+                                    </Card.Content>
+            
+                                    <Card.Content style={{ flexWrap: 'wrap', flexDirection: 'row', alignItems: 'center' }}>
+                                        <Chip style={{
+                                            marginTop: 5,
+                                            marginRight: 5,
+                                            backgroundColor: (`#a2d2ff`)
+                                        }} icon="information"> {item.entrytype}</Chip>
+                                        <Chip style={{
+                                            marginTop: 5,
+                                            marginRight: 5
+                                        }} icon="account-star"> {item.name}</Chip>
+                                        <Chip style={{
+                                            marginTop: 5,
+                                            marginRight: 5
+                                        }} icon="domain"> {item.company}</Chip>
+                                    </Card.Content>
+                                        
+                                    <Card.Actions style={{ justifyContent: 'center' }}>
+                                        <Button onPress={() => props.navigation.navigate("Keyinfo", { keyId: item.id, uid: firebase.auth().currentUser.uid })} >
+                                            VIEW HISTORY
+                                        </Button>
+                                    </Card.Actions>
+                                </Card>)
+
+                        //OTHER CARD LAYOUT
+                        case 'OTHER':
+                            return(
+                                <Card style={styles.cardstyle}>
+                                    <Card.Title
+                                        left={() => <MaterialCommunityIcons name="folder-key-outline" size={40} />}
+                                        title={item.keyname}
+                                        subtitle={item.keylocation}
+                                    />
+                                    <Divider style={{ marginBottom: 5 }} />
+        
+                                    <Card.Content>
+                                        <Caption>
+                                            {format(new Date(item.creation.toDate().toString()), 'PPPP')}
+                                        </Caption>
+                                    </Card.Content>
+            
+                                    <Card.Content style={{ flexWrap: 'wrap', flexDirection: 'row', alignItems: 'center' }}>
+                                        <Chip style={{
+                                            marginTop: 5,
+                                            marginRight: 5,
+                                            backgroundColor: (`#cfbaf0`)
+                                        }} icon="information"> {item.entrytype}</Chip>
+                                        <Chip style={{
+                                            marginTop: 5,
+                                            marginRight: 5
+                                        }} icon="account-star"> {item.name}</Chip>
+                                        <Chip style={{
+                                            marginTop: 5,
+                                            marginRight: 5
+                                        }} icon="domain"> {item.company}</Chip>
+                                    </Card.Content>
+                                        
+                                    <Card.Actions style={{ justifyContent: 'center' }}>
+                                        <Button onPress={() => props.navigation.navigate("Keyinfo", { keyId: item.id, uid: firebase.auth().currentUser.uid })} >
+                                            VIEW HISTORY
+                                        </Button>
+                                    </Card.Actions>
+                                </Card>)
+                                    
+                        }}}/>
             </View>
 
             <FAB
@@ -97,11 +270,9 @@ function Profile(props) {
                 label="NEW KEY"
                 onPress={() => props.navigation.navigate('AddKey')}
             />
-
             </ImageBackground>
-            </View>
-            )
-}
+        </View>)
+        }
 
 
 

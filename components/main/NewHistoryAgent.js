@@ -24,7 +24,7 @@ export default function NewHistroyAgent(props) {
     const [number, setfieldnumber] = useState("")
     const [notes, setfieldnotes] = useState("")
 
-    const entrytype = "Agent"
+    const entrytype = "AGENT"
 
     const [visiblePhotoFront, setVisiblePhotoFront] = React.useState(false);
     const showModalPhotoFront = () => setVisiblePhotoFront(true);
