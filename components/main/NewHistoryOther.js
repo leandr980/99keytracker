@@ -22,7 +22,7 @@ export default function NewHistoryOther(props, { navigation }) {
     const [number, setfieldnumber] = useState("")
     const [notes, setfieldnotes] = useState("")
 
-    const entrytype = "Other"
+    const entrytype = "OTHER"
 
     const [visiblePhotoFront, setVisiblePhotoFront] = React.useState(false);
     const showModalPhotoFront = () => setVisiblePhotoFront(true);

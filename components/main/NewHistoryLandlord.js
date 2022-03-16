@@ -22,7 +22,7 @@ export default function NewHistoryLandlord(props, { navigation }) {
     const [number, setfieldnumber] = useState("")
     const [notes, setfieldnotes] = useState("")
 
-    const entrytype = "Landlord"
+    const entrytype = "LANDLORD"
 
     const [visiblePhotoFront, setVisiblePhotoFront] = React.useState(false);
     const showModalPhotoFront = () => setVisiblePhotoFront(true);
@@ -44,7 +44,8 @@ export default function NewHistoryLandlord(props, { navigation }) {
 
             const camerastatus = await Camera.requestPermissionsAsync();
             sethascamerapermission(camerastatus.status === 'granted');
-        })();
+        })()
+
     }, []);
 
 
