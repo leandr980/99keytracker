@@ -65,7 +65,11 @@ export function fetchKeyInfo() {
 
                 })
                 //console.log(keyinfo)
-                dispatch({ type: USER_KEYINFO_STATE_CHANGE, keyinfo })
+                if (!docSnapshot.metadata.hasPendingWrites) {  // <======
+                    dispatch({ type: USER_KEYINFO_STATE_CHANGE, keyinfo })
+                 }
+
+                
             })
     })
 }

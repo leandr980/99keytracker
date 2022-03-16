@@ -22,7 +22,7 @@ export default function NewHistoryCompany(props, { navigation }) {
     const [number, setfieldnumber] = useState("")
     const [notes, setfieldnotes] = useState("")
 
-    const entrytype = "Company"
+    const entrytype = "COMPANY"
 
     const [visiblePhotoFront, setVisiblePhotoFront] = React.useState(false);
     const showModalPhotoFront = () => setVisiblePhotoFront(true);

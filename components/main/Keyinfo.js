@@ -3,7 +3,7 @@ import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity, ImageBackgro
 import {Dimensions} from 'react-native'
 import { Card, FAB, IconButton, Chip, Paragraph, Button, Divider, Caption, Provider, Portal, Dialog, RadioButton, TouchableRipple, List, Switch, Banner } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import { compareAsc, format } from 'date-fns'
+import {format } from 'date-fns'
 
 import firebase from 'firebase'
 import NewHistoryLandlord from './NewHistoryLandlord'
@@ -54,6 +54,10 @@ export default function Keyinfo(props) {
             setKeyId(props.route.params.keyId)
 
         }
+
+        return () => {  
+            abortController.abort();  
+            }  
 
     }, [props.route.params.keyId])
 
@@ -200,13 +204,54 @@ export default function Keyinfo(props) {
                         renderItem={({ item, index }) => 
 
                         {switch(item.entrytype){
-                            case "landlord" :
+                            case "LANDLORD" :
+                                return( 
+                                    <Card style={styles.cardstyle}>
+                                        <Card.Title
+                                            title={ format(new Date(item.creation.toDate().toString()), 'PPPP')}/>
+                                        <Divider />
+
+                                        <Card.Content>
+        
+                                            <Caption> Name: {item.name} </Caption>
+                                            <Caption> Phone Number: {item.number} </Caption>
+                                            <Caption> Type: {item.entrytype} </Caption>
+                                            <Caption> Notes: {item.notes} </Caption>
+        
+                                        </Card.Content>
+        
+                                        <List.Section>
+                                            <List.Accordion title='View Media'>
+                                                <Divider/>
+
+                                                <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap'}}>
+
+                                                    <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
+                                                        <Card.Cover source={{ uri: item.imageIDfrontURL}} 
+                                                        defaultSource={require('../../assets/99nomedia.jpg')}
+                                                        style={{margin: 10, aspectRatio: 4/3, alignSelf: "center",  width: 300}}/>
+                                                        <Card.Title title={"Emirates ID Front"}/>
+                                                    </Card>
+        
+                                                    <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
+                                                        <Card.Cover source={{ uri: item.imageIDbackURL }}
+                                                        defaultSource={require('../../assets/99nomedia.jpg')}
+                                                        style={{margin: 10, aspectRatio: 4/3, alignSelf: "center", width: 300}}/>
+                                                        <Card.Title title={"Emirates ID Front"}/>
+                                                    </Card>
+
+                                                </View>
+                                            </List.Accordion>                                    
+                                        </List.Section>
+                                    </Card>
+                                )
+
+                            case "NEW ENTRY" :
                                 return( 
 
                                     <Card style={styles.cardstyle}>
                                         <Card.Title
-                                            title={ format(new Date(item.creation.toDate().toString()), 'PPPP')}
-                                            />
+                                            title={ format(new Date(item.creation.toDate().toString()), 'PPPP')}/>
         
                                         <Divider />
         
@@ -218,43 +263,13 @@ export default function Keyinfo(props) {
                                             <Caption> Notes: {item.notes} </Caption>
         
                                         </Card.Content>
-        
-                                        <List.Section>
-        
-                                            <List.Accordion title='View Media'>
-        
-                                                <Divider/>
-
-                                                <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center'}}>
-
-                                                <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: windowWidth/2.5}}>
-                                                    <Card.Cover source={{ uri: item.imageIDfrontURL}} 
-                                                    defaultSource={require('../../assets/99nomedia.jpg')}
-                                                    style={{margin: 10, aspectRatio: 4/3, alignSelf: "center",  width: windowWidth/2}}/>
-                                                    <Card.Title title={"Emirates ID Front"}/>
-                                                </Card>
-        
-                                                <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: windowWidth/2.5}}>
-                                                    <Card.Cover source={{ uri: item.imageIDbackURL }}
-                                                    defaultSource={require('../../assets/99nomedia.jpg')}
-                                                    style={{margin: 10, aspectRatio: 4/3, alignSelf: "center", width: windowWidth/2}}/>
-                                                    <Card.Title title={"Emirates ID Front"}/>
-                                                </Card>
-                                                </View>
-        
-                                            </List.Accordion>                                    
-                                            
-                                        </List.Section>
-        
                                     </Card>
-        
-        
                                 )
-                                break;
+
+                                
                         }}
                         
-                        
-                        
+
                         }
                     />
                 </View>

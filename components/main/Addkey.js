@@ -26,8 +26,6 @@ export default function Addkey(props) {
         }
         else {
 
-            //setfieldentrytype('NEW ENTRY')
-
             const entrytype = 'NEW ENTRY'
 
             firebase.firestore()
@@ -65,7 +63,9 @@ export default function Addkey(props) {
                                     console.log("Data saved successfully.");
                                 }
                             }
-                        )
+                        ).then((function () {
+                            props.navigation.pop()
+                        }))
                 })
         }
     }
