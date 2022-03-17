@@ -81,14 +81,6 @@ function Profile(props) {
                                             marginRight: 5,
                                             backgroundColor: (`#8eecf5`)
                                         }} icon="information"> {item.entrytype}</Chip>
-                                        <Chip style={{
-                                            marginTop: 5,
-                                            marginRight: 5
-                                        }} icon="account-star"> {item.name}</Chip>
-                                        <Chip style={{
-                                            marginTop: 5,
-                                            marginRight: 5
-                                        }} icon="domain"> {item.company}</Chip>
                                     </Card.Content>
                                         
                                     <Card.Actions style={{ justifyContent: 'center' }}>
@@ -128,7 +120,7 @@ function Profile(props) {
                                         <Chip style={{
                                             marginTop: 5,
                                             marginRight: 5
-                                        }} icon="domain"> {item.company}</Chip>
+                                        }} icon="domain"> {item.number}</Chip>
                                     </Card.Content>
                                         
                                     <Card.Actions style={{ justifyContent: 'center' }}>
@@ -164,7 +156,11 @@ function Profile(props) {
                                         <Chip style={{
                                             marginTop: 5,
                                             marginRight: 5
-                                        }} icon="account-star"> {item.name}</Chip>
+                                        }} icon="account-star"> {item.companyname}</Chip>
+                                        <Chip style={{
+                                            marginTop: 5,
+                                            marginRight: 5
+                                        }} icon="account-star"> {item.supervisor}</Chip>
                                         <Chip style={{
                                             marginTop: 5,
                                             marginRight: 5
