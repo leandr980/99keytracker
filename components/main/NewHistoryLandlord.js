@@ -1,6 +1,6 @@
 // JavaScript source code
 import React, { useEffect, useState, Component } from 'react'
-import { View, FlatList, StyleSheet, ScrollView, Image, ImageBackground } from 'react-native'
+import { View, FlatList, StyleSheet, ScrollView, Image, ImageBackground, Dimensions } from 'react-native'
 import { Card,  IconButton, Paragraph, Divider, Button, Chip, Text, TextInput, Portal, Dialog, Provider, ProgressBar, Switch } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import * as ImagePicker from 'expo-image-picker';
@@ -12,6 +12,9 @@ require("firebase/firebase-storage")
 
 
 export default function NewHistoryLandlord(props, { navigation }) {
+
+    const windowHeight = Dimensions.get('window').height
+    const windowWidth = Dimensions.get('window').width
 
     const creation = firebase.firestore.FieldValue.serverTimestamp()
 
@@ -337,7 +340,7 @@ export default function NewHistoryLandlord(props, { navigation }) {
                             />
 
                             <TextInput
-                                style={{marginVertical: 10, height: 200}}
+                                style={{marginVertical: 10, height: 100}}
                                 label="Notes . . ."
                                 onChangeText={(notes) => setfieldnotes(notes)}
                             />
@@ -346,7 +349,7 @@ export default function NewHistoryLandlord(props, { navigation }) {
 
                     <Card style={styles.cardstyle}>
                         <Card.Title title='Emirates ID Front:' />
-                        <Card.Cover source={{ uri: imageIDfront }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center"}} />
+                        <Card.Cover source={{ uri: imageIDfront }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center", height: 300}} />
                         
                         <Card.Actions style={{ justifyContent: 'space-between' }}>
                             <Button
@@ -363,7 +366,7 @@ export default function NewHistoryLandlord(props, { navigation }) {
 
                     <Card style={styles.cardstyle}>
                         <Card.Title title='Emirates ID Back:' />
-                        <Card.Cover source={{ uri: imageIDback }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center"}} />
+                        <Card.Cover source={{ uri: imageIDback }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center", height: 300}} />
                         
                         <Divider />
                         
