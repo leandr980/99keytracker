@@ -18,8 +18,9 @@ export default function NewHistoryCompany(props, { navigation }) {
     const [keydetails, setKeydetails] = useState([])
     const [keyId, setKeyId] = useState("")
 
-    const [name, setfeildname] = useState("")
+    const [companyname, setfeildcompanyname] = useState("")
     const [number, setfieldnumber] = useState("")
+    const [supervisor, setfieldsupervisor] = useState("")
     const [notes, setfieldnotes] = useState("")
 
     const entrytype = "COMPANY"
@@ -128,8 +129,9 @@ export default function NewHistoryCompany(props, { navigation }) {
             .doc(props.route.params.keyId)
             .collection("keyhistory")
             .add({
-                name,
+                companyname,
                 entrytype,
+                supervisor,
                 number,
                 notes,
                 creation,
@@ -155,7 +157,6 @@ export default function NewHistoryCompany(props, { navigation }) {
             .collection("keylist")
             .doc(props.route.params.keyId)
             .update({
-                name: name,
                 entrytype: entrytype,
                 number: number,
                 notes: notes
@@ -326,7 +327,7 @@ export default function NewHistoryCompany(props, { navigation }) {
                                 style={styles.textinputstyle}
                                 type='outlined'
                                 label="Company Name . . ."
-                                onChangeText={(name) => setfeildname(name)}
+                                onChangeText={(companyname) => setfeildcompanyname(companyname)}
                             />
 
                             <TextInput
@@ -337,6 +338,12 @@ export default function NewHistoryCompany(props, { navigation }) {
 
                             <TextInput
                                 style={styles.textinputstyle}
+                                label="Supervisor Name . . ."
+                                onChangeText={(supervisor) => setfieldsupervisor(supervisor)}
+                            />
+
+                            <TextInput
+                                style={{marginVertical: 10, height: 100}}
                                 label="Notes . . ."
                                 onChangeText={(notes) => setfieldnotes(notes)}
                             />
@@ -345,7 +352,7 @@ export default function NewHistoryCompany(props, { navigation }) {
 
                     <Card style={styles.cardstyle}>
                         <Card.Title title='Emirates ID Front:' />
-                        <Card.Cover source={{ uri: imageIDfront }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center"}} />
+                        <Card.Cover source={{ uri: imageIDfront }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center", height: 300}} />
                         
                         <Card.Actions style={{ justifyContent: 'space-between' }}>
                             <Button
@@ -362,7 +369,7 @@ export default function NewHistoryCompany(props, { navigation }) {
 
                     <Card style={styles.cardstyle}>
                         <Card.Title title='Emirates ID Back:' />
-                        <Card.Cover source={{ uri: imageIDback }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center"}} />
+                        <Card.Cover source={{ uri: imageIDback }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center", height: 300}} />
                         
                         <Divider />
                         

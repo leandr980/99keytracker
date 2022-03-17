@@ -21,6 +21,7 @@ export default function NewHistroyAgent(props) {
     const [keyId, setKeyId] = useState("")
 
     const [name, setfeildname] = useState("")
+    const [agency, setfieldagency] = useState("")
     const [number, setfieldnumber] = useState("")
     const [notes, setfieldnotes] = useState("")
 
@@ -132,6 +133,7 @@ export default function NewHistroyAgent(props) {
             .collection("keyhistory")
             .add({
                 name,
+                agency,
                 entrytype,
                 number,
                 notes,
@@ -417,12 +419,19 @@ export default function NewHistroyAgent(props) {
 
                             <TextInput
                                 style={styles.textinputstyle}
+                                type='outlined'
+                                label="Real Estate Agency . . ."
+                                onChangeText={(agency) => setfieldagency(agency)}
+                            />
+
+                            <TextInput
+                                style={styles.textinputstyle}
                                 label="Phone Number . . ."
                                 onChangeText={(number) => setfieldnumber(number)}
                             />
 
                             <TextInput
-                                style={styles.textinputstyle}
+                                style={{marginVertical: 10, height: 100}}
                                 label="Notes . . ."
                                 onChangeText={(notes) => setfieldnotes(notes)}
                             />
