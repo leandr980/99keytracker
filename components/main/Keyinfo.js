@@ -313,8 +313,6 @@ export default function Keyinfo(props) {
                         renderItem={({ item, index }) => 
 
                         {
-
-                            if (index != 0) {
                                 switch(item.entrytype){
                                     case "LANDLORD" :
                                         return( 
@@ -399,6 +397,55 @@ export default function Keyinfo(props) {
                                                 </List.Section>
                                             </Card>
                                         )
+                                    case "AGENT" :
+                                        return( 
+                                            <Card style={styles.cardstyle}>
+                                                <Card.Title
+                                                    title={ format(new Date(item.creation.toDate().toString()), 'PPPP')}/>
+                                                <Divider />
+        
+                                                <Card.Content>
+                
+                                                    <Caption> Name: {item.name} </Caption>
+                                                    <Caption> Phone Number: {item.number} </Caption>
+                                                    <Caption> Real Estate Agency: {item.agency} </Caption>
+                                                    <Caption> Type: {item.entrytype} </Caption>
+                                                    <Caption> Notes: {item.notes} </Caption>
+                
+                                                </Card.Content>
+                
+                                                <List.Section>
+                                                    <List.Accordion title='View Media'>
+                                                        <Divider/>
+        
+                                                        <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap'}}>
+        
+                                                            <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
+                                                                <Card.Cover source={{ uri: item.imageIDfrontURL}} 
+                                                                defaultSource={require('../../assets/99nomedia.jpg')}
+                                                                style={{margin: 10, aspectRatio: 4/3, alignSelf: "center",  width: 300}}/>
+                                                                <Card.Title title={"Emirates ID Front"}/>
+                                                            </Card>
+                
+                                                            <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
+                                                                <Card.Cover source={{ uri: item.imageIDbackURL }}
+                                                                defaultSource={require('../../assets/99nomedia.jpg')}
+                                                                style={{margin: 10, aspectRatio: 4/3, alignSelf: "center", width: 300}}/>
+                                                                <Card.Title title={"Emirates ID Front"}/>
+                                                            </Card>
+
+                                                            <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
+                                                                <Card.Cover source={{ uri: item.signatureURL }}
+                                                                defaultSource={require('../../assets/99nomedia.jpg')}
+                                                                style={{margin: 10, aspectRatio: 4/3, alignSelf: "center", width: 300}}/>
+                                                                <Card.Title title={"Signature"}/>
+                                                            </Card>
+        
+                                                        </View>
+                                                    </List.Accordion>                                    
+                                                </List.Section>
+                                            </Card>
+                                        )
         
                                     case "NEW ENTRY" :
                                         return( 
@@ -423,7 +470,6 @@ export default function Keyinfo(props) {
                                         
                                 }
                             }
-                        }
                         
 
                         }
