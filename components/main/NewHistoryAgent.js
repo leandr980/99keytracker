@@ -140,7 +140,7 @@ export default function NewHistroyAgent(props) {
                 creation,
                 imageIDbackURL,
                 imageIDfrontURL,
-                signatureURL
+                signatureURL: text
 
             },
                 function (error) {
@@ -212,44 +212,6 @@ export default function NewHistroyAgent(props) {
         })
         .catch((err) => console.log(err))
     }
-    
-    const uploadsignature  = async (signaturebase64) => {
-        console.log('upload signature func start')
-
-        const substringbase64 = signaturebase64.substring(22)
-
-        return new Promise (async (resolve) => {
-            substringbase64.id = Math.random().toString(36)
-            const uploadTask = firebase
-            .storage()
-            .ref()
-            .child(`post/${firebase.auth().currentUser.uid}/${substringbase64.id}`)
-            .putString(substringbase64, 'base64', {contentType:'image/png'});
-
-            uploadTask.on ("state_changed",
-
-                (snapshot) => {
-                    const progress = Math.round(
-                        (snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-                    setProgress(progress);},
-
-                (error) => { console.log(error); },
-
-                async () => {
-                    await firebase
-                        .storage()
-                        .ref()
-                        .child(`post/${firebase.auth().currentUser.uid}/${substringbase64.id}`)
-                        .getDownloadURL()
-                        .then((snapshot) => {
-                            resolve(snapshot);
-                            //console.log(snapshot)
-                        });}
-            )
-        })
-        .catch((err) => console.log(err))
-
-    }
 
     //loop images into uploadimage
     const downloadURLarray = async () => {
@@ -278,9 +240,8 @@ export default function NewHistroyAgent(props) {
 
         const url1 = urls[0]
         const url2 = urls[1]
-        const url3 = urls[2]
 
-        saveKeyData(url1,url2,url3)
+        saveKeyData(url1,url2)
     }
 
     // Clear All Fields
