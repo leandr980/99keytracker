@@ -13,8 +13,7 @@ require("firebase/firebase-storage")
 
 export default function NewHistoryLandlord(props, { navigation }) {
 
-    const windowHeight = Dimensions.get('window').height
-    const windowWidth = Dimensions.get('window').width
+
 
     const creation = firebase.firestore.FieldValue.serverTimestamp()
 
