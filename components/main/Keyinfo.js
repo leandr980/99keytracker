@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native'
+import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity, ImageBackground, ScrollView } from 'react-native'
 import {Dimensions} from 'react-native'
 import { Card, FAB, IconButton, Chip, Paragraph, Button, Divider, Caption, Provider, Portal, Dialog, RadioButton, TouchableRipple, List, Switch, Banner } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -184,16 +184,17 @@ export default function Keyinfo(props) {
                                         return( 
                                             <Card style={styles.cardstyle}>
                                                 <Card.Title
-                                                    title={ format(new Date(item.creation.toDate().toString()), 'PPPP')}/>
+                                                    title={ format(new Date(item.creation.toDate().toString()), 'PP')}
+                                                    right={()=><Chip style={{
+                                                        marginRight: 10,
+                                                        backgroundColor: (`#ffd60a`)
+                                                    }} icon="information"> {item.entrytype}</Chip>}/>
                                                 <Divider />
         
                                                 <Card.Content>
-                
                                                     <Caption> Name: {item.name} </Caption>
                                                     <Caption> Phone Number: {item.number} </Caption>
-                                                    <Caption> Type: {item.entrytype} </Caption>
                                                     <Caption> Notes: {item.notes} </Caption>
-                
                                                 </Card.Content>
                 
                                                 <List.Section>
@@ -205,14 +206,14 @@ export default function Keyinfo(props) {
                                                             <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
                                                                 <Card.Cover source={{ uri: item.imageIDfrontURL}} 
                                                                 defaultSource={require('../../assets/99nomedia.jpg')}
-                                                                style={{margin: 10, aspectRatio: 4/3, alignSelf: "center",  width: 300}}/>
+                                                                style={{alignSelf: "center",  width: 300}}/>
                                                                 <Card.Title title={"Emirates ID Front"}/>
                                                             </Card>
                 
                                                             <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
                                                                 <Card.Cover source={{ uri: item.imageIDbackURL }}
                                                                 defaultSource={require('../../assets/99nomedia.jpg')}
-                                                                style={{margin: 10, aspectRatio: 4/3, alignSelf: "center", width: 300}}/>
+                                                                style={{alignSelf: "center", width: 300}}/>
                                                                 <Card.Title title={"Emirates ID Front"}/>
                                                             </Card>
         
@@ -225,7 +226,11 @@ export default function Keyinfo(props) {
                                         return( 
                                             <Card style={styles.cardstyle}>
                                                 <Card.Title
-                                                    title={ format(new Date(item.creation.toDate().toString()), 'PPPP')}/>
+                                                    title={ format(new Date(item.creation.toDate().toString()), 'PP')}
+                                                    right={()=><Chip style={{
+                                                        marginRight: 10,
+                                                        backgroundColor: (`#fb8500`)
+                                                    }} icon="information"> {item.entrytype}</Chip>}/>
                                                 <Divider />
         
                                                 <Card.Content>
@@ -233,7 +238,6 @@ export default function Keyinfo(props) {
                                                     <Caption> Company Name: {item.companyname} </Caption>
                                                     <Caption> Phone Number: {item.number} </Caption>
                                                     <Caption> Supervisor Name: {item.supervisor} </Caption>
-                                                    <Caption> Type: {item.entrytype} </Caption>
                                                     <Caption> Notes: {item.notes} </Caption>
                 
                                                 </Card.Content>
@@ -247,14 +251,14 @@ export default function Keyinfo(props) {
                                                             <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
                                                                 <Card.Cover source={{ uri: item.imageIDfrontURL}} 
                                                                 defaultSource={require('../../assets/99nomedia.jpg')}
-                                                                style={{margin: 10, aspectRatio: 4/3, alignSelf: "center",  width: 300}}/>
+                                                                style={{alignSelf: "center",  width: 300}}/>
                                                                 <Card.Title title={"Emirates ID Front"}/>
                                                             </Card>
                 
                                                             <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
                                                                 <Card.Cover source={{ uri: item.imageIDbackURL }}
                                                                 defaultSource={require('../../assets/99nomedia.jpg')}
-                                                                style={{margin: 10, aspectRatio: 4/3, alignSelf: "center", width: 300}}/>
+                                                                style={{alignSelf: "center", width: 300}}/>
                                                                 <Card.Title title={"Emirates ID Front"}/>
                                                             </Card>
         
@@ -267,7 +271,11 @@ export default function Keyinfo(props) {
                                         return( 
                                             <Card style={styles.cardstyle}>
                                                 <Card.Title
-                                                    title={ format(new Date(item.creation.toDate().toString()), 'PPPP')}/>
+                                                    title={ format(new Date(item.creation.toDate().toString()), 'PP')}
+                                                    right={()=><Chip style={{
+                                                        marginRight: 10,
+                                                        backgroundColor: (`#a2d2ff`)
+                                                    }} icon="information"> {item.entrytype}</Chip>}/>
                                                 <Divider />
         
                                                 <Card.Content>
@@ -275,41 +283,39 @@ export default function Keyinfo(props) {
                                                     <Caption> Name: {item.name} </Caption>
                                                     <Caption> Phone Number: {item.number} </Caption>
                                                     <Caption> Real Estate Agency: {item.agency} </Caption>
-                                                    <Caption> Type: {item.entrytype} </Caption>
                                                     <Caption> Notes: {item.notes} </Caption>
                 
                                                 </Card.Content>
                 
                                                 <List.Section>
                                                     <List.Accordion title='View Media'>
-                                                        <Divider/>
-        
-                                                        <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap'}}>
 
-                                                            <FlatList>
+                                                        <Divider/>
+                                                        
+                                                        <ScrollView horizontal style={{flex: 1}}>
 
                                                             <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
                                                                 <Card.Cover source={{ uri: item.imageIDfrontURL}} 
                                                                 defaultSource={require('../../assets/99nomedia.jpg')}
-                                                                style={{margin: 10, aspectRatio: 4/3, alignSelf: "center",  width: 300}}/>
+                                                                style={{alignSelf: "center",  width: 300}}/>
                                                                 <Card.Title title={"Emirates ID Front"}/>
                                                             </Card>
-                
                                                             <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
                                                                 <Card.Cover source={{ uri: item.imageIDbackURL }}
                                                                 defaultSource={require('../../assets/99nomedia.jpg')}
-                                                                style={{margin: 10, aspectRatio: 4/3, alignSelf: "center", width: 300}}/>
+                                                                style={{alignSelf: "center", width: 300}}/>
                                                                 <Card.Title title={"Emirates ID Front"}/>
                                                             </Card>
+
 
                                                             <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
                                                                 <Card.Cover source={{ uri: item.signatureURL }}
                                                                 defaultSource={require('../../assets/99nomedia.jpg')}
-                                                                style={{margin: 10, aspectRatio: 4/3, alignSelf: "center", width: 300}}/>
+                                                                style={{alignSelf: "center", width: 300}}/>
                                                                 <Card.Title title={"Signature"}/>
                                                             </Card>
-                                                            </FlatList>
-                                                        </View>
+
+                                                        </ScrollView>
                                                     </List.Accordion>                                    
                                                 </List.Section>
                                             </Card>
@@ -320,7 +326,11 @@ export default function Keyinfo(props) {
         
                                             <Card style={styles.cardstyle}>
                                                 <Card.Title
-                                                    title={ format(new Date(item.creation.toDate().toString()), 'PPPP')}/>
+                                                    title={ format(new Date(item.creation.toDate().toString()), 'PP')}
+                                                    right={()=><Chip style={{
+                                                        marginRight: 10,
+                                                        backgroundColor: (`#8eecf5`)
+                                                    }} icon="information"> {item.entrytype}</Chip>}/>
                 
                                                 <Divider />
                 
@@ -328,7 +338,6 @@ export default function Keyinfo(props) {
                 
                                                     <Caption> Name: {item.name} </Caption>
                                                     <Caption> Company: {item.company} </Caption>
-                                                    <Caption> Type: {item.entrytype} </Caption>
                                                     <Caption> Notes: {item.notes} </Caption>
                 
                                                 </Card.Content>

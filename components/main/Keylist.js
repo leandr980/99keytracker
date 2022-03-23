@@ -1,7 +1,7 @@
 // JavaScript source code
 import React, { useEffect, useState } from 'react'
-import { View, Text, FlatList, StyleSheet, ImageBackground, } from 'react-native'
-import { Card, FAB, Searchbar, IconButton, Paragraph, Divider, Chip, Caption, Button } from 'react-native-paper'
+import { View, Text, FlatList, StyleSheet, ImageBackground, ScrollView } from 'react-native'
+import { Card, FAB, Searchbar, IconButton, Paragraph, Divider, Chip, Caption, Button, List } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { compareAsc, format } from 'date-fns'
 
@@ -55,206 +55,242 @@ function Profile(props) {
                     horizontal={false}
                     data={keyinfo}
                     renderItem={({ item }) => 
-                    
-                    {switch(item.entrytype){
 
-                        //NEW ENTRTY CARD LAYOUT
-                        case 'NEW ENTRY':
-                            return(
+                    {
+                        switch(item.entrytype){
+                            case "LANDLORD" :
+                                return( 
                                 <Card style={styles.cardstyle}>
                                     <Card.Title
-                                        left={() => <MaterialCommunityIcons name="folder-key-outline" size={40} />}
-                                        title={item.keyname}
-                                        subtitle={item.keylocation}
+                                    left={() => <MaterialCommunityIcons name="folder-key-outline" size={40} />}
+                                    title={item.keyname}
+                                    subtitle={item.keylocation}
                                     />
-                                    <Divider style={{ marginBottom: 5 }} />
-        
-                                    <Card.Content>
-                                        <Caption>
-                                            {format(new Date(item.creation.toDate().toString()), 'PPPP')}
-                                        </Caption>
-                                    </Card.Content>
-            
-                                    <Card.Content style={{ flexWrap: 'wrap', flexDirection: 'row', alignItems: 'center' }}>
-                                        <Chip style={{
-                                            marginTop: 5,
-                                            marginRight: 5,
-                                            backgroundColor: (`#8eecf5`)
-                                        }} icon="information"> {item.entrytype}</Chip>
-                                    </Card.Content>
-                                        
-                                    <Card.Actions style={{ justifyContent: 'center' }}>
-                                        <Button onPress={() => props.navigation.navigate("Keyinfo", { keyId: item.id, uid: firebase.auth().currentUser.uid })} >
-                                            VIEW HISTORY
-                                        </Button>
-                                    </Card.Actions>
-                                </Card>)
-
-                        //LANDLORD CARD LAYOUT
-                        case 'LANDLORD':
-                            return(
-                                <Card style={styles.cardstyle}>
-                                    <Card.Title
-                                        left={() => <MaterialCommunityIcons name="folder-key-outline" size={40} />}
-                                        title={item.keyname}
-                                        subtitle={item.keylocation}
-                                    />
-                                    <Divider style={{ marginBottom: 5 }} />
-        
-                                    <Card.Content>
-                                        <Caption>
-                                            {format(new Date(item.creation.toDate().toString()), 'PPPP')}
-                                        </Caption>
-                                    </Card.Content>
-            
-                                    <Card.Content style={{ flexWrap: 'wrap', flexDirection: 'row', alignItems: 'center' }}>
-                                        <Chip style={{
-                                            marginTop: 5,
-                                            marginRight: 5,
-                                            backgroundColor: (`#ffd60a`)
-                                        }} icon="information"> {item.entrytype}</Chip>
-                                        <Chip style={{
-                                            marginTop: 5,
-                                            marginRight: 5
-                                        }} icon="account-star"> {item.name}</Chip>
-                                        <Chip style={{
-                                            marginTop: 5,
-                                            marginRight: 5
-                                        }} icon="domain"> {item.number}</Chip>
-                                    </Card.Content>
-                                        
-                                    <Card.Actions style={{ justifyContent: 'center' }}>
-                                        <Button onPress={() => props.navigation.navigate("Keyinfo", { keyId: item.id, uid: firebase.auth().currentUser.uid })} >
-                                            VIEW HISTORY
-                                        </Button>
-                                    </Card.Actions>
-                                </Card>)
-
-                        //COMPANY CARD LAYOUT
-                        case 'COMPANY':
-                            return(
-                                <Card style={styles.cardstyle}>
-                                    <Card.Title
-                                        left={() => <MaterialCommunityIcons name="folder-key-outline" size={40} />}
-                                        title={item.keyname}
-                                        subtitle={item.keylocation}
-                                    />
-                                    <Divider style={{ marginBottom: 5 }} />
-        
-                                    <Card.Content>
-                                        <Caption>
-                                            {format(new Date(item.creation.toDate().toString()), 'PPPP')}
-                                        </Caption>
-                                    </Card.Content>
-            
-                                    <Card.Content style={{ flexWrap: 'wrap', flexDirection: 'row', alignItems: 'center' }}>
-                                        <Chip style={{
-                                            marginTop: 5,
-                                            marginRight: 5,
-                                            backgroundColor: (`#fb8500`)
-                                        }} icon="information"> {item.entrytype}</Chip>
-                                        <Chip style={{
-                                            marginTop: 5,
-                                            marginRight: 5
-                                        }} icon="account-star"> {item.companyname}</Chip>
-                                        <Chip style={{
-                                            marginTop: 5,
-                                            marginRight: 5
-                                        }} icon="account-star"> {item.supervisor}</Chip>
-                                        <Chip style={{
-                                            marginTop: 5,
-                                            marginRight: 5
-                                        }} icon="domain"> {item.company}</Chip>
-                                    </Card.Content>
-                                        
-                                    <Card.Actions style={{ justifyContent: 'center' }}>
-                                        <Button onPress={() => props.navigation.navigate("Keyinfo", { keyId: item.id, uid: firebase.auth().currentUser.uid })} >
-                                            VIEW HISTORY
-                                        </Button>
-                                    </Card.Actions>
-                                </Card>)
-
-                        //AGENT CARD LAYOUT
-                        case 'AGENT':
-                            return(
-                                <Card style={styles.cardstyle}>
-                                    <Card.Title
-                                        left={() => <MaterialCommunityIcons name="folder-key-outline" size={40} />}
-                                        title={item.keyname}
-                                        subtitle={item.keylocation}
-                                    />
-                                    <Divider style={{ marginBottom: 5 }} />
-        
-                                    <Card.Content>
-                                        <Caption>
-                                            {format(new Date(item.creation.toDate().toString()), 'PPPP')}
-                                        </Caption>
-                                    </Card.Content>
-            
-                                    <Card.Content style={{ flexWrap: 'wrap', flexDirection: 'row', alignItems: 'center' }}>
-                                        <Chip style={{
-                                            marginTop: 5,
-                                            marginRight: 5,
-                                            backgroundColor: (`#a2d2ff`)
-                                        }} icon="information"> {item.entrytype}</Chip>
-                                        <Chip style={{
-                                            marginTop: 5,
-                                            marginRight: 5
-                                        }} icon="account-star"> {item.name}</Chip>
-                                        <Chip style={{
-                                            marginTop: 5,
-                                            marginRight: 5
-                                        }} icon="domain"> {item.company}</Chip>
-                                    </Card.Content>
-                                        
-                                    <Card.Actions style={{ justifyContent: 'center' }}>
-                                        <Button onPress={() => props.navigation.navigate("Keyinfo", { keyId: item.id, uid: firebase.auth().currentUser.uid })} >
-                                            VIEW HISTORY
-                                        </Button>
-                                    </Card.Actions>
-                                </Card>)
-
-                        //OTHER CARD LAYOUT
-                        case 'OTHER':
-                            return(
-                                <Card style={styles.cardstyle}>
-                                    <Card.Title
-                                        left={() => <MaterialCommunityIcons name="folder-key-outline" size={40} />}
-                                        title={item.keyname}
-                                        subtitle={item.keylocation}
-                                    />
-                                    <Divider style={{ marginBottom: 5 }} />
-        
-                                    <Card.Content>
-                                        <Caption>
-                                            {format(new Date(item.creation.toDate().toString()), 'PPPP')}
-                                        </Caption>
-                                    </Card.Content>
-            
-                                    <Card.Content style={{ flexWrap: 'wrap', flexDirection: 'row', alignItems: 'center' }}>
-                                        <Chip style={{
-                                            marginTop: 5,
-                                            marginRight: 5,
-                                            backgroundColor: (`#cfbaf0`)
-                                        }} icon="information"> {item.entrytype}</Chip>
-                                        <Chip style={{
-                                            marginTop: 5,
-                                            marginRight: 5
-                                        }} icon="account-star"> {item.name}</Chip>
-                                        <Chip style={{
-                                            marginTop: 5,
-                                            marginRight: 5
-                                        }} icon="domain"> {item.company}</Chip>
-                                    </Card.Content>
-                                        
-                                    <Card.Actions style={{ justifyContent: 'center' }}>
-                                        <Button onPress={() => props.navigation.navigate("Keyinfo", { keyId: item.id, uid: firebase.auth().currentUser.uid })} >
-                                            VIEW HISTORY
-                                        </Button>
-                                    </Card.Actions>
-                                </Card>)
                                     
-                        }}}/>
+                                    <Divider style={{ marginBottom: 5 }} />
+                                    
+                                    <Card style={styles.cardstyle}>
+                                        <Card.Title
+                                            title={ format(new Date(item.creation.toDate().toString()), 'PP')}
+                                            right={()=><Chip style={{
+                                                marginTop: 5,
+                                                marginRight: 5,
+                                                backgroundColor: (`#ffd60a`)
+                                            }} icon="information"> {item.entrytype}</Chip>}/>
+                                        <Divider />
+
+                                        <Card.Content>
+        
+                                            <Caption> Name: {item.name} </Caption>
+                                            <Caption> Phone Number: {item.number} </Caption>
+                                            <Caption> Notes: {item.notes} </Caption>
+        
+                                        </Card.Content>
+        
+                                        <List.Section>
+                                            <List.Accordion title='View Media'>
+                                                <Divider/>
+
+                                                <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap'}}>
+
+                                                    <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
+                                                        <Card.Cover source={{ uri: item.imageIDfrontURL}} 
+                                                        defaultSource={require('../../assets/99nomedia.jpg')}
+                                                        style={{margin: 10, aspectRatio: 4/3, alignSelf: "center",  width: 300}}/>
+                                                        <Card.Title title={"Emirates ID Front"}/>
+                                                    </Card>
+        
+                                                    <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
+                                                        <Card.Cover source={{ uri: item.imageIDbackURL }}
+                                                        defaultSource={require('../../assets/99nomedia.jpg')}
+                                                        style={{margin: 10, aspectRatio: 4/3, alignSelf: "center", width: 300}}/>
+                                                        <Card.Title title={"Emirates ID Front"}/>
+                                                    </Card>
+
+                                                </View>
+                                            </List.Accordion>                                    
+                                        </List.Section>
+                                    </Card>
+                        
+                                    <Card.Actions style={{ justifyContent: 'center' }}>
+                                        <Button onPress={() => props.navigation.navigate("Keyinfo", { keyId: item.id, uid: firebase.auth().currentUser.uid })} >
+                                            VIEW HISTORY
+                                        </Button>
+                                    </Card.Actions>
+                                </Card>
+
+                                    
+                                )
+                            case "COMPANY" :
+                                return( 
+                                <Card style={styles.cardstyle}>
+                                    <Card.Title
+                                    left={() => <MaterialCommunityIcons name="folder-key-outline" size={40} />}
+                                    title={item.keyname}
+                                    subtitle={item.keylocation}
+                                    />
+                                    
+                                    <Divider style={{ marginBottom: 5 }} />
+                                    <Card style={styles.cardstyle}>
+                                        <Card.Title
+                                            title={ format(new Date(item.creation.toDate().toString()), 'PP')}
+                                            right={()=><Chip style={{
+                                                marginTop: 5,
+                                                marginRight: 5,
+                                                backgroundColor: (`#fb8500`)
+                                            }} icon="information"> {item.entrytype}</Chip>}/>
+                                        <Divider />
+
+                                        <Card.Content>
+        
+                                            <Caption> Company Name: {item.companyname} </Caption>
+                                            <Caption> Phone Number: {item.number} </Caption>
+                                            <Caption> Supervisor Name: {item.supervisor} </Caption>
+                                            <Caption> Notes: {item.notes} </Caption>
+        
+                                        </Card.Content>
+        
+                                        <List.Section>
+                                            <List.Accordion title='View Media'>
+                                                <Divider/>
+
+                                                <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap'}}>
+
+                                                    <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
+                                                        <Card.Cover source={{ uri: item.imageIDfrontURL}} 
+                                                        defaultSource={require('../../assets/99nomedia.jpg')}
+                                                        style={{margin: 10, aspectRatio: 4/3, alignSelf: "center",  width: 300}}/>
+                                                        <Card.Title title={"Emirates ID Front"}/>
+                                                    </Card>
+        
+                                                    <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
+                                                        <Card.Cover source={{ uri: item.imageIDbackURL }}
+                                                        defaultSource={require('../../assets/99nomedia.jpg')}
+                                                        style={{margin: 10, aspectRatio: 4/3, alignSelf: "center", width: 300}}/>
+                                                        <Card.Title title={"Emirates ID Front"}/>
+                                                    </Card>
+
+                                                </View>
+                                            </List.Accordion>                                    
+                                        </List.Section>
+                                    </Card>
+                                    <Card.Actions style={{ justifyContent: 'center' }}>
+                                        <Button onPress={() => props.navigation.navigate("Keyinfo", { keyId: item.id, uid: firebase.auth().currentUser.uid })} >
+                                            VIEW HISTORY
+                                        </Button>
+                                    </Card.Actions>
+                                </Card>
+                                )
+                            case "AGENT" :
+                                return( 
+                                <Card style={styles.cardstyle}>
+                                    <Card.Title
+                                    left={() => <MaterialCommunityIcons name="folder-key-outline" size={40} />}
+                                    title={item.keyname}
+                                    subtitle={item.keylocation}
+                                    />
+                                    
+                                    <Divider style={{ marginBottom: 5 }} />
+                                    <Card style={styles.cardstyle}>
+                                        <Card.Title
+                                            title={ format(new Date(item.creation.toDate().toString()), 'PP')}
+                                            right={()=><Chip style={{
+                                                marginTop: 5,
+                                                marginRight: 5,
+                                                backgroundColor: (`#a2d2ff`)
+                                            }} icon="information"> {item.entrytype}</Chip>}/>
+                                        <Divider />
+
+                                        <Card.Content>
+        
+                                            <Caption> Name: {item.name} </Caption>
+                                            <Caption> Phone Number: {item.number} </Caption>
+                                            <Caption> Real Estate Agency: {item.agency} </Caption>
+                                            <Caption> Notes: {item.notes} </Caption>
+        
+                                        </Card.Content>
+        
+                                        <List.Section>
+                                            <List.Accordion title='View Media'>
+
+                                                <Divider/>
+                                                
+                                                <ScrollView horizontal style={{flex: 1}}>
+
+                                                    <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
+                                                        <Card.Cover source={{ uri: item.imageIDfrontURL}} 
+                                                        defaultSource={require('../../assets/99nomedia.jpg')}
+                                                        style={{margin: 10, aspectRatio: 4/3, alignSelf: "center",  width: 300}}/>
+                                                        <Card.Title title={"Emirates ID Front"}/>
+                                                    </Card>
+                                                    <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
+                                                        <Card.Cover source={{ uri: item.imageIDbackURL }}
+                                                        defaultSource={require('../../assets/99nomedia.jpg')}
+                                                        style={{margin: 10, aspectRatio: 4/3, alignSelf: "center", width: 300}}/>
+                                                        <Card.Title title={"Emirates ID Front"}/>
+                                                    </Card>
+
+
+                                                    <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
+                                                        <Card.Cover source={{ uri: item.signatureURL }}
+                                                        defaultSource={require('../../assets/99nomedia.jpg')}
+                                                        style={{margin: 10, aspectRatio: 4/3, alignSelf: "center", width: 300}}/>
+                                                        <Card.Title title={"Signature"}/>
+                                                    </Card>
+
+                                                </ScrollView>
+                                            </List.Accordion>                                    
+                                        </List.Section>
+                                    </Card>
+                                    <Card.Actions style={{ justifyContent: 'center' }}>
+                                        <Button onPress={() => props.navigation.navigate("Keyinfo", { keyId: item.id, uid: firebase.auth().currentUser.uid })} >
+                                            VIEW HISTORY
+                                        </Button>
+                                    </Card.Actions>
+                                </Card>
+                                )
+
+                            case "NEW ENTRY" :
+                                return( 
+                                <Card style={styles.cardstyle}>
+                                    <Card.Title
+                                    left={() => <MaterialCommunityIcons name="folder-key-outline" size={40} />}
+                                    title={item.keyname}
+                                    subtitle={item.keylocation}
+                                    />
+                                    
+                                    <Divider style={{ marginBottom: 5 }} />
+
+                                    <Card style={styles.cardstyle}>
+                                        <Card.Title
+                                            title={ format(new Date(item.creation.toDate().toString()), 'PP')}
+                                            right={()=><Chip style={{
+                                                marginTop: 5,
+                                                marginRight: 5,
+                                                backgroundColor: (`#8eecf5`)
+                                            }} icon="information"> {item.entrytype}</Chip>}/>
+        
+                                        <Divider />
+        
+                                        <Card.Content>
+        
+                                            <Caption> Name: {item.name} </Caption>
+                                            <Caption> Company: {item.company} </Caption>
+                                            <Caption> Notes: {item.notes} </Caption>
+        
+                                        </Card.Content>
+                                    </Card>
+
+                                    <Card.Actions style={{ justifyContent: 'center' }}>
+                                        <Button onPress={() => props.navigation.navigate("Keyinfo", { keyId: item.id, uid: firebase.auth().currentUser.uid })} >
+                                            VIEW HISTORY
+                                        </Button>
+                                    </Card.Actions>
+                                </Card>
+                                )
+                            }
+                        }
+                    }/>
             </View>
 
             <FAB
