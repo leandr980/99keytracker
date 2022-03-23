@@ -50,26 +50,6 @@ export default function NewHistoryLandlord(props, { navigation }) {
 
     }, []);
 
-
-    useEffect(() => {
-
-        if (props.route.params.keyId !== keyId) {
-            firebase.firestore()
-                .collection('keycollection')
-                .doc(props.route.params.uid)
-                .collection('keylist')
-                .doc(props.route.params.keyId)
-                .get()
-                .then((snapshot) => {
-                    setKeydetails(snapshot.data())
-                })
-
-            setKeyId(props.route.params.keyId)
-
-        }
-
-    }, [props.route.params.keyId])
-
     //Expo Image Picker
     const [hasgallerypermission, sethasgallerypermission] = useState(null);
 
@@ -279,40 +259,6 @@ export default function NewHistoryLandlord(props, { navigation }) {
             style={{flex: 1}}
             imageStyle={{resizeMode: 'repeat'}}
             source={require('../../assets/bg-image/99-whatsapp-bg-small.jpg')}>
-
-                <Card style={styles.cardstyleinfo}>
-
-                    <Card.Title
-                        left={() => <MaterialCommunityIcons name="file-key-outline" size={40} />}
-                        style={{
-                            fontSize: 30,
-                            fontWeight: 'bold'
-                        }}
-                        title={keydetails.keyname}
-                        subtitle={keydetails.keylocation}
-                    />
-
-                    <Divider style={{ marginBottom: 5 }} />
-
-                    <Card.Content style={{ flexWrap: 'wrap', flexDirection: 'row', alignItems: 'center' }}>
-                        <Chip style={{
-                            marginTop: 5,
-                            marginRight: 5
-                        }} icon="information"> {keydetails.entrytype}</Chip>
-                        <Chip style={{
-                            marginTop: 5,
-                            marginRight: 5
-                        }} icon="account-star"> {keydetails.name}</Chip>
-                        <Chip style={{
-                            marginTop: 5,
-                            marginRight: 5
-                        }} icon="domain"> {keydetails.company}</Chip>
-                    </Card.Content>
-
-
-                </Card>
-
-                <Divider />
 
                 <ScrollView>
 
