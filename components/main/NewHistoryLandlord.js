@@ -303,7 +303,7 @@ export default function NewHistoryLandlord(props, { navigation }) {
 
                     <Card style={styles.cardstyle}>
                         <Card.Title title='Emirates ID Back:' />
-                        <Card.Cover source={{ uri: imageIDback }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center", height: 300}} />
+                        <Card.Cover source={{ uri: imageIDback }} style={{ flex: 1, margin: 10, alignSelf: "center", height: 300}} />
                         
                         <Divider />
                         
