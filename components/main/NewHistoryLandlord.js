@@ -1,5 +1,5 @@
 // JavaScript source code
-import React, { useEffect, useState, Component } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { View, FlatList, StyleSheet, ScrollView, Image, ImageBackground, Dimensions } from 'react-native'
 import { Card,  IconButton, Paragraph, Divider, Button, Chip, Text, TextInput, Portal, Dialog, Provider, ProgressBar, Switch } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -13,12 +13,7 @@ require("firebase/firebase-storage")
 
 export default function NewHistoryLandlord(props, { navigation }) {
 
-
-
     const creation = firebase.firestore.FieldValue.serverTimestamp()
-
-    const [keydetails, setKeydetails] = useState([])
-    const [keyId, setKeyId] = useState("")
 
     const [name, setfeildname] = useState("")
     const [number, setfieldnumber] = useState("")
@@ -39,7 +34,11 @@ export default function NewHistoryLandlord(props, { navigation }) {
 
     const containerStylePhoto = {flex: 1, justifyContent: 'center', backgroundColor: 'white', margin: 20, padding: 5, borderRadius: 10};
 
+    const mounted = useRef(false);
+
     useEffect(() => {
+        mounted.current = true;
+
         (async () => {
             const gallerystatus = await ImagePicker.requestMediaLibraryPermissionsAsync();
             sethasgallerypermission(gallerystatus.status === 'granted');
@@ -48,7 +47,11 @@ export default function NewHistoryLandlord(props, { navigation }) {
             sethascamerapermission(camerastatus.status === 'granted');
         })()
 
+        return () => { mounted.current = false; };
+
     }, []);
+
+    const [loading, setLoading] = useState(false);
 
     //Expo Image Picker
     const [hasgallerypermission, sethasgallerypermission] = useState(null);
@@ -131,28 +134,9 @@ export default function NewHistoryLandlord(props, { navigation }) {
 
         console.log("Document written with ID: ", props.route.params.keyId)
 
-        // Updates the cards in key list screen
-        firebase.firestore()
-            .collection('keycollection')
-            .doc(firebase.auth().currentUser.uid)
-            .collection("keylist")
-            .doc(props.route.params.keyId)
-            .update({
-                name: name,
-                entrytype: entrytype,
-                number: number,
-                notes: notes
-            },
-                function (error) {
-                    if (error) {
-                        console.log("Data could not be saved." + error);
-                    } else {
-                        console.log("Data saved successfully.");
-                    }
-                }
-            ).then((function () {
-                props.navigation.pop()
-            }))
+        if(mounted.current){
+            setLoading(false)
+        }
     }
 
     const [progress, setProgress] = useState(0);
@@ -193,7 +177,8 @@ export default function NewHistoryLandlord(props, { navigation }) {
     }
     
     //loop images into uploadimage
-    const downloadURLarray = async () => {
+    const downloadURLarray =  async () => {
+        setLoading(true);
 
         console.log('-----------------------')
 
@@ -260,7 +245,14 @@ export default function NewHistoryLandlord(props, { navigation }) {
             imageStyle={{resizeMode: 'repeat'}}
             source={require('../../assets/bg-image/99-whatsapp-bg-small.jpg')}>
 
-                <ScrollView>
+                {
+                    loading ? <View>
+
+                        <Text>Loading</Text>
+
+                    </View> : 
+
+                    <ScrollView>
 
                     <Text style={{
                         marginHorizontal: 20,
@@ -330,11 +322,6 @@ export default function NewHistoryLandlord(props, { navigation }) {
 
                     <Card style={styles.cardstyle}>
 
-                        <Card.Content style= {{marginBottom: 10}}>
-                            <Paragraph>{progress}</Paragraph>
-                            <ProgressBar progress={progress}/>
-                        </Card.Content>
-
                         <Divider styles={{margin: 10}}/>
 
                         <Card.Actions style={{ justifyContent: 'space-between', alignItems: 'center' }}>
@@ -349,7 +336,10 @@ export default function NewHistoryLandlord(props, { navigation }) {
                         </Card.Actions>
                     </Card>
 
-                </ScrollView>
+                    </ScrollView>
+                }
+
+                
                 </ImageBackground>
             </View>
         </Provider>

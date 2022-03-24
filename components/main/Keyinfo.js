@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity, ImageBackground, ScrollView } from 'react-native'
 import {Dimensions} from 'react-native'
 import { Card, FAB, IconButton, Chip, Paragraph, Button, Divider, Caption, Provider, Portal, Dialog, RadioButton, TouchableRipple, List, Switch, Banner } from 'react-native-paper'
@@ -14,11 +14,13 @@ export default function Keyinfo(props) {
     const [keydetails, setKeydetails] = useState([])
     const [keyHistory, setKeyHistory] = useState([])
 
-    const [keyId, setKeyId] = useState("")
+    const mounted = useRef(false)
 
     useEffect(() => {
 
-        if (props.route.params.keyId !== keyId) {
+        mounted.current = true;
+
+        console.log(props.route.params.keyId)
 
             firebase.firestore()
                 .collection('keycollection')
@@ -26,7 +28,9 @@ export default function Keyinfo(props) {
                 .collection('keylist')
                 .doc(props.route.params.keyId)
                 .onSnapshot((docSnapshot) => {
-                    setKeydetails(docSnapshot.data())
+                    if (!docSnapshot.metadata.hasPendingWrites) {  // <======
+                        setKeydetails(docSnapshot.data())
+                     }
                 })
 
             firebase.firestore()
@@ -44,12 +48,11 @@ export default function Keyinfo(props) {
                     })
                     if (!docSnapshot.metadata.hasPendingWrites) {  // <======
                         setKeyHistory(keyHistory)
-                     }
-                    
+                     }  
                 })
 
-            setKeyId(props.route.params.keyId)
-
+        return () => {
+            mounted.current = false;
         }
 
     }, [props.route.params.keyId])
@@ -58,27 +61,6 @@ export default function Keyinfo(props) {
     const showModalCategory = () => setVisibleCategory(true);
     const hideModalCategory = () => setVisibleCategory(false);
     const [checked, setChecked] = React.useState();
-
-    const deletehistory = () => {
-        setvisabledialogue(true)
-    }
-
-    const deletehistorydialogue = (itemid) => {
-
-        firebase.firestore()
-            .collection('keycollection')
-            .doc(props.route.params.uid)
-            .collection('keylist')
-            .doc(props.route.params.keyId)
-            .collection('keyhistory')
-            .doc(itemid)
-            .delete()
-            .then(() => {
-                console.log("Document successfully deleted!");
-            }).catch((error) => {
-                console.error("Error removing document: ", error);
-            })
-    } 
 
     return (
         <Provider >
@@ -139,9 +121,10 @@ export default function Keyinfo(props) {
                     
                     <Dialog.Actions>
                         <Button onPress={ () => {
-                            props.navigation.navigate(checked, { keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid }),hideModalCategory()
+                            props.navigation.navigate(checked, { keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid }),
+                            hideModalCategory()
                         } 
-                        }
+                    }
                         
                         >Done</Button>
                     </Dialog.Actions>
