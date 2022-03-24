@@ -16,23 +16,28 @@ export default function Keyinfo(props) {
 
     const mounted = useRef(false)
     const [loading, setLoading] = useState(false);
+    
+
+
 
     useEffect(() => {
 
-        mounted.current = true;
+        setLoading(true)
 
         console.log(props.route.params.keyId)
 
-            firebase.firestore()
-                .collection('keycollection')
-                .doc(props.route.params.uid)
-                .collection('keylist')
-                .doc(props.route.params.keyId)
-                .onSnapshot((docSnapshot) => {
-                    if (!docSnapshot.metadata.hasPendingWrites) {  // <======
-                        setKeydetails(docSnapshot.data())
-                     }
-                })
+        firebase.firestore()
+        .collection('keycollection')
+        .doc(props.route.params.uid)
+        .collection('keylist')
+        .doc(props.route.params.keyId)
+        .onSnapshot((docSnapshot) => {
+            if (!docSnapshot.metadata.hasPendingWrites) {  // <======
+                setKeydetails(docSnapshot.data())
+             }
+        })
+
+
 
             firebase.firestore()
                 .collection('keycollection')
@@ -52,10 +57,7 @@ export default function Keyinfo(props) {
                      }  
                 })
 
-
-        return () => {
-            mounted.current = false;
-        }
+                setLoading(false)
 
     }, [])
 
@@ -140,14 +142,6 @@ export default function Keyinfo(props) {
             imageStyle={{resizeMode: 'repeat'}}
             source={require('../../assets/bg-image/99-whatsapp-bg-small.jpg')}>
 
-                {
-                    loading ? <View>
-                        <Text>
-                            Loading
-                        </Text>
-                    </View>
-
-                    : <View>
                         <Card style={styles.maincardstyle}>
 
 <Card.Title
@@ -356,8 +350,7 @@ label="NEW LOG"
 
 onPress={showModalCategory}
 />
-                    </View>
-                }
+                    
 
                 
 
