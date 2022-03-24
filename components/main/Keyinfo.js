@@ -15,6 +15,7 @@ export default function Keyinfo(props) {
     const [keyHistory, setKeyHistory] = useState([])
 
     const mounted = useRef(false)
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
 
@@ -51,11 +52,12 @@ export default function Keyinfo(props) {
                      }  
                 })
 
+
         return () => {
             mounted.current = false;
         }
 
-    }, [props.route.params.keyId])
+    }, [])
 
     const [visibleCategory, setVisibleCategory] = React.useState(false);
     const showModalCategory = () => setVisibleCategory(true);
@@ -138,214 +140,226 @@ export default function Keyinfo(props) {
             imageStyle={{resizeMode: 'repeat'}}
             source={require('../../assets/bg-image/99-whatsapp-bg-small.jpg')}>
 
-                <Card style={styles.maincardstyle}>
+                {
+                    loading ? <View>
+                        <Text>
+                            Loading
+                        </Text>
+                    </View>
 
-                    <Card.Title
-                        left={() => <MaterialCommunityIcons name="file-key-outline" size={40} />}
-                        style={{
-                            fontSize: 30,
-                            fontWeight: 'bold'
-                        }}
-                        title={keydetails.keyname}
-                        subtitle={keydetails.keylocation}
-                    />
+                    : <View>
+                        <Card style={styles.maincardstyle}>
 
-                </Card>
+<Card.Title
+    left={() => <MaterialCommunityIcons name="file-key-outline" size={40} />}
+    style={{
+        fontSize: 30,
+        fontWeight: 'bold'
+    }}
+    title={keydetails.keyname}
+    subtitle={keydetails.keylocation}
+/>
 
-                <View style={styles.containerGallery}>
+</Card>
 
-                    <FlatList
-                        numColumns={1}
-                        horizontal={false}
-                        data={keyHistory}
+<View style={styles.containerGallery}>
 
-                        renderItem={({ item, index }) => 
+<FlatList
+    numColumns={1}
+    horizontal={false}
+    data={keyHistory}
 
-                        {
-                                switch(item.entrytype){
-                                    case "LANDLORD" :
-                                        return( 
-                                            <Card style={styles.cardstyle}>
-                                                <Card.Title
-                                                    title={ format(new Date(item.creation.toDate().toString()), 'PP')}
-                                                    right={()=><Chip style={{
-                                                        marginRight: 10,
-                                                        backgroundColor: (`#ffd60a`)
-                                                    }} icon="information"> {item.entrytype}</Chip>}/>
-                                                <Divider />
-        
-                                                <Card.Content>
-                                                    <Caption> Name: {item.name} </Caption>
-                                                    <Caption> Phone Number: {item.number} </Caption>
-                                                    <Caption> Notes: {item.notes} </Caption>
-                                                </Card.Content>
+    renderItem={({ item, index }) => 
+
+    {
+            switch(item.entrytype){
+                case "LANDLORD" :
+                    return( 
+                        <Card style={styles.cardstyle}>
+                            <Card.Title
+                                title={ format(new Date(item.creation.toDate().toString()), 'PP')}
+                                right={()=><Chip style={{
+                                    marginRight: 10,
+                                    backgroundColor: (`#ffd60a`)
+                                }} icon="information"> {item.entrytype}</Chip>}/>
+                            <Divider />
+
+                            <Card.Content>
+                                <Caption> Name: {item.name} </Caption>
+                                <Caption> Phone Number: {item.number} </Caption>
+                                <Caption> Notes: {item.notes} </Caption>
+                            </Card.Content>
+
+                            <List.Section>
+                                <List.Accordion title='View Media'>
+                                    <Divider/>
+
+                                    <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap'}}>
+
+                                        <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
+                                            <Card.Cover source={{ uri: item.imageIDfrontURL}} 
+                                            defaultSource={require('../../assets/99nomedia.jpg')}
+                                            style={{alignSelf: "center",  width: 300}}/>
+                                            <Card.Title title={"Emirates ID Front"}/>
+                                        </Card>
+
+                                        <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
+                                            <Card.Cover source={{ uri: item.imageIDbackURL }}
+                                            defaultSource={require('../../assets/99nomedia.jpg')}
+                                            style={{alignSelf: "center", width: 300}}/>
+                                            <Card.Title title={"Emirates ID Front"}/>
+                                        </Card>
+
+                                    </View>
+                                </List.Accordion>                                    
+                            </List.Section>
+                        </Card>
+                    )
+                case "COMPANY" :
+                    return( 
+                        <Card style={styles.cardstyle}>
+                            <Card.Title
+                                title={ format(new Date(item.creation.toDate().toString()), 'PP')}
+                                right={()=><Chip style={{
+                                    marginRight: 10,
+                                    backgroundColor: (`#fb8500`)
+                                }} icon="information"> {item.entrytype}</Chip>}/>
+                            <Divider />
+
+                            <Card.Content>
+
+                                <Caption> Company Name: {item.companyname} </Caption>
+                                <Caption> Phone Number: {item.number} </Caption>
+                                <Caption> Supervisor Name: {item.supervisor} </Caption>
+                                <Caption> Notes: {item.notes} </Caption>
+
+                            </Card.Content>
+
+                            <List.Section>
+                                <List.Accordion title='View Media'>
+                                    <Divider/>
+
+                                    <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap'}}>
+
+                                        <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
+                                            <Card.Cover source={{ uri: item.imageIDfrontURL}} 
+                                            defaultSource={require('../../assets/99nomedia.jpg')}
+                                            style={{alignSelf: "center",  width: 300}}/>
+                                            <Card.Title title={"Emirates ID Front"}/>
+                                        </Card>
+
+                                        <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
+                                            <Card.Cover source={{ uri: item.imageIDbackURL }}
+                                            defaultSource={require('../../assets/99nomedia.jpg')}
+                                            style={{alignSelf: "center", width: 300}}/>
+                                            <Card.Title title={"Emirates ID Front"}/>
+                                        </Card>
+
+                                    </View>
+                                </List.Accordion>                                    
+                            </List.Section>
+                        </Card>
+                    )
+                case "AGENT" :
+                    return( 
+                        <Card style={styles.cardstyle}>
+                            <Card.Title
+                                title={ format(new Date(item.creation.toDate().toString()), 'PP')}
+                                right={()=><Chip style={{
+                                    marginRight: 10,
+                                    backgroundColor: (`#a2d2ff`)
+                                }} icon="information"> {item.entrytype}</Chip>}/>
+                            <Divider />
+
+                            <Card.Content>
+
+                                <Caption> Name: {item.name} </Caption>
+                                <Caption> Phone Number: {item.number} </Caption>
+                                <Caption> Real Estate Agency: {item.agency} </Caption>
+                                <Caption> Notes: {item.notes} </Caption>
+
+                            </Card.Content>
+
+                            <List.Section>
+                                <List.Accordion title='View Media'>
+
+                                    <Divider/>
+                                    
+                                    <ScrollView horizontal style={{flex: 1}}>
+
+                                        <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
+                                            <Card.Cover source={{ uri: item.imageIDfrontURL}} 
+                                            defaultSource={require('../../assets/99nomedia.jpg')}
+                                            style={{alignSelf: "center",  width: 300}}/>
+                                            <Card.Title title={"Emirates ID Front"}/>
+                                        </Card>
+                                        <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
+                                            <Card.Cover source={{ uri: item.imageIDbackURL }}
+                                            defaultSource={require('../../assets/99nomedia.jpg')}
+                                            style={{alignSelf: "center", width: 300}}/>
+                                            <Card.Title title={"Emirates ID Front"}/>
+                                        </Card>
+
+
+                                        <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
+                                            <Card.Cover source={{ uri: item.signatureURL }}
+                                            defaultSource={require('../../assets/99nomedia.jpg')}
+                                            style={{alignSelf: "center", width: 300}}/>
+                                            <Card.Title title={"Signature"}/>
+                                        </Card>
+
+                                    </ScrollView>
+                                </List.Accordion>                                    
+                            </List.Section>
+                        </Card>
+                    )
+
+                case "NEW ENTRY" :
+                    return( 
+
+                        <Card style={styles.cardstyle}>
+                            <Card.Title
+                                title={ format(new Date(item.creation.toDate().toString()), 'PP')}
+                                right={()=><Chip style={{
+                                    marginRight: 10,
+                                    backgroundColor: (`#8eecf5`)
+                                }} icon="information"> {item.entrytype}</Chip>}/>
+
+                            <Divider />
+
+                            <Card.Content>
+
+                                <Caption> Name: {item.name} </Caption>
+                                <Caption> Company: {item.company} </Caption>
+                                <Caption> Notes: {item.notes} </Caption>
+
+                            </Card.Content>
+                        </Card>
+                    )
+
+                    
+            }
+        }
+    
+
+    }
+/>
+</View>
+
+<FAB
+style={styles.fab}
+theme={{ colors: { accent: 'white' } }}
+color='blue'
+large
+icon="plus"
+label="NEW LOG"
+
+onPress={showModalCategory}
+/>
+                    </View>
+                }
+
                 
-                                                <List.Section>
-                                                    <List.Accordion title='View Media'>
-                                                        <Divider/>
-        
-                                                        <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap'}}>
-        
-                                                            <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
-                                                                <Card.Cover source={{ uri: item.imageIDfrontURL}} 
-                                                                defaultSource={require('../../assets/99nomedia.jpg')}
-                                                                style={{alignSelf: "center",  width: 300}}/>
-                                                                <Card.Title title={"Emirates ID Front"}/>
-                                                            </Card>
-                
-                                                            <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
-                                                                <Card.Cover source={{ uri: item.imageIDbackURL }}
-                                                                defaultSource={require('../../assets/99nomedia.jpg')}
-                                                                style={{alignSelf: "center", width: 300}}/>
-                                                                <Card.Title title={"Emirates ID Front"}/>
-                                                            </Card>
-        
-                                                        </View>
-                                                    </List.Accordion>                                    
-                                                </List.Section>
-                                            </Card>
-                                        )
-                                    case "COMPANY" :
-                                        return( 
-                                            <Card style={styles.cardstyle}>
-                                                <Card.Title
-                                                    title={ format(new Date(item.creation.toDate().toString()), 'PP')}
-                                                    right={()=><Chip style={{
-                                                        marginRight: 10,
-                                                        backgroundColor: (`#fb8500`)
-                                                    }} icon="information"> {item.entrytype}</Chip>}/>
-                                                <Divider />
-        
-                                                <Card.Content>
-                
-                                                    <Caption> Company Name: {item.companyname} </Caption>
-                                                    <Caption> Phone Number: {item.number} </Caption>
-                                                    <Caption> Supervisor Name: {item.supervisor} </Caption>
-                                                    <Caption> Notes: {item.notes} </Caption>
-                
-                                                </Card.Content>
-                
-                                                <List.Section>
-                                                    <List.Accordion title='View Media'>
-                                                        <Divider/>
-        
-                                                        <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap'}}>
-        
-                                                            <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
-                                                                <Card.Cover source={{ uri: item.imageIDfrontURL}} 
-                                                                defaultSource={require('../../assets/99nomedia.jpg')}
-                                                                style={{alignSelf: "center",  width: 300}}/>
-                                                                <Card.Title title={"Emirates ID Front"}/>
-                                                            </Card>
-                
-                                                            <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
-                                                                <Card.Cover source={{ uri: item.imageIDbackURL }}
-                                                                defaultSource={require('../../assets/99nomedia.jpg')}
-                                                                style={{alignSelf: "center", width: 300}}/>
-                                                                <Card.Title title={"Emirates ID Front"}/>
-                                                            </Card>
-        
-                                                        </View>
-                                                    </List.Accordion>                                    
-                                                </List.Section>
-                                            </Card>
-                                        )
-                                    case "AGENT" :
-                                        return( 
-                                            <Card style={styles.cardstyle}>
-                                                <Card.Title
-                                                    title={ format(new Date(item.creation.toDate().toString()), 'PP')}
-                                                    right={()=><Chip style={{
-                                                        marginRight: 10,
-                                                        backgroundColor: (`#a2d2ff`)
-                                                    }} icon="information"> {item.entrytype}</Chip>}/>
-                                                <Divider />
-        
-                                                <Card.Content>
-                
-                                                    <Caption> Name: {item.name} </Caption>
-                                                    <Caption> Phone Number: {item.number} </Caption>
-                                                    <Caption> Real Estate Agency: {item.agency} </Caption>
-                                                    <Caption> Notes: {item.notes} </Caption>
-                
-                                                </Card.Content>
-                
-                                                <List.Section>
-                                                    <List.Accordion title='View Media'>
-
-                                                        <Divider/>
-                                                        
-                                                        <ScrollView horizontal style={{flex: 1}}>
-
-                                                            <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
-                                                                <Card.Cover source={{ uri: item.imageIDfrontURL}} 
-                                                                defaultSource={require('../../assets/99nomedia.jpg')}
-                                                                style={{alignSelf: "center",  width: 300}}/>
-                                                                <Card.Title title={"Emirates ID Front"}/>
-                                                            </Card>
-                                                            <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
-                                                                <Card.Cover source={{ uri: item.imageIDbackURL }}
-                                                                defaultSource={require('../../assets/99nomedia.jpg')}
-                                                                style={{alignSelf: "center", width: 300}}/>
-                                                                <Card.Title title={"Emirates ID Front"}/>
-                                                            </Card>
-
-
-                                                            <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
-                                                                <Card.Cover source={{ uri: item.signatureURL }}
-                                                                defaultSource={require('../../assets/99nomedia.jpg')}
-                                                                style={{alignSelf: "center", width: 300}}/>
-                                                                <Card.Title title={"Signature"}/>
-                                                            </Card>
-
-                                                        </ScrollView>
-                                                    </List.Accordion>                                    
-                                                </List.Section>
-                                            </Card>
-                                        )
-        
-                                    case "NEW ENTRY" :
-                                        return( 
-        
-                                            <Card style={styles.cardstyle}>
-                                                <Card.Title
-                                                    title={ format(new Date(item.creation.toDate().toString()), 'PP')}
-                                                    right={()=><Chip style={{
-                                                        marginRight: 10,
-                                                        backgroundColor: (`#8eecf5`)
-                                                    }} icon="information"> {item.entrytype}</Chip>}/>
-                
-                                                <Divider />
-                
-                                                <Card.Content>
-                
-                                                    <Caption> Name: {item.name} </Caption>
-                                                    <Caption> Company: {item.company} </Caption>
-                                                    <Caption> Notes: {item.notes} </Caption>
-                
-                                                </Card.Content>
-                                            </Card>
-                                        )
-        
-                                        
-                                }
-                            }
-                        
-
-                        }
-                    />
-                </View>
-
-                <FAB
-                    style={styles.fab}
-                    theme={{ colors: { accent: 'white' } }}
-                    color='blue'
-                    large
-                    icon="plus"
-                    label="NEW LOG"
-
-                    onPress={showModalCategory}
-                />
 
                 </ImageBackground>
             </View>
