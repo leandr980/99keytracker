@@ -9,8 +9,6 @@ import firebase from 'firebase'
 require ("firebase/firestore")
 
 import { connect } from 'react-redux'
-    
-//homepage
 
 function Profile(props) {
 
