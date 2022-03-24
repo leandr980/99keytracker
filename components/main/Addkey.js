@@ -26,6 +26,8 @@ export default function Addkey(props) {
         }
         else {
 
+            //setfieldentrytype('NEW ENTRY')
+
             const entrytype = 'NEW ENTRY'
 
             firebase.firestore()
@@ -76,6 +78,7 @@ export default function Addkey(props) {
 
     return (
         <Provider>
+            
             <ImageBackground 
             style={{flex: 1}}
             imageStyle={{resizeMode: 'repeat'}}
@@ -84,7 +87,9 @@ export default function Addkey(props) {
                 <ScrollView>
 
                     <Card style={styles.cardstyle}>
+
                         <Card.Title title='Key Details' />
+
                         <Card.Content >
                             <TextInput
                             style={styles.textinputstyle}
@@ -103,10 +108,13 @@ export default function Addkey(props) {
                             onChangeText={(keylocation) => setKeylocation(keylocation)}
                         />
                         </Card.Content>
+
                     </Card>
                     
                     <Card style={styles.cardstyle}>
+
                         <Card.Title title='New Key History Entry' />
+
                         <Card.Content >
                             <TextInput
                             style={styles.textinputstyle}
@@ -125,18 +133,23 @@ export default function Addkey(props) {
                             label="Notes . . ."
                             onChangeText={(notes) => setfieldnotes(notes)}
                             />
+
                         </Card.Content>
+
                     </Card>
 
                     <Card style={styles.cardstyle}>
+
                         <Card.Actions style={{ justifyContent: 'center' }}>
+
                             <Button
                                 onPress={() => saveKeyData()}>
                                 SAVE
                             </Button>
-                        </Card.Actions>
-                    </Card>
 
+                        </Card.Actions>
+
+                    </Card>
                 </ScrollView>
             </ImageBackground>
         </Provider>
