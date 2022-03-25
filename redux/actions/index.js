@@ -74,19 +74,30 @@ export function fetchKeyInfo() {
     })
 }
 
-export function fetchKeyInfoDetailes() {
+export function fetchKeyInfoDetails() {
     return ((dispatch) => {
         firebase.firestore()
-            .collection("keycollection")
+            .collection('keycollection')
             .doc(firebase.auth().currentUser.uid)
-            .collection("keylist")
-            .doc(props.route.params.uid)
-            .orderBy("creation", "asc")
+            .collection('keylist')
+            .doc(props.route.params.keyId)
+            .collection('keyhistory')
+            .orderBy("creation", "desc")
             .onSnapshot((docSnapshot) => {
-                let keyinfodetails = docSnapshot.data
-                return keyinfodetails
-                console.log(keyinfodetails , "redux actions")
-                dispatch({ type: USER_KEYINFO_DETAILS_STATE_CHANGE, keyinfodetails })
+                let keyinfodetails = docSnapshot.docs.map(doc => {
+                    const data = doc.data();
+                    const id = doc.id;
+                    return { id, ...data }
+                
             })
+            console.log(keyinfodetails)
+            if (!docSnapshot.metadata.hasPendingWrites) {
+                dispatch({ type: USER_KEYINFO_DETAILS_STATE_CHANGE, keyinfodetails })
+            }
+
+
+            
+            })
+
     })
 }

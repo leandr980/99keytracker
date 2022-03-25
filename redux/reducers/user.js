@@ -8,7 +8,8 @@ import {
 const initialState = {
     currentUser: null,
     posts: [],
-    keyinfo: []
+    keyinfo: [],
+    keyinfodetails: []
 }
 
 export const user = (state = initialState, action) => {
