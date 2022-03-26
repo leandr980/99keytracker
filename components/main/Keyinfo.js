@@ -160,14 +160,17 @@ export default function Keyinfo(props) {
                                     <Card style={styles.cardstyle}>
                                         <Card.Title
                                             title={ format(new Date(item.creation.toDate().toString()), 'PP')}
-                                            right={()=><Chip style={{
+                                            right={()=>
+                                            
+                                            <Chip style={{
                                                 marginRight: 10,
                                                 backgroundColor: (`#ffd60a`)
-                                            }} icon="account-star"> {item.entrytype}</Chip>}/>
+                                            }} icon="account-star"
+                                            > {item.entrytype}</Chip>}/>
                                         <Divider />
                                         
                                         {
-                                        itemtype = 'LANDLORD' &&
+                                        item.entrytype == 'LANDLORD' &&
                                             <Card.Content>
                                                 <Caption> Name: {item.name} </Caption>
                                                 <Caption> Phone Number: {item.number} </Caption>
@@ -175,7 +178,7 @@ export default function Keyinfo(props) {
                                             </Card.Content>
                                         }
                                         {
-                                        itemtype = 'NEW ENTRY' &&
+                                        item.entrytype == 'NEW ENTRY' &&
                                             <Card.Content>
                                                 <Caption> Name: {item.name} </Caption>
                                                 <Caption> Phone Number: {item.number} </Caption>
