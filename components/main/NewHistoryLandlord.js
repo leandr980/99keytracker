@@ -107,6 +107,9 @@ export default function NewHistoryLandlord(props, { navigation }) {
     const saveKeyData = (imageIDbackURL, imageIDfrontURL) => {
 
         // Saving data to keyhistory db
+        
+
+
         firebase.firestore()
             .collection('keycollection')
             .doc(firebase.auth().currentUser.uid)
@@ -122,6 +125,26 @@ export default function NewHistoryLandlord(props, { navigation }) {
                 imageIDbackURL,
                 imageIDfrontURL
 
+            },
+                function (error) {
+                    if (error) {
+                        console.log("Data could not be saved." + error);
+                    } else {
+                        console.log("Data saved successfully.");
+                    }
+                }
+            )
+
+
+            firebase.firestore()
+            .collection('keycollection')
+            .doc(firebase.auth().currentUser.uid)
+            .collection("keylist")
+            .doc(props.route.params.keyId)
+            .update({
+                name: name,
+                entrytype: entrytype,
+                number: number
             },
                 function (error) {
                     if (error) {
