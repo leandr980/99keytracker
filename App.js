@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, LogBox } from 'react-native';
+import { StyleSheet, Text, View, LogBox, Image } from 'react-native';
 
 import firebase from 'firebase'
 
@@ -81,8 +81,10 @@ export class App extends Component {
         const { loggedIn, loaded } = this.state;
         if (!loaded) {
             return (
-                <View style={{flex: 1, justifyContent: 'center'} }>
-                    <Text> Loading </Text>
+                <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+
+                        <Image  source={require('./assets/LOADING-GIF.gif')}/>
+
                     </View>
                 )
         }
