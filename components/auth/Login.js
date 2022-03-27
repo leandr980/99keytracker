@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Text } from 'react-native'
+import { View, StyleSheet, Text, ImageBackground } from 'react-native'
 import { Card, FAB, Searchbar, IconButton, Paragraph, Divider, Chip, Button, TextInput} from 'react-native-paper'
 
 import firebase from 'firebase/app'
@@ -32,35 +32,45 @@ export class Login extends Component {
 
     render() {
         return (
-            <View style={{ flex: 1, justifyContent: 'center', marginTop: 30 }}>
-                <Card style={styles.cardstyle}>
+            <View style={{ flex: 1}}>
+                <ImageBackground 
+                style={{flex: 1}}
+                imageStyle={{resizeMode: 'repeat'}}
+                source={require('../../assets/bg-image/99-whatsapp-bg-small.jpg')}>
+                    <View style={{ flex: 1, justifyContent: 'center', marginTop: 30 }}>
 
-                    <Card.Content style={{ alignItems: 'center', marginBottom: 20 }}>
-                        <Text style={{ fontSize: 30, fontWeight: 'bold' }}> Login </Text>
-                    </Card.Content>
+                        <Card style={styles.cardstyle}>
 
-                    <Card.Content>
-                        <TextInput
-                            style={styles.textinputstyle}
-                            type='outlined'
-                            label="Email . . ."
-                            onChangeText={(email) => this.setState({ email })}
-                        />
+                            <Card.Content style={{ alignItems: 'center', marginBottom: 20 }}>
+                                <Text style={{ fontSize: 30, fontWeight: 'bold' }}> Login </Text>
+                            </Card.Content>
 
-                        <TextInput
-                            style={styles.textinputstyle}
-                            type='outlined'
-                            label="Password . . ."
-                            onChangeText={(password) => this.setState({ password })}
-                        />
-                    </Card.Content>
+                            <Card.Content>
+                                <TextInput
+                                    style={styles.textinputstyle}
+                                    type='outlined'
+                                    label="Email . . ."
+                                    onChangeText={(email) => this.setState({ email })}
+                                />
 
-                    <Card.Actions style={{justifyContent: 'space-between'}}>
-                        <Button onPress={() => { this.props.navigation.goBack() }}> GO BACK </Button>
-                        <Button onPress={() => this.onSignUp()}> SIGN IN </Button>
-                    </Card.Actions>
+                                <TextInput
+                                    style={styles.textinputstyle}
+                                    type='outlined'
+                                    label="Password . . ."
+                                    onChangeText={(password) => this.setState({ password })}
+                                />
+                            </Card.Content>
 
-                </Card>
+                            <Card.Actions style={{justifyContent: 'space-between'}}>
+                                <Button onPress={() => { this.props.navigation.goBack() }}> GO BACK </Button>
+                                <Button onPress={() => this.onSignUp()}> SIGN IN </Button>
+                            </Card.Actions>
+
+                        </Card>
+                    </View>
+
+                </ImageBackground>
+                
 
             </View>
         )
