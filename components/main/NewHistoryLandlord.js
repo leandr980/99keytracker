@@ -1,6 +1,6 @@
 // JavaScript source code
 import React, { useEffect, useState, useRef } from 'react'
-import { View, FlatList, StyleSheet, ScrollView, Image, ImageBackground, Dimensions } from 'react-native'
+import { View, FlatList, StyleSheet, ScrollView, Image, ImageBackground } from 'react-native'
 import { Card,  IconButton, Paragraph, Divider, Button, Chip, Text, TextInput, Portal, Dialog, Provider, ProgressBar, Switch } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import * as ImagePicker from 'expo-image-picker';
@@ -271,9 +271,9 @@ export default function NewHistoryLandlord(props, { navigation }) {
             source={require('../../assets/bg-image/99-whatsapp-bg-small.jpg')}>
 
                 {
-                    loading ? <View>
+                    loading ? <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
 
-                        <Text>Loading</Text>
+                        <Image  source={require('../../assets/LOADING-GIF.gif')}/>
 
                     </View> : 
 
