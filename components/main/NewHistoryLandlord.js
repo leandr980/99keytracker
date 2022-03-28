@@ -273,7 +273,7 @@ export default function NewHistoryLandlord(props, { navigation }) {
                 {
                     loading ? <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
 
-                        <Image  source={require('../../assets/LOADING-GIF.gif')}/>
+                        <Image  source={require('../../assets/LOADING-GIF_3.gif')}/>
 
                     </View> : 
 

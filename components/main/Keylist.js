@@ -21,6 +21,47 @@ function Profile(props) {
         return <View/>
     }
 
+    const changechipcolor =(itementry)=> {
+        switch(itementry){
+            case 'LANDLORD':
+                return{
+                    backgroundColor: (`#ffd60a`)
+                }
+            case 'COMPANY':
+                return{
+                    backgroundColor: (`#fb8500`)
+                }
+            case 'AGENT':
+                return{
+                    backgroundColor: (`#a2d2ff`)
+                }
+            case 'OTHER':
+                return{
+                    backgroundColor: (`#ffd60a`)
+                }
+            case 'NEW ENTRY':
+                return{
+                    backgroundColor: (`#8eecf5`)
+                }
+        }
+
+    }
+
+    const changechipicon =(itementry)=> {
+        switch(itementry){
+            case 'LANDLORD':
+                return "account-star"
+            case 'COMPANY':
+                return "domain"
+            case 'AGENT':
+                return "account-tie"
+            case 'OTHER':
+                return "help-box"
+            case 'NEW ENTRY':
+                return "folder-plus"
+        }
+    }
+
     return (
 
         <View style={styles.container}>
@@ -67,46 +108,26 @@ function Profile(props) {
 
                             <Card >
                                 <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap', margin: 10}}>
+
                                 <Chip >Name: {item.name}</Chip>
-                                <Chip >Number: {item.number}</Chip>
 
                                 {
-                                    item.entrytype == 'NEW ENTRY' && 
-                                    <Chip icon="information">{item.entrytype}</Chip>
-
+                                    item.entrytype == 'NEW ENTRY' ? 
+                                    <></> 
+                                    : 
+                                    <Chip>{item.number}</Chip>
                                 }
-
                                 
-
-                                {
-                                    item.entrytype == 'LANDLORD' && 
-                                    <Chip icon="information" >{item.entrytype}</Chip>
-
-                                }
-
-                                {
-                                    item.entrytype == 'COMPANY' && 
-                                    <Chip icon="information">{item.entrytype}</Chip>
-
-                                }
-
-                                {
-                                    item.entrytype == 'AGENT' && 
-                                    <Chip icon="information">{item.entrytype}</Chip>
-
-                                }
-
-                                {
-                                    item.entrytype == 'OTHER' && 
-                                    <Chip icon="information">{item.entrytype}</Chip>
-
-                                }
+                                <Chip 
+                                style={changechipcolor(item.entrytype)} 
+                                icon={changechipicon(item.entrytype)}
+                                >{item.entrytype}</Chip>
+                            
                                 </View>
                             </Card>
 
                         </Card>
-                    )}
-                    />
+                    )}/>
             </View>
 
             <FAB

@@ -27,7 +27,7 @@ export const user = (state = initialState, action) => {
         case USER_KEYINFO_STATE_CHANGE:
             return {
                 ...state,
-                keyinfo: action.keyinfo
+                keyinfo: [...action.keyinfo]
             }
         case USER_KEYINFO_DETAILS_STATE_CHANGE:
             return {

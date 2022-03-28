@@ -56,6 +56,47 @@ export default function Keyinfo(props) {
     const hideModalCategory = () => setVisibleCategory(false);
     const [checked, setChecked] = React.useState();
 
+    const changechipcolor =(itementry)=> {
+        switch(itementry){
+            case 'LANDLORD':
+                return{
+                    backgroundColor: (`#ffd60a`)
+                }
+            case 'COMPANY':
+                return{
+                    backgroundColor: (`#fb8500`)
+                }
+            case 'AGENT':
+                return{
+                    backgroundColor: (`#a2d2ff`)
+                }
+            case 'OTHER':
+                return{
+                    backgroundColor: (`#ffd60a`)
+                }
+            case 'NEW ENTRY':
+                return{
+                    backgroundColor: (`#8eecf5`)
+                }
+        }
+
+    }
+
+    const changechipicon =(itementry)=> {
+        switch(itementry){
+            case 'LANDLORD':
+                return "account-star"
+            case 'COMPANY':
+                return "domain"
+            case 'AGENT':
+                return "account-tie"
+            case 'OTHER':
+                return "help-box"
+            case 'NEW ENTRY':
+                return "folder-plus"
+        }
+    }
+
     return (
         <Provider >
 
@@ -117,11 +158,9 @@ export default function Keyinfo(props) {
                         <Button onPress={ () => {
                             props.navigation.navigate(checked, { keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid }),
                             hideModalCategory()
-                        } 
-                    }
-                        
-                        >Done</Button>
+                        }}>Done</Button>
                     </Dialog.Actions>
+
                 </Dialog>                
             </Portal>
 
@@ -131,7 +170,6 @@ export default function Keyinfo(props) {
             style={{flex: 1}}
             imageStyle={{resizeMode: 'repeat'}}
             source={require('../../assets/bg-image/99-whatsapp-bg-small.jpg')}>
-
 
                         <Card style={styles.maincardstyle}>
 
@@ -159,13 +197,13 @@ export default function Keyinfo(props) {
                                 ( 
                                     <Card style={styles.cardstyle}>
                                         <Card.Title
-                                            title={ format(new Date(item.creation.toDate().toString()), 'PP')}
+                                            title={'Added ' + format(new Date(item.creation.toDate().toString()), 'PP')}
                                             right={()=>
-                                            
-                                            <Chip style={{
-                                                marginRight: 10,
-                                                backgroundColor: (`#ffd60a`)
-                                            }} icon="account-star"
+
+                                            <Chip style={
+                                                changechipcolor(item.entrytype)
+                                            } icon={changechipicon(item.entrytype)}
+
                                             > {item.entrytype}</Chip>}/>
                                         <Divider />
                                         
@@ -178,43 +216,101 @@ export default function Keyinfo(props) {
                                             </Card.Content>
                                         }
                                         {
-                                        item.entrytype == 'NEW ENTRY' &&
+                                        item.entrytype == 'AGENT' &&
                                             <Card.Content>
                                                 <Caption> Name: {item.name} </Caption>
                                                 <Caption> Phone Number: {item.number} </Caption>
                                                 <Caption> Notes: {item.notes} </Caption>
                                             </Card.Content>
                                         }
+                                        {
+                                        item.entrytype == 'COMPANY' &&
+                                            <Card.Content>
+                                                <Caption> Name: {item.name} </Caption>
+                                                <Caption> Phone Number: {item.number} </Caption>
+                                                <Caption> Notes: {item.notes} </Caption>
+                                            </Card.Content>
+                                        }
+                                        {
+                                        item.entrytype == 'OTHER' &&
+                                            <Card.Content>
+                                                <Caption> Name: {item.name} </Caption>
+                                                <Caption> Phone Number: {item.number} </Caption>
+                                                <Caption> Notes: {item.notes} </Caption>
+                                            </Card.Content>
+                                        }
+                                        {
+                                        item.entrytype == 'NEW ENTRY' &&
+                                            <Card.Content>
+                                                <Caption> This is a new entry</Caption>
+                                            </Card.Content>
+                                        }
 
-                                        <List.Section>
-                                            <List.Accordion title='View Media'>
-                                                <Divider/>
+                                        {
+                                            {
+                                                'AGENT' :
+                                                <List.Section>
+                                                    <List.Accordion title='View Media'>
+                                                        <Divider/>
 
-                                                <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap'}}>
+                                                        <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap'}}>
 
-                                                    <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
-                                                        <Card.Cover source={{ uri: item.imageIDfrontURL}} 
-                                                        defaultSource={require('../../assets/99nomedia.jpg')}
-                                                        style={{alignSelf: "center",  width: 300}}/>
-                                                        <Card.Title title={"Emirates ID Front"}/>
-                                                    </Card>
+                                                            <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
+                                                                <Card.Cover source={{ uri: item.imageIDfrontURL}} 
+                                                                defaultSource={require('../../assets/99nomedia.jpg')}
+                                                                style={{alignSelf: "center",  width: 300}}/>
+                                                                <Card.Title title={"Emirates ID Front"}/>
+                                                            </Card>
 
-                                                    <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
-                                                        <Card.Cover source={{ uri: item.imageIDbackURL }}
-                                                        defaultSource={require('../../assets/99nomedia.jpg')}
-                                                        style={{alignSelf: "center", width: 300}}/>
-                                                        <Card.Title title={"Emirates ID Front"}/>
-                                                    </Card>
+                                                            <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
+                                                                <Card.Cover source={{ uri: item.imageIDbackURL }}
+                                                                defaultSource={require('../../assets/99nomedia.jpg')}
+                                                                style={{alignSelf: "center", width: 300}}/>
+                                                                <Card.Title title={"Emirates ID Front"}/>
+                                                            </Card>
+                                                            <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
+                                                                <Card.Cover source={{ uri: item.signatureURL }}
+                                                                defaultSource={require('../../assets/99nomedia.jpg')}
+                                                                style={{alignSelf: "center", width: 300}}/>
+                                                                <Card.Title title={"Agent Signature"}/>
+                                                                </Card>
+                                                        </View>
+                                                    </List.Accordion>                                    
+                                                </List.Section>,
 
-                                                </View>
-                                            </List.Accordion>                                    
-                                        </List.Section>
+                                                'NEW ENTRY' :
+                                                <></>
+
+                                            } [item.entrytype]||
+
+                                            <List.Section>
+                                                <List.Accordion title='View Media'>
+                                                    <Divider/>
+
+                                                    <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap'}}>
+
+                                                        <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
+                                                            <Card.Cover source={{ uri: item.imageIDfrontURL}} 
+                                                            defaultSource={require('../../assets/99nomedia.jpg')}
+                                                            style={{alignSelf: "center",  width: 300}}/>
+                                                            <Card.Title title={"Emirates ID Front"}/>
+                                                        </Card>
+
+                                                        <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
+                                                            <Card.Cover source={{ uri: item.imageIDbackURL }}
+                                                            defaultSource={require('../../assets/99nomedia.jpg')}
+                                                            style={{alignSelf: "center", width: 300}}/>
+                                                            <Card.Title title={"Emirates ID Front"}/>
+                                                        </Card>
+
+                                                    </View>
+                                                </List.Accordion>                                    
+                                            </List.Section>
+                                        }
                                     </Card>
                                 )
-                                
+                            }/>
 
-                                }
-                            />
                             </View>
 
                             <FAB
