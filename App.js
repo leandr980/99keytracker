@@ -83,7 +83,7 @@ export class App extends Component {
             return (
                 <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
 
-                        <Image  source={require('./assets/LOADING-GIF.gif')}/>
+                        <Image  source={require('./assets/LOADING-GIF_3.gif')}/>
 
                     </View>
                 )
