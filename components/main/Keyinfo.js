@@ -155,9 +155,14 @@ export default function Keyinfo(props) {
                     </Dialog.Content>
                     
                     <Dialog.Actions>
-                        <Button onPress={ () => {
+                        <Button onPress={ () => { if (checked == null) {
+                            
+                        }
+                        else {
                             props.navigation.navigate(checked, { keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid }),
                             hideModalCategory()
+                        }
+                            
                         }}>Done</Button>
                     </Dialog.Actions>
 

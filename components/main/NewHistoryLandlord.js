@@ -1,7 +1,7 @@
 // JavaScript source code
 import React, { useEffect, useState, useRef } from 'react'
 import { View, FlatList, StyleSheet, ScrollView, Image, ImageBackground } from 'react-native'
-import { Card,  IconButton, Paragraph, Divider, Button, Chip, Text, TextInput, Portal, Dialog, Provider, ProgressBar, Switch } from 'react-native-paper'
+import { Card,  IconButton, Divider, Button, Text, TextInput, Portal, Dialog, Provider, Banner } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import * as ImagePicker from 'expo-image-picker';
 import { Camera } from 'expo-camera';
@@ -108,8 +108,6 @@ export default function NewHistoryLandlord(props, { navigation }) {
 
         // Saving data to keyhistory db
         
-
-
         firebase.firestore()
             .collection('keycollection')
             .doc(firebase.auth().currentUser.uid)
@@ -238,8 +236,10 @@ export default function NewHistoryLandlord(props, { navigation }) {
     const clearKeyData = () => {
         setImageIDback(null)
         setImageIDfront(null)
-        setfeildname("")
+        console.log('clear')
     }
+
+    const [visiblebanner, setVisiblebanner] = React.useState(true);
     
 
     return (
