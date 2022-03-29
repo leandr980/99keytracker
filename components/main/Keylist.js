@@ -106,25 +106,23 @@ function Profile(props) {
                             />
                             <Divider/>
 
-                            <Card >
-                                <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap', margin: 10}}>
+                            <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap', margin: 10}}>
 
-                                <Chip >Name: {item.name}</Chip>
+                            <Chip >Name: {item.name}</Chip>
 
-                                {
-                                    item.entrytype == 'NEW ENTRY' ? 
-                                    <></> 
-                                    : 
-                                    <Chip>{item.number}</Chip>
-                                }
+                            {
+                                item.entrytype == 'NEW ENTRY' ? 
+                                <></> 
+                                : 
+                                <Chip>{item.number}</Chip>
+                            }
                                 
-                                <Chip 
-                                style={changechipcolor(item.entrytype)} 
-                                icon={changechipicon(item.entrytype)}
-                                >{item.entrytype}</Chip>
+                            <Chip 
+                            style={changechipcolor(item.entrytype)} 
+                            icon={changechipicon(item.entrytype)}
+                            >{item.entrytype}</Chip>
                             
-                                </View>
-                            </Card>
+                            </View>
 
                         </Card>
                     )}/>

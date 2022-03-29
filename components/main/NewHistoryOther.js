@@ -1,5 +1,5 @@
 // JavaScript source code
-import React, { useEffect, useState, Component } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { View, FlatList, StyleSheet, ScrollView, Image, ImageBackground } from 'react-native'
 import { Card,  IconButton, Paragraph, Divider, Button, Chip, Text, TextInput, Portal, Dialog, Provider, ProgressBar, Switch } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -14,9 +14,6 @@ require("firebase/firebase-storage")
 export default function NewHistoryOther(props, { navigation }) {
 
     const creation = firebase.firestore.FieldValue.serverTimestamp()
-
-    const [keydetails, setKeydetails] = useState([])
-    const [keyId, setKeyId] = useState("")
 
     const [name, setfeildname] = useState("")
     const [number, setfieldnumber] = useState("")
@@ -37,7 +34,11 @@ export default function NewHistoryOther(props, { navigation }) {
 
     const containerStylePhoto = {flex: 1, justifyContent: 'center', backgroundColor: 'white', margin: 20, padding: 5, borderRadius: 10};
 
+    const mounted = useRef(false);
+
     useEffect(() => {
+        mounted.current = true;
+
         (async () => {
             const gallerystatus = await ImagePicker.requestMediaLibraryPermissionsAsync();
             sethasgallerypermission(gallerystatus.status === 'granted');
@@ -45,27 +46,12 @@ export default function NewHistoryOther(props, { navigation }) {
             const camerastatus = await Camera.requestPermissionsAsync();
             sethascamerapermission(camerastatus.status === 'granted');
         })();
+
+        return () => { mounted.current = false; };
+
     }, []);
 
-
-    useEffect(() => {
-
-        if (props.route.params.keyId !== keyId) {
-            firebase.firestore()
-                .collection('keycollection')
-                .doc(props.route.params.uid)
-                .collection('keylist')
-                .doc(props.route.params.keyId)
-                .get()
-                .then((snapshot) => {
-                    setKeydetails(snapshot.data())
-                })
-
-            setKeyId(props.route.params.keyId)
-
-        }
-
-    }, [props.route.params.keyId])
+    const [loading, setLoading] = useState(false);
 
     //Expo Image Picker
     const [hasgallerypermission, sethasgallerypermission] = useState(null);
@@ -146,8 +132,6 @@ export default function NewHistoryOther(props, { navigation }) {
                 }
             )
 
-        console.log("Document written with ID: ", props.route.params.keyId)
-
         // Updates the cards in key list screen
         firebase.firestore()
             .collection('keycollection')
@@ -157,8 +141,7 @@ export default function NewHistoryOther(props, { navigation }) {
             .update({
                 name: name,
                 entrytype: entrytype,
-                number: number,
-                notes: notes
+                number: number
             },
                 function (error) {
                     if (error) {
@@ -170,6 +153,12 @@ export default function NewHistoryOther(props, { navigation }) {
             ).then((function () {
                 props.navigation.pop()
             }))
+
+            console.log("Document written with ID: ", props.route.params.keyId)
+
+            if(mounted.current){
+                setLoading(false)
+            }
     }
 
     const [progress, setProgress] = useState(0);
@@ -211,6 +200,7 @@ export default function NewHistoryOther(props, { navigation }) {
     
     //loop images into uploadimage
     const downloadURLarray = async () => {
+        setLoading(true);
 
         console.log('-----------------------')
 
@@ -277,130 +267,106 @@ export default function NewHistoryOther(props, { navigation }) {
             imageStyle={{resizeMode: 'repeat'}}
             source={require('../../assets/bg-image/99-whatsapp-bg-small.jpg')}>
 
-                <Card style={styles.cardstyleinfo}>
+                {
+                    loading ? <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
 
-                    <Card.Title
-                        left={() => <MaterialCommunityIcons name="file-key-outline" size={40} />}
-                        style={{
-                            fontSize: 30,
-                            fontWeight: 'bold'
-                        }}
-                        title={keydetails.keyname}
-                        subtitle={keydetails.keylocation}
-                    />
+                    <Image  source={require('../../assets/LOADING-GIF_3.gif')}/>
 
-                    <Divider style={{ marginBottom: 5 }} />
+                </View> :
 
-                    <Card.Content style={{ flexWrap: 'wrap', flexDirection: 'row', alignItems: 'center' }}>
-                        <Chip style={{
-                            marginTop: 5,
-                            marginRight: 5
-                        }} icon="information"> {keydetails.entrytype}</Chip>
-                        <Chip style={{
-                            marginTop: 5,
-                            marginRight: 5
-                        }} icon="account-star"> {keydetails.name}</Chip>
-                        <Chip style={{
-                            marginTop: 5,
-                            marginRight: 5
-                        }} icon="domain"> {keydetails.company}</Chip>
-                    </Card.Content>
+<ScrollView>
 
+<Text style={{
+    marginHorizontal: 20,
+    fontSize: 30, 
+    fontWeight: 'bold'
+}}> New Other Entry </Text>
 
-                </Card>
+<Card style={styles.cardstyle}>
+    <Card.Content style={styles.cardcontentstyle}>
 
-                <Divider />
+        <TextInput
+            style={styles.textinputstyle}
+            type='outlined'
+            label="Name . . ."
+            onChangeText={(name) => setfeildname(name)}
+        />
 
-                <ScrollView>
+        <TextInput
+            style={styles.textinputstyle}
+            label="Phone Number . . ."
+            onChangeText={(number) => setfieldnumber(number)}
+        />
 
-                    <Text style={{
-                        marginHorizontal: 20,
-                        fontSize: 30, 
-                        fontWeight: 'bold'
-                    }}> New Other Entry </Text>
+        <TextInput
+            style={styles.textinputstyle}
+            label="Notes . . ."
+            onChangeText={(notes) => setfieldnotes(notes)}
+        />
+    </Card.Content>
+</Card>
 
-                    <Card style={styles.cardstyle}>
-                        <Card.Content style={styles.cardcontentstyle}>
+<Card style={styles.cardstyle}>
+    <Card.Title title='Emirates ID Front:' />
+    <Card.Cover source={{ uri: imageIDfront }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center", height: 300}} />
+    
+    <Card.Actions style={{ justifyContent: 'space-between' }}>
+        <Button
+        onPress={showModalPhotoFront} >
+            NEW PHOTO
+            </Button>
+            
+        <Button
+        onPress={() => pickImage('idfront')} >
+            OPEN GALLERY
+        </Button>
+    </Card.Actions>
+</Card>
 
-                            <TextInput
-                                style={styles.textinputstyle}
-                                type='outlined'
-                                label="Name . . ."
-                                onChangeText={(name) => setfeildname(name)}
-                            />
+<Card style={styles.cardstyle}>
+    <Card.Title title='Emirates ID Back:' />
+    <Card.Cover source={{ uri: imageIDback }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center", height: 300}} />
+    
+    <Divider />
+    
+    <Card.Actions style={{ justifyContent: 'space-between' }}>
+        <Button
+        onPress={showModalPhotoBack} >
+            NEW PHOTO
+            </Button>
+            
+        <Button
+        onPress={() => pickImage('idback')} >
+            OPEN GALLERY
+        </Button>
+    </Card.Actions>
+</Card>
 
-                            <TextInput
-                                style={styles.textinputstyle}
-                                label="Phone Number . . ."
-                                onChangeText={(number) => setfieldnumber(number)}
-                            />
+<Card style={styles.cardstyle}>
 
-                            <TextInput
-                                style={styles.textinputstyle}
-                                label="Notes . . ."
-                                onChangeText={(notes) => setfieldnotes(notes)}
-                            />
-                        </Card.Content>
-                    </Card>
+    <Card.Content style= {{marginBottom: 10}}>
+        <Paragraph>{progress}</Paragraph>
+        <ProgressBar progress={progress}/>
+    </Card.Content>
 
-                    <Card style={styles.cardstyle}>
-                        <Card.Title title='Emirates ID Front:' />
-                        <Card.Cover source={{ uri: imageIDfront }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center"}} />
-                        
-                        <Card.Actions style={{ justifyContent: 'space-between' }}>
-                            <Button
-                            onPress={showModalPhotoFront} >
-                                NEW PHOTO
-                                </Button>
-                                
-                            <Button
-                            onPress={() => pickImage('idfront')} >
-                                OPEN GALLERY
-                            </Button>
-                        </Card.Actions>
-                    </Card>
+    <Divider styles={{margin: 10}}/>
 
-                    <Card style={styles.cardstyle}>
-                        <Card.Title title='Emirates ID Back:' />
-                        <Card.Cover source={{ uri: imageIDback }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center"}} />
-                        
-                        <Divider />
-                        
-                        <Card.Actions style={{ justifyContent: 'space-between' }}>
-                            <Button
-                            onPress={showModalPhotoBack} >
-                                NEW PHOTO
-                                </Button>
-                                
-                            <Button
-                            onPress={() => pickImage('idback')} >
-                                OPEN GALLERY
-                            </Button>
-                        </Card.Actions>
-                    </Card>
+    <Card.Actions style={{ justifyContent: 'space-between', alignItems: 'center' }}>
+        <Button
+            onPress={() => downloadURLarray()} >
+            SAVE
+        </Button>
+        <Button
+            onPress={() => clearKeyData()} >
+            CLEAR
+        </Button>
+    </Card.Actions>
+</Card>
 
-                    <Card style={styles.cardstyle}>
+</ScrollView>
+                }
 
-                        <Card.Content style= {{marginBottom: 10}}>
-                            <Paragraph>{progress}</Paragraph>
-                            <ProgressBar progress={progress}/>
-                        </Card.Content>
-
-                        <Divider styles={{margin: 10}}/>
-
-                        <Card.Actions style={{ justifyContent: 'space-between', alignItems: 'center' }}>
-                            <Button
-                                onPress={() => downloadURLarray()} >
-                                SAVE
-                            </Button>
-                            <Button
-                                onPress={() => clearKeyData()} >
-                                CLEAR
-                            </Button>
-                        </Card.Actions>
-                    </Card>
-
-                </ScrollView>
+                
                 </ImageBackground>
             </View>
         </Provider>
