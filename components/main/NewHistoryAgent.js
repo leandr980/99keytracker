@@ -1,5 +1,5 @@
 // JavaScript source code
-import React, { useEffect, useState, Component, useRef } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { View, FlatList, StyleSheet, ScrollView, Image, ImageBackground, TouchableHighlight, TouchableOpacity } from 'react-native'
 import { Card,  IconButton, Paragraph, Divider, Button, Chip, Text, TextInput, Portal, Dialog, Provider, Modal, ProgressBar } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -16,9 +16,6 @@ require("firebase/firebase-storage")
 export default function NewHistroyAgent(props) {
 
     const creation = firebase.firestore.FieldValue.serverTimestamp()
-
-    const [keydetails, setKeydetails] = useState([])
-    const [keyId, setKeyId] = useState("")
 
     const [name, setfeildname] = useState("")
     const [agency, setfieldagency] = useState("")
@@ -41,7 +38,11 @@ export default function NewHistroyAgent(props) {
 
     const containerStylePhoto = {flex: 1, justifyContent: 'center', backgroundColor: 'white', margin: 20, padding: 5, borderRadius: 10};
 
+    const mounted = useRef(false);
+
     useEffect(() => {
+        mounted.current = true;
+
         (async () => {
             const gallerystatus = await ImagePicker.requestMediaLibraryPermissionsAsync();
             sethasgallerypermission(gallerystatus.status === 'granted');
@@ -49,27 +50,12 @@ export default function NewHistroyAgent(props) {
             const camerastatus = await Camera.requestPermissionsAsync();
             sethascamerapermission(camerastatus.status === 'granted');
         })();
+
+        return () => { mounted.current = false; };
+
     }, []);
 
-
-    useEffect(() => {
-
-        if (props.route.params.keyId !== keyId) {
-            firebase.firestore()
-                .collection('keycollection')
-                .doc(props.route.params.uid)
-                .collection('keylist')
-                .doc(props.route.params.keyId)
-                .get()
-                .then((snapshot) => {
-                    setKeydetails(snapshot.data())
-                })
-
-            setKeyId(props.route.params.keyId)
-
-        }
-
-    }, [props.route.params.keyId])
+    const [loading, setLoading] = useState(false);
 
     //Expo Image Picker
     const [hasgallerypermission, sethasgallerypermission] = useState(null);
@@ -152,7 +138,6 @@ export default function NewHistroyAgent(props) {
                 }
             )
 
-        console.log("Document written with ID: ", props.route.params.keyId)
 
         // Updates the cards in key list screen
         firebase.firestore()
@@ -163,8 +148,7 @@ export default function NewHistroyAgent(props) {
             .update({
                 name: name,
                 entrytype: entrytype,
-                number: number,
-                notes: notes
+                number: number
             },
                 function (error) {
                     if (error) {
@@ -173,7 +157,15 @@ export default function NewHistroyAgent(props) {
                         console.log("Data saved successfully.");
                     }
                 }
-            )
+            ).then((function () {
+                props.navigation.pop()
+            }))
+
+            console.log("Document written with ID: ", props.route.params.keyId)
+
+        if(mounted.current){
+            setLoading(false)
+        }
     }
 
     const [progress, setProgress] = useState(0);
@@ -215,6 +207,7 @@ export default function NewHistroyAgent(props) {
 
     //loop images into uploadimage
     const downloadURLarray = async () => {
+        setLoading(true)
 
         console.log('-----------------------')
 
@@ -328,154 +321,131 @@ export default function NewHistroyAgent(props) {
             imageStyle={{resizeMode: 'repeat'}}
             source={require('../../assets/bg-image/99-whatsapp-bg-small.jpg')}>
 
-                <Card style={styles.cardstyleinfo}>
+                {
+                    loading ? <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
 
-                    <Card.Title
-                        left={() => <MaterialCommunityIcons name="file-key-outline" size={40} />}
-                        style={{
-                            fontSize: 30,
-                            fontWeight: 'bold'
-                        }}
-                        title={keydetails.keyname}
-                        subtitle={keydetails.keylocation}
-                    />
+                    <Image  source={require('../../assets/LOADING-GIF_3.gif')}/>
 
-                    <Divider style={{ marginBottom: 5 }} />
+                </View> : 
+                <ScrollView>
 
-                    <Card.Content style={{ flexWrap: 'wrap', flexDirection: 'row', alignItems: 'center' }}>
-                        <Chip style={{
-                            marginTop: 5,
-                            marginRight: 5
-                        }} icon="information"> {keydetails.entrytype}</Chip>
-                        <Chip style={{
-                            marginTop: 5,
-                            marginRight: 5
-                        }} icon="account-star"> {keydetails.name}</Chip>
-                        <Chip style={{
-                            marginTop: 5,
-                            marginRight: 5
-                        }} icon="domain"> {keydetails.company}</Chip>
+                <Text style={{
+                    marginHorizontal: 20,
+                    fontSize: 30, 
+                    fontWeight: 'bold'
+                }}> New Agent Entry </Text>
+
+                <Card style={styles.cardstyle}>
+                    <Card.Content style={styles.cardcontentstyle}>
+
+                        <TextInput
+                            style={styles.textinputstyle}
+                            type='outlined'
+                            label="Name . . ."
+                            onChangeText={(name) => setfeildname(name)}
+                        />
+
+                        <TextInput
+                            style={styles.textinputstyle}
+                            type='outlined'
+                            label="Real Estate Agency . . ."
+                            onChangeText={(agency) => setfieldagency(agency)}
+                        />
+
+                        <TextInput
+                            style={styles.textinputstyle}
+                            label="Phone Number . . ."
+                            onChangeText={(number) => setfieldnumber(number)}
+                        />
+
+                        <TextInput
+                            style={{marginVertical: 10, height: 100}}
+                            label="Notes . . ."
+                            onChangeText={(notes) => setfieldnotes(notes)}
+                        />
                     </Card.Content>
                 </Card>
 
-                <Divider />
-
-                <ScrollView>
-
-                    <Text style={{
-                        marginHorizontal: 20,
-                        fontSize: 30, 
-                        fontWeight: 'bold'
-                    }}> New Agent Entry </Text>
-
-                    <Card style={styles.cardstyle}>
-                        <Card.Content style={styles.cardcontentstyle}>
-
-                            <TextInput
-                                style={styles.textinputstyle}
-                                type='outlined'
-                                label="Name . . ."
-                                onChangeText={(name) => setfeildname(name)}
-                            />
-
-                            <TextInput
-                                style={styles.textinputstyle}
-                                type='outlined'
-                                label="Real Estate Agency . . ."
-                                onChangeText={(agency) => setfieldagency(agency)}
-                            />
-
-                            <TextInput
-                                style={styles.textinputstyle}
-                                label="Phone Number . . ."
-                                onChangeText={(number) => setfieldnumber(number)}
-                            />
-
-                            <TextInput
-                                style={{marginVertical: 10, height: 100}}
-                                label="Notes . . ."
-                                onChangeText={(notes) => setfieldnotes(notes)}
-                            />
-                        </Card.Content>
-                    </Card>
-
-                    <Card style={styles.cardstyle}>
-                        <Card.Title title='Emirates ID Front:' />
-                        <Card.Cover source={{ uri: imageIDfront }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center"}} />
-                        
-                        <Card.Actions style={{ justifyContent: 'space-between' }}>
-                            <Button
-                            onPress={showModalPhotoFront} >
-                                NEW PHOTO
-                                </Button>
-                                
-                            <Button
-                            onPress={() => pickImage('idfront')} >
-                                OPEN GALLERY
+                <Card style={styles.cardstyle}>
+                    <Card.Title title='Emirates ID Front:' />
+                    <Card.Cover source={{ uri: imageIDfront }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center", height: 300}} />
+                    
+                    <Card.Actions style={{ justifyContent: 'space-between' }}>
+                        <Button
+                        onPress={showModalPhotoFront} >
+                            NEW PHOTO
                             </Button>
-                        </Card.Actions>
-                    </Card>
+                            
+                        <Button
+                        onPress={() => pickImage('idfront')} >
+                            OPEN GALLERY
+                        </Button>
+                    </Card.Actions>
+                </Card>
 
-                    <Card style={styles.cardstyle}>
-                        <Card.Title title='Emirates ID Back:' />
-                        <Card.Cover source={{ uri: imageIDback }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center"}} />
-                        
-                        <Divider />
-                        
-                        <Card.Actions style={{ justifyContent: 'space-between' }}>
-                            <Button
-                            onPress={showModalPhotoBack} >
-                                NEW PHOTO
-                                </Button>
-                                
-                            <Button
-                            onPress={() => pickImage('idback')} >
-                                OPEN GALLERY
+                <Card style={styles.cardstyle}>
+                    <Card.Title title='Emirates ID Back:' />
+                    <Card.Cover source={{ uri: imageIDback }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center", height: 300}} />
+                    
+                    <Divider />
+                    
+                    <Card.Actions style={{ justifyContent: 'space-between' }}>
+                        <Button
+                        onPress={showModalPhotoBack} >
+                            NEW PHOTO
                             </Button>
-                        </Card.Actions>
-                    </Card>
+                            
+                        <Button
+                        onPress={() => pickImage('idback')} >
+                            OPEN GALLERY
+                        </Button>
+                    </Card.Actions>
+                </Card>
 
-                    <Card style={styles.cardstyle}>
-                        <Card.Title title='Agent Signature:' />
-                        <Card.Cover source={text ? { uri: text } : null} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center"}} />
+                <Card style={styles.cardstyle}>
+                    <Card.Title title='Agent Signature:' />
+                    <Card.Cover source={text ? { uri: text } : null} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center", height: 300}} />
 
-                        <Divider />
-                        
-                        <Card.Actions style={{ justifyContent: 'space-between' }}>
-                            <Button
-                            onPress={showModalSignature} >
-                                NEW SIGNATURE
-                                </Button>
-                                
-                            <Button
-                            onPress={() => pickImage('idback')} >
-                                OPEN GALLERY
+                    <Divider />
+                    
+                    <Card.Actions style={{ justifyContent: 'space-between' }}>
+                        <Button
+                        onPress={showModalSignature} >
+                            NEW SIGNATURE
                             </Button>
-                        </Card.Actions>
-                    </Card>
+                            
+                        <Button
+                        onPress={() => pickImage('idback')} >
+                            OPEN GALLERY
+                        </Button>
+                    </Card.Actions>
+                </Card>
 
-                    <Card style={styles.cardstyle}>
+                <Card style={styles.cardstyle}>
 
-                        <Card.Content style= {{marginBottom: 10}}>
-                            <Paragraph>{progress}</Paragraph>
-                            <ProgressBar progress={progress}/>
-                        </Card.Content>
+                    <Card.Content style= {{marginBottom: 10}}>
+                        <Paragraph>{progress}</Paragraph>
+                        <ProgressBar progress={progress}/>
+                    </Card.Content>
 
-                        <Divider styles={{margin: 10}}/>
+                    <Divider styles={{margin: 10}}/>
 
-                        <Card.Actions style={{ justifyContent: 'space-between', alignItems: 'center' }}>
-                            <Button
-                                onPress={() => downloadURLarray()} >
-                                SAVE
-                            </Button>
-                            <Button
-                                onPress={() => uploadsignature(text)} >
-                                CLEAR
-                            </Button>
-                        </Card.Actions>
-                    </Card>
+                    <Card.Actions style={{ justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Button
+                            onPress={() => downloadURLarray()} >
+                            SAVE
+                        </Button>
+                        <Button
+                            onPress={() => uploadsignature(text)} >
+                            CLEAR
+                        </Button>
+                    </Card.Actions>
+                </Card>
 
-                </ScrollView>
+            </ScrollView>
+                }
+
+                
                 </ImageBackground>
             </View>
         </Provider>
