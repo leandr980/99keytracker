@@ -24,7 +24,7 @@ export default function Keyinfo(props) {
                 .onSnapshot((docSnapshot) => {
                     if (!docSnapshot.metadata.hasPendingWrites) {  
                         setKeydetails(docSnapshot.data())
-                     }
+                    }
                 })
 
             const subscribe2 = firebase.firestore()
@@ -42,7 +42,7 @@ export default function Keyinfo(props) {
                     })
                     if (!docSnapshot.metadata.hasPendingWrites) {  
                         setKeyHistory(keyHistory)
-                     }  
+                    }  
                 })
 
                 return () => {
@@ -188,7 +188,7 @@ export default function Keyinfo(props) {
                                 subtitle={keydetails.keylocation}
                             />
 
-                            </Card>
+                        </Card>
 
                             <View style={styles.containerGallery}>
 
