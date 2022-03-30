@@ -1,7 +1,7 @@
 // JavaScript source code
 import React, { useEffect, useState } from 'react'
-import { View, Text, FlatList, StyleSheet, ImageBackground, ScrollView } from 'react-native'
-import { Card, FAB, Searchbar, IconButton, Paragraph, Divider, Chip, Caption, Button, List } from 'react-native-paper'
+import { View, Text, FlatList, StyleSheet, ImageBackground, TextInput } from 'react-native'
+import { Card, FAB, Searchbar, IconButton, Divider, Chip, Caption } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { format } from 'date-fns'
 
@@ -15,7 +15,7 @@ function Profile(props) {
     const { currentUser, keyinfo, keyinfodetails } = props;
 
     const [searchQuery, setSearchQuery] = React.useState('');
-    const onChangeSearch = query => setSearchQuery(query);
+    const onChangeSearch = query => fetchUsers(query);
 
     if (currentUser === null) {
         return <View/>
@@ -81,6 +81,8 @@ function Profile(props) {
 
                     <Divider style={{marginBottom: 10}}/>
 
+                    <TextInput fetchUsers/>
+
                     <Caption style={{ fontSize: 20, margin: 5 }}> Welcome {currentUser.name} </Caption>
                 </View>
             </Card>
@@ -104,26 +106,24 @@ function Profile(props) {
                             title={item.keyname}
                             subtitle={item.keylocation}
                             />
+
                             <Divider/>
 
                             <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap', margin: 10}}>
-
-                            <Chip >Name: {item.name}</Chip>
-
-                            {
-                                item.entrytype == 'NEW ENTRY' ? 
-                                <></> 
-                                : 
-                                <Chip>{item.number}</Chip>
-                            }
-                                
-                            <Chip 
-                            style={changechipcolor(item.entrytype)} 
-                            icon={changechipicon(item.entrytype)}
-                            >{item.entrytype}</Chip>
-                            
+                                <Text>Most recent log:</Text>
+                                <Chip >{item.name}</Chip>
+                                {
+                                    item.entrytype == 'NEW ENTRY' ? 
+                                    <></> 
+                                    : 
+                                    <Chip>{item.number}</Chip>
+                                }
+                                    
+                                <Chip 
+                                style={changechipcolor(item.entrytype)} 
+                                icon={changechipicon(item.entrytype)}
+                                >{item.entrytype}</Chip>
                             </View>
-
                         </Card>
                     )}/>
             </View>

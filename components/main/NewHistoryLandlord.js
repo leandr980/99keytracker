@@ -1,7 +1,7 @@
 // JavaScript source code
 import React, { useEffect, useState, useRef } from 'react'
-import { View, FlatList, StyleSheet, ScrollView, Image, ImageBackground } from 'react-native'
-import { Card,  IconButton, Divider, Button, Text, TextInput, Portal, Dialog, Provider, Banner } from 'react-native-paper'
+import { View, FlatList, StyleSheet, ScrollView, Image, ImageBackground, TextInput } from 'react-native'
+import { Card,  IconButton, Divider, Button, Text, Portal, Dialog, Provider, Switch } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import * as ImagePicker from 'expo-image-picker';
 import { Camera } from 'expo-camera';
@@ -205,30 +205,41 @@ export default function NewHistoryLandlord(props, { navigation }) {
 
         console.log('-----------------------')
 
-        const images = []
-        const urls = []
+        
 
-        const response1 = await fetch(imageIDfront);
-        const blob1 = await response1.blob();
-    
-        const response2 = await fetch(imageIDback);
-        const blob2 = await response2.blob();
-    
-        images.push(blob1)
-        images.push(blob2)
+        if(isSwitchOn == true){
 
-        for (const image of images) {
-            const dd = await uploadimage(image)
-            urls.push(dd)
-            console.log('uploading')
+            saveKeyData('../../assets/99nomedia.jpg','../../assets/99nomedia.jpg')
+
         }
-        console.log(urls[0], 'results1')
-        console.log(urls[1], 'results2')
+        else{
+            const images = []
+            const urls = []
 
-        const url1 = urls[0]
-        const url2 = urls[1]
+            const response1 = await fetch(imageIDfront);
+            const blob1 = await response1.blob();
+        
+            const response2 = await fetch(imageIDback);
+            const blob2 = await response2.blob();
+        
+            images.push(blob1)
+            images.push(blob2)
 
-        saveKeyData(url1,url2)
+            for (const image of images) {
+                const dd = await uploadimage(image)
+                urls.push(dd)
+                console.log('uploading')
+            }
+            console.log(urls[0], 'results1')
+            console.log(urls[1], 'results2')
+    
+            const url1 = urls[0]
+            const url2 = urls[1]
+    
+            saveKeyData(url1,url2)
+        }
+
+        
         
     }
 
@@ -238,8 +249,8 @@ export default function NewHistoryLandlord(props, { navigation }) {
         setImageIDfront(null)
         console.log('clear')
     }
-
-    const [visiblebanner, setVisiblebanner] = React.useState(true);
+    const [isSwitchOn, setIsSwitchOn] = React.useState(false);
+    const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
     
 
     return (
@@ -286,64 +297,82 @@ export default function NewHistoryLandlord(props, { navigation }) {
                     }}> New Landlord Entry </Text>
 
                     <Card style={styles.cardstyle}>
+                        <Card.Title title='Basic Info:'/>
                         <Card.Content style={styles.cardcontentstyle}>
 
                             <TextInput
                                 style={styles.textinputstyle}
-                                type='outlined'
-                                label="Name . . ."
                                 onChangeText={(name) => setfeildname(name)}
+                                placeholder='Name . . .'
                             />
 
                             <TextInput
                                 style={styles.textinputstyle}
-                                label="Phone Number . . ."
                                 onChangeText={(number) => setfieldnumber(number)}
+                                placeholder='Number . . .'
                             />
 
                             <TextInput
-                                style={{marginVertical: 10, height: 100}}
-                                label="Notes . . ."
+                                style={styles.textinputstyle}
                                 onChangeText={(notes) => setfieldnotes(notes)}
+                                placeholder='Notes . . .'
                             />
                         </Card.Content>
                     </Card>
 
                     <Card style={styles.cardstyle}>
-                        <Card.Title title='Emirates ID Front:' />
-                        <Card.Cover source={{ uri: imageIDfront }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center", height: 300}} />
-                        
-                        <Card.Actions style={{ justifyContent: 'space-between' }}>
-                            <Button
-                            onPress={showModalPhotoFront} >
-                                NEW PHOTO
-                                </Button>
-                                
-                            <Button
-                            onPress={() => pickImage('idfront')} >
-                                OPEN GALLERY
-                            </Button>
-                        </Card.Actions>
+                        <Card.Title 
+                        title='Do not include Emirates ID'
+                        right={()=> 
+                            <Switch value={isSwitchOn} onValueChange={onToggleSwitch} />
+                        }
+                        />
                     </Card>
 
-                    <Card style={styles.cardstyle}>
-                        <Card.Title title='Emirates ID Back:' />
-                        <Card.Cover source={{ uri: imageIDback }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center", height: 300}} />
+                    {
+                        isSwitchOn ? 
+                        <></>
+
+                        :
                         
-                        <Divider />
-                        
-                        <Card.Actions style={{ justifyContent: 'space-between' }}>
-                            <Button
-                            onPress={showModalPhotoBack} >
-                                NEW PHOTO
-                                </Button>
+                        <View>
+                            <Card style={styles.cardstyle}>
+                                <Card.Title title='Emirates ID Front:' />
+                                <Card.Cover source={{ uri: imageIDfront }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center", height: 300}} />
                                 
-                            <Button
-                            onPress={() => pickImage('idback')} >
-                                OPEN GALLERY
-                            </Button>
-                        </Card.Actions>
-                    </Card>
+                                <Card.Actions style={{ justifyContent: 'space-between' }}>
+                                    <Button
+                                    onPress={showModalPhotoFront} >
+                                        NEW PHOTO
+                                        </Button>
+                                        
+                                    <Button
+                                    onPress={() => pickImage('idfront')} >
+                                        OPEN GALLERY
+                                    </Button>
+                                </Card.Actions>
+                            </Card>
+
+                            <Card style={styles.cardstyle}>
+                                <Card.Title title='Emirates ID Back:' />
+                                <Card.Cover source={{ uri: imageIDback }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center", height: 300}} />
+                                
+                                <Divider />
+                                
+                                <Card.Actions style={{ justifyContent: 'space-between' }}>
+                                    <Button
+                                    onPress={showModalPhotoBack} >
+                                        NEW PHOTO
+                                        </Button>
+                                        
+                                    <Button
+                                    onPress={() => pickImage('idback')} >
+                                        OPEN GALLERY
+                                    </Button>
+                                </Card.Actions>
+                            </Card>
+                        </View>
+                    }
 
                     <Card style={styles.cardstyle}>
 
@@ -396,7 +425,11 @@ const styles = StyleSheet.create({
         bottom: 0,
     },
     textinputstyle: {
-        marginVertical: 10
+        height: 40,
+        borderBottomWidth: 1,
+        borderBottomColor: 'grey',
+        margin: 12,
+        padding: 10
     },
     cardcontentstyle: {
         justifyContent: 'space-between',
