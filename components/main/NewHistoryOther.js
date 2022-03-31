@@ -90,10 +90,12 @@ export default function NewHistoryOther(props, { navigation }) {
                 case 'front':
                     setImageIDfront(data.uri)
                     console.log(data.uri)
+                    setVisiblePhotoFront(false)
                     break;
                 case 'back':
                     setImageIDback(data.uri)
                     console.log(data.uri)
+                    setVisiblePhotoBack(false)
                     break;
             }
         }
@@ -237,26 +239,41 @@ export default function NewHistoryOther(props, { navigation }) {
         setImageIDfront(null)
         setfeildname("")
     }
-    
+
+    const [isSwitchOn, setIsSwitchOn] = React.useState(false);
+    const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
 
     return (
     <Provider>
         <Portal>
 
-            <Dialog visible={visiblePhotoFront} onDismiss={hideModalPhotoFront} contentContainerStyle={containerStylePhoto}>
+            <Dialog visible={visiblePhotoFront} dismissable={false} contentContainerStyle={containerStylePhoto}>
                 <Camera 
                 ref={ref => setcamera(ref)}
                 style={styles.fixedratio}
                 ratio={'1:1'} />
-                <IconButton icon="camera" size={60} onPress={() => takePicture('front')}/> 
+
+                <Card style={{position: 'absolute', bottom: 10, left: 10, borderRadius: 100, justifyContent: 'center'}}>
+                    <IconButton icon="camera" size={60} onPress={() => takePicture('front')}/> 
+                </Card>
+
+                <Card style={{position: 'absolute', bottom: 10, right: 10, borderRadius: 100, justifyContent: 'center'}}>
+                    <IconButton  icon="close-box-outline" size={60} onPress={() => setVisiblePhotoFront(false)}/>
+                </Card>
             </Dialog>
 
-            <Dialog visible={visiblePhotoBack} onDismiss={hideModalPhotoBack} contentContainerStyle={containerStylePhoto}>
+            <Dialog visible={visiblePhotoBack} dismissable={false} contentContainerStyle={containerStylePhoto}>
                 <Camera
                 ref={ref => setcamera(ref)}
                 style={styles.fixedratio}
                 ratio={'1:1'} />
-                <IconButton icon="camera" size={60} onPress={() => takePicture('back')}/>
+                <Card style={{position: 'absolute', bottom: 10, left: 10, borderRadius: 100, justifyContent: 'center'}}>
+                    <IconButton  icon="camera" size={60} onPress={() => takePicture('back')}/>
+                </Card>
+
+                <Card style={{position: 'absolute', bottom: 10, right: 10, borderRadius: 100, justifyContent: 'center'}}>
+                    <IconButton  icon="close-box-outline" size={60} onPress={() => setVisiblePhotoBack(false)}/>
+                </Card>
             </Dialog>
 
         </Portal>
@@ -274,96 +291,109 @@ export default function NewHistoryOther(props, { navigation }) {
 
                 </View> :
 
-<ScrollView>
+                    <ScrollView>
 
-<Text style={{
-    marginHorizontal: 20,
-    fontSize: 30, 
-    fontWeight: 'bold'
-}}> New Other Entry </Text>
+                    <Text style={{
+                        marginHorizontal: 20,
+                        fontSize: 30, 
+                        fontWeight: 'bold'
+                    }}> New Other Entry </Text>
 
-<Card style={styles.cardstyle}>
-    <Card.Content style={styles.cardcontentstyle}>
+                    <Card style={styles.cardstyle}>
+                        <Card.Content style={styles.cardcontentstyle}>
+                            <TextInput
+                                style={styles.textinputstyle}
+                                onChangeText={(name) => setfeildname(name)}
+                                placeholder='Name . . .'
+                            />
 
-        <TextInput
-            style={styles.textinputstyle}
-            type='outlined'
-            label="Name . . ."
-            onChangeText={(name) => setfeildname(name)}
-        />
+                            <TextInput
+                                style={styles.textinputstyle}
+                                onChangeText={(number) => setfieldnumber(number)}
+                                placeholder='Number . . .'
+                            />
 
-        <TextInput
-            style={styles.textinputstyle}
-            label="Phone Number . . ."
-            onChangeText={(number) => setfieldnumber(number)}
-        />
+                            <TextInput
+                                style={styles.textinputstyle}
+                                onChangeText={(notes) => setfieldnotes(notes)}
+                                placeholder='Notes . . .'
+                            />
+                        </Card.Content>
+                    </Card>
 
-        <TextInput
-            style={styles.textinputstyle}
-            label="Notes . . ."
-            onChangeText={(notes) => setfieldnotes(notes)}
-        />
-    </Card.Content>
-</Card>
+                    <Card style={styles.cardstyle}>
+                        <Card.Title 
+                        title='Do not include Emirates ID'
+                        right={()=> 
+                            <Switch value={isSwitchOn} onValueChange={onToggleSwitch} />
+                        }
+                        />
+                    </Card>
 
-<Card style={styles.cardstyle}>
-    <Card.Title title='Emirates ID Front:' />
-    <Card.Cover source={{ uri: imageIDfront }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center", height: 300}} />
-    
-    <Card.Actions style={{ justifyContent: 'space-between' }}>
-        <Button
-        onPress={showModalPhotoFront} >
-            NEW PHOTO
-            </Button>
-            
-        <Button
-        onPress={() => pickImage('idfront')} >
-            OPEN GALLERY
-        </Button>
-    </Card.Actions>
-</Card>
+                    {
+                        isSwitchOn ? <></> :
 
-<Card style={styles.cardstyle}>
-    <Card.Title title='Emirates ID Back:' />
-    <Card.Cover source={{ uri: imageIDback }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center", height: 300}} />
-    
-    <Divider />
-    
-    <Card.Actions style={{ justifyContent: 'space-between' }}>
-        <Button
-        onPress={showModalPhotoBack} >
-            NEW PHOTO
-            </Button>
-            
-        <Button
-        onPress={() => pickImage('idback')} >
-            OPEN GALLERY
-        </Button>
-    </Card.Actions>
-</Card>
+                        <View>
+                            <Card style={styles.cardstyle}>
+                                <Card.Title title='Emirates ID Front:' />
+                                <Card.Cover source={{ uri: imageIDfront }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center", height: 300}} />
+                                
+                                <Card.Actions style={{ justifyContent: 'space-between' }}>
+                                    <Button
+                                    onPress={showModalPhotoFront} >
+                                        NEW PHOTO
+                                        </Button>
+                                        
+                                    <Button
+                                    onPress={() => pickImage('idfront')} >
+                                        OPEN GALLERY
+                                    </Button>
+                                </Card.Actions>
+                            </Card>
 
-<Card style={styles.cardstyle}>
+                            <Card style={styles.cardstyle}>
+                                <Card.Title title='Emirates ID Back:' />
+                                <Card.Cover source={{ uri: imageIDback }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center", height: 300}} />
+                                
+                                <Divider />
+                                
+                                <Card.Actions style={{ justifyContent: 'space-between' }}>
+                                    <Button
+                                    onPress={showModalPhotoBack} >
+                                        NEW PHOTO
+                                        </Button>
+                                        
+                                    <Button
+                                    onPress={() => pickImage('idback')} >
+                                        OPEN GALLERY
+                                    </Button>
+                                </Card.Actions>
+                            </Card>
 
-    <Card.Content style= {{marginBottom: 10}}>
-        <Paragraph>{progress}</Paragraph>
-        <ProgressBar progress={progress}/>
-    </Card.Content>
+                            <Card style={styles.cardstyle}>
 
-    <Divider styles={{margin: 10}}/>
+                                <Card.Content style= {{marginBottom: 10}}>
+                                    <Paragraph>{progress}</Paragraph>
+                                    <ProgressBar progress={progress}/>
+                                </Card.Content>
 
-    <Card.Actions style={{ justifyContent: 'space-between', alignItems: 'center' }}>
-        <Button
-            onPress={() => downloadURLarray()} >
-            SAVE
-        </Button>
-        <Button
-            onPress={() => clearKeyData()} >
-            CLEAR
-        </Button>
-    </Card.Actions>
-</Card>
+                                <Divider styles={{margin: 10}}/>
 
-</ScrollView>
+                                <Card.Actions style={{ justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <Button
+                                        onPress={() => downloadURLarray()} >
+                                        SAVE
+                                    </Button>
+                                    <Button
+                                        onPress={() => clearKeyData()} >
+                                        CLEAR
+                                    </Button>
+                                </Card.Actions>
+                            </Card>
+                        </View>
+                    }
+
+                    </ScrollView>
                 }
 
                 
