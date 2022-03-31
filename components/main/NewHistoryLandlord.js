@@ -90,10 +90,12 @@ export default function NewHistoryLandlord(props, { navigation }) {
                 case 'front':
                     setImageIDfront(data.uri)
                     console.log(data.uri)
+                    setVisiblePhotoFront(false)
                     break;
                 case 'back':
                     setImageIDback(data.uri)
                     console.log(data.uri)
+                    setVisiblePhotoBack(false)
                     break;
             }
         }
@@ -257,20 +259,32 @@ export default function NewHistoryLandlord(props, { navigation }) {
     <Provider>
         <Portal>
 
-            <Dialog visible={visiblePhotoFront} onDismiss={hideModalPhotoFront} contentContainerStyle={containerStylePhoto}>
+            <Dialog visible={visiblePhotoFront} dismissable={false} contentContainerStyle={containerStylePhoto}>
                 <Camera 
                 ref={ref => setcamera(ref)}
                 style={styles.fixedratio}
                 ratio={'1:1'} />
-                <IconButton icon="camera" size={60} onPress={() => takePicture('front')}/> 
+                <Card style={{position: 'absolute', bottom: 10, left: 10, borderRadius: 100, justifyContent: 'center'}}>
+                    <IconButton icon="camera" size={60} onPress={() => takePicture('front')}/> 
+                </Card>
+
+                <Card style={{position: 'absolute', bottom: 10, right: 10, borderRadius: 100, justifyContent: 'center'}}>
+                    <IconButton  icon="close-box-outline" size={60} onPress={() => setVisiblePhotoFront(false)}/>
+                </Card>
             </Dialog>
 
-            <Dialog visible={visiblePhotoBack} onDismiss={hideModalPhotoBack} contentContainerStyle={containerStylePhoto}>
+            <Dialog visible={visiblePhotoBack} dismissable={false} contentContainerStyle={containerStylePhoto}>
                 <Camera
                 ref={ref => setcamera(ref)}
                 style={styles.fixedratio}
                 ratio={'1:1'} />
-                <IconButton icon="camera" size={60} onPress={() => takePicture('back')}/>
+                <Card style={{position: 'absolute', bottom: 10, left: 10, borderRadius: 100, justifyContent: 'center'}}>
+                    <IconButton  icon="camera" size={60} onPress={() => takePicture('back')}/>
+                </Card>
+
+                <Card style={{position: 'absolute', bottom: 10, right: 10, borderRadius: 100, justifyContent: 'center'}}>
+                    <IconButton  icon="close-box-outline" size={60} onPress={() => setVisiblePhotoBack(false)}/>
+                </Card>
             </Dialog>
 
         </Portal>
@@ -330,10 +344,7 @@ export default function NewHistoryLandlord(props, { navigation }) {
                     </Card>
 
                     {
-                        isSwitchOn ? 
-                        <></>
-
-                        :
+                        isSwitchOn ? <></> :
                         
                         <View>
                             <Card style={styles.cardstyle}>

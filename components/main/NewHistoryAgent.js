@@ -94,10 +94,12 @@ export default function NewHistroyAgent(props) {
                 case 'front':
                     setImageIDfront(data.uri)
                     console.log(data.uri)
+                    setVisiblePhotoFront(false)
                     break;
                 case 'back':
                     setImageIDback(data.uri)
                     console.log(data.uri)
+                    setVisiblePhotoBack(false)
                     break;
             }
         }
@@ -254,20 +256,35 @@ export default function NewHistroyAgent(props) {
     <Provider>
         <Portal>
 
-            <Dialog visible={visiblePhotoFront} onDismiss={hideModalPhotoFront} contentContainerStyle={containerStylePhoto}>
+            <Dialog visible={visiblePhotoFront} dismissable={false} contentContainerStyle={containerStylePhoto}>
                 <Camera 
                 ref={ref => setcamera(ref)}
                 style={styles.fixedratio}
                 ratio={'1:1'} />
-                <IconButton icon="camera" size={60} onPress={() => takePicture('front')}/> 
+                
+                <Card style={{position: 'absolute', bottom: 10, left: 10, borderRadius: 100, justifyContent: 'center'}}>
+                    <IconButton icon="camera" size={60} onPress={() => takePicture('front')}/> 
+                </Card>
+
+                <Card style={{position: 'absolute', bottom: 10, right: 10, borderRadius: 100, justifyContent: 'center'}}>
+                    <IconButton  icon="close-box-outline" size={60} onPress={() => setVisiblePhotoFront(false)}/>
+                </Card>
             </Dialog>
 
-            <Dialog visible={visiblePhotoBack} onDismiss={hideModalPhotoBack} contentContainerStyle={containerStylePhoto}>
+            <Dialog visible={visiblePhotoBack} dismissable={false} contentContainerStyle={containerStylePhoto}>
                 <Camera
                 ref={ref => setcamera(ref)}
                 style={styles.fixedratio}
                 ratio={'1:1'} />
-                <IconButton icon="camera" size={60} onPress={() => takePicture('back')}/>
+
+                <Card style={{position: 'absolute', bottom: 10, left: 10, borderRadius: 100, justifyContent: 'center'}}>
+                    <IconButton  icon="camera" size={60} onPress={() => takePicture('back')}/>
+                </Card>
+
+                <Card style={{position: 'absolute', bottom: 10, right: 10, borderRadius: 100, justifyContent: 'center'}}>
+                    <IconButton  icon="close-box-outline" size={60} onPress={() => setVisiblePhotoBack(false)}/>
+                </Card>
+                
             </Dialog>
 
             <Modal visible={visibleSignature} onDismiss={hideModalSignature} contentContainerStyle={containerStylePhoto}>
@@ -337,31 +354,27 @@ export default function NewHistroyAgent(props) {
 
                 <Card style={styles.cardstyle}>
                     <Card.Content style={styles.cardcontentstyle}>
-
                         <TextInput
                             style={styles.textinputstyle}
-                            type='outlined'
-                            label="Name . . ."
                             onChangeText={(name) => setfeildname(name)}
+                            placeholder='Name . . .'
                         />
 
                         <TextInput
                             style={styles.textinputstyle}
-                            type='outlined'
-                            label="Real Estate Agency . . ."
-                            onChangeText={(agency) => setfieldagency(agency)}
-                        />
-
-                        <TextInput
-                            style={styles.textinputstyle}
-                            label="Phone Number . . ."
                             onChangeText={(number) => setfieldnumber(number)}
+                            placeholder='Phone Number . . .'
                         />
 
                         <TextInput
-                            style={{marginVertical: 10, height: 100}}
-                            label="Notes . . ."
+                            style={styles.textinputstyle}
                             onChangeText={(notes) => setfieldnotes(notes)}
+                            placeholder='Real Estate Agency . . .'
+                        />
+                        <TextInput
+                            style={styles.textinputstyle}
+                            onChangeText={(notes) => setfieldnotes(notes)}
+                            placeholder='Notes . . .'
                         />
                     </Card.Content>
                 </Card>
