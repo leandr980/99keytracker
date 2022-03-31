@@ -239,6 +239,9 @@ export default function NewHistoryCompany(props, { navigation }) {
         setImageIDfront(null)
         setfeildname("")
     }
+
+    const [isSwitchOn, setIsSwitchOn] = React.useState(false);
+    const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
     
 
     return (
@@ -275,103 +278,121 @@ export default function NewHistoryCompany(props, { navigation }) {
                     <Image  source={require('../../assets/LOADING-GIF_3.gif')}/>
 
                 </View> : 
+                
+                <ScrollView>
 
-<ScrollView>
+                <Text style={{
+                    marginHorizontal: 20,
+                    fontSize: 30, 
+                    fontWeight: 'bold'
+                }}> New Company Entry </Text>
 
-<Text style={{
-    marginHorizontal: 20,
-    fontSize: 30, 
-    fontWeight: 'bold'
-}}> New Company Entry </Text>
+                <Card style={styles.cardstyle}>
+                    <Card.Content style={styles.cardcontentstyle}>
 
-<Card style={styles.cardstyle}>
-    <Card.Content style={styles.cardcontentstyle}>
+                        <TextInput
+                            style={styles.textinputstyle}
+                            type='outlined'
+                            label="Company Name . . ."
+                            onChangeText={(companyname) => setfeildcompanyname(companyname)}
+                        />
 
-        <TextInput
-            style={styles.textinputstyle}
-            type='outlined'
-            label="Company Name . . ."
-            onChangeText={(companyname) => setfeildcompanyname(companyname)}
-        />
+                        <TextInput
+                            style={styles.textinputstyle}
+                            label="Phone Number . . ."
+                            onChangeText={(number) => setfieldnumber(number)}
+                        />
 
-        <TextInput
-            style={styles.textinputstyle}
-            label="Phone Number . . ."
-            onChangeText={(number) => setfieldnumber(number)}
-        />
+                        <TextInput
+                            style={styles.textinputstyle}
+                            label="Supervisor Name . . ."
+                            onChangeText={(supervisor) => setfieldsupervisor(supervisor)}
+                        />
 
-        <TextInput
-            style={styles.textinputstyle}
-            label="Supervisor Name . . ."
-            onChangeText={(supervisor) => setfieldsupervisor(supervisor)}
-        />
+                        <TextInput
+                            style={{marginVertical: 10, height: 100}}
+                            label="Notes . . ."
+                            onChangeText={(notes) => setfieldnotes(notes)}
+                        />
+                    </Card.Content>
+                </Card>
 
-        <TextInput
-            style={{marginVertical: 10, height: 100}}
-            label="Notes . . ."
-            onChangeText={(notes) => setfieldnotes(notes)}
-        />
-    </Card.Content>
-</Card>
+                <Card style={styles.cardstyle}>
+                    <Card.Title 
+                    title='Do not include Emirates ID'
+                    right={()=> 
+                    <Switch value={isSwitchOn} onValueChange={onToggleSwitch} />
+                }
+                />
+                </Card>
 
-<Card style={styles.cardstyle}>
-    <Card.Title title='Emirates ID Front:' />
-    <Card.Cover source={{ uri: imageIDfront }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center", height: 300}} />
-    
-    <Card.Actions style={{ justifyContent: 'space-between' }}>
-        <Button
-        onPress={showModalPhotoFront} >
-            NEW PHOTO
-            </Button>
-            
-        <Button
-        onPress={() => pickImage('idfront')} >
-            OPEN GALLERY
-        </Button>
-    </Card.Actions>
-</Card>
+                {
+                    isSwitchOn ? 
+                    <></>
 
-<Card style={styles.cardstyle}>
-    <Card.Title title='Emirates ID Back:' />
-    <Card.Cover source={{ uri: imageIDback }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center", height: 300}} />
-    
-    <Divider />
-    
-    <Card.Actions style={{ justifyContent: 'space-between' }}>
-        <Button
-        onPress={showModalPhotoBack} >
-            NEW PHOTO
-            </Button>
-            
-        <Button
-        onPress={() => pickImage('idback')} >
-            OPEN GALLERY
-        </Button>
-    </Card.Actions>
-</Card>
+                    :
 
-<Card style={styles.cardstyle}>
+                    <View>
+                        <Card style={styles.cardstyle}>
+                            <Card.Title title='Emirates ID Front:' />
+                            <Card.Cover source={{ uri: imageIDfront }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center", height: 300}} />
+                            
+                            <Card.Actions style={{ justifyContent: 'space-between' }}>
+                                <Button
+                                onPress={showModalPhotoFront} >
+                                    NEW PHOTO
+                                    </Button>
+                                    
+                                <Button
+                                onPress={() => pickImage('idfront')} >
+                                    OPEN GALLERY
+                                </Button>
+                            </Card.Actions>
+                        </Card>
 
-    <Card.Content style= {{marginBottom: 10}}>
-        <Paragraph>{progress}</Paragraph>
-        <ProgressBar progress={progress}/>
-    </Card.Content>
+                        <Card style={styles.cardstyle}>
+                            <Card.Title title='Emirates ID Back:' />
+                            <Card.Cover source={{ uri: imageIDback }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center", height: 300}} />
+                            
+                            <Divider />
+                            
+                            <Card.Actions style={{ justifyContent: 'space-between' }}>
+                                <Button
+                                onPress={showModalPhotoBack} >
+                                    NEW PHOTO
+                                    </Button>
+                                    
+                                <Button
+                                onPress={() => pickImage('idback')} >
+                                    OPEN GALLERY
+                                </Button>
+                            </Card.Actions>
+                        </Card>
+                    </View>
+                }
 
-    <Divider styles={{margin: 10}}/>
+                <Card style={styles.cardstyle}>
 
-    <Card.Actions style={{ justifyContent: 'space-between', alignItems: 'center' }}>
-        <Button
-            onPress={() => downloadURLarray()} >
-            SAVE
-        </Button>
-        <Button
-            onPress={() => clearKeyData()} >
-            CLEAR
-        </Button>
-    </Card.Actions>
-</Card>
+                    <Card.Content style= {{marginBottom: 10}}>
+                        <Paragraph>{progress}</Paragraph>
+                        <ProgressBar progress={progress}/>
+                    </Card.Content>
 
-</ScrollView>
+                    <Divider styles={{margin: 10}}/>
+
+                    <Card.Actions style={{ justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Button
+                            onPress={() => downloadURLarray()} >
+                            SAVE
+                        </Button>
+                        <Button
+                            onPress={() => clearKeyData()} >
+                            CLEAR
+                        </Button>
+                    </Card.Actions>
+                </Card>
+
+                </ScrollView>
                 }
 
                 
