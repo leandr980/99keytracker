@@ -249,8 +249,17 @@ export default function NewHistoryLandlord(props, { navigation }) {
     const clearKeyData = () => {
         setImageIDback(null)
         setImageIDfront(null)
+        this.fieldname.current.clear()
+        this.fieldnumber.current.clear()
+        this.fieldnotes.current.clear()
         console.log('clear')
     }
+
+    this.fieldname = React.createRef();
+    this.fieldnumber = React.createRef();
+    this.fieldnotes = React.createRef();
+
+
     const [isSwitchOn, setIsSwitchOn] = React.useState(false);
     const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
     
@@ -318,18 +327,23 @@ export default function NewHistoryLandlord(props, { navigation }) {
                                 style={styles.textinputstyle}
                                 onChangeText={(name) => setfeildname(name)}
                                 placeholder='Name . . .'
+                                ref={this.fieldname}
                             />
 
                             <TextInput
                                 style={styles.textinputstyle}
                                 onChangeText={(number) => setfieldnumber(number)}
                                 placeholder='Number . . .'
+                                ref={this.fieldnumber}
+
                             />
 
                             <TextInput
                                 style={styles.textinputstyle}
                                 onChangeText={(notes) => setfieldnotes(notes)}
                                 placeholder='Notes . . .'
+                                ref={this.fieldnotes}
+                                
                             />
                         </Card.Content>
                     </Card>
