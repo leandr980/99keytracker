@@ -244,22 +244,12 @@ export default function NewHistroyAgent(props) {
         setImageIDback(null)
         setImageIDfront(null)
         setText(null)
-        this.fieldname.current.clear()
-        this.fieldnumber.current.clear()
-        this.fieldagency.current.clear()
-        this.fieldnotes.current.clear()
         console.log('clear')
     }
-
-    this.fieldname = React.createRef();
-    this.fieldnumber = React.createRef();
-    this.fieldagency = React.createRef();
-    this.fieldnotes = React.createRef();
 
     const [visibleSignature, setVisibleSignature] = React.useState(false);
     const showModalSignature = () => setVisibleSignature(true);
     const hideModalSignature = () => setVisibleSignature(false);
-    const [imageSignagure, setSignature] = useState(null);
 
     const signatureRef = useRef(null);
     const [text,setText] = useState('')
@@ -370,27 +360,23 @@ export default function NewHistroyAgent(props) {
                             style={styles.textinputstyle}
                             onChangeText={(name) => setfeildname(name)}
                             placeholder='Name . . .'
-                            ref={this.fieldname}
                         />
 
                         <TextInput
                             style={styles.textinputstyle}
                             onChangeText={(number) => setfieldnumber(number)}
                             placeholder='Phone Number . . .'
-                            ref={this.fieldnumber}
                         />
 
                         <TextInput
                             style={styles.textinputstyle}
                             onChangeText={(notes) => setfieldagency(notes)}
                             placeholder='Real Estate Agency . . .'
-                            ref={this.fieldagency}
                         />
                         <TextInput
                             style={styles.textinputstyle}
                             onChangeText={(notes) => setfieldnotes(notes)}
                             placeholder='Notes . . .'
-                            ref={this.fieldnotes}
                         />
                     </Card.Content>
                 </Card>
