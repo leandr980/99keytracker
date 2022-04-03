@@ -1,12 +1,13 @@
 // JavaScript source code
 import React, { useEffect, useState, useRef } from 'react'
-import { View, FlatList, StyleSheet, ScrollView, Image, ImageBackground } from 'react-native'
-import { Card,  IconButton, Paragraph, Divider, Button, Chip, Text, TextInput, Portal, Dialog, Provider, ProgressBar, Switch } from 'react-native-paper'
+import { View, StyleSheet, ScrollView, Image, ImageBackground, TextInput } from 'react-native'
+import { Card,  IconButton, Paragraph, Divider, Button, Text, Portal, Dialog, Provider, ProgressBar, Switch } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import * as ImagePicker from 'expo-image-picker';
 import { Camera } from 'expo-camera';
 
 import firebase from 'firebase'
+import reactDom from 'react-dom';
 require("firebase/firestore")
 require("firebase/firebase-storage")
 
@@ -239,8 +240,17 @@ export default function NewHistoryCompany(props, { navigation }) {
     const clearKeyData = () => {
         setImageIDback(null)
         setImageIDfront(null)
-        setfeildname("")
+        this.fieldname.current.clear()
+        this.fieldnumber.current.clear()
+        this.fieldsupervisor.current.clear()
+        this.fieldnotes.current.clear()
+        console.log('clear')
     }
+
+    this.fieldname = React.createRef()
+    this.fieldnumber = React.createRef()
+    this.fieldsupervisor = React.createRef()
+    this.fieldnotes = React.createRef()
 
     const [isSwitchOn, setIsSwitchOn] = React.useState(false);
     const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
@@ -305,26 +315,30 @@ export default function NewHistoryCompany(props, { navigation }) {
                     <Card.Content style={styles.cardcontentstyle}>
                         <TextInput
                             style={styles.textinputstyle}
-                            onChangeText={(name) => setfeildname(name)}
+                            onChangeText={(name) => setfeildcompanyname(name)}
                             placeholder='Company Name . . .'
+                            ref={this.fieldname}
                         />
 
                         <TextInput
                             style={styles.textinputstyle}
                             onChangeText={(number) => setfieldnumber(number)}
                             placeholder='Phone Number . . .'
+                            ref={this.fieldnumber}
                         />
 
                         <TextInput
                             style={styles.textinputstyle}
-                            onChangeText={(supervisor) => setfieldnotes(supervisor)}
+                            onChangeText={(supervisor) => setfieldsupervisor(supervisor)}
                             placeholder='Supervisor Name . . .'
+                            ref={this.fieldsupervisor}
                         />
                         
                         <TextInput
                             style={styles.textinputstyle}
                             onChangeText={(notes) => setfieldnotes(notes)}
                             placeholder='Notes . . .'
+                            ref={this.fieldnotes}
                         />
                     </Card.Content>
                 </Card>
@@ -436,7 +450,11 @@ const styles = StyleSheet.create({
         bottom: 0,
     },
     textinputstyle: {
-        marginVertical: 10
+        height: 40,
+        borderBottomWidth: 1,
+        borderBottomColor: 'grey',
+        margin: 12,
+        padding: 10
     },
     cardcontentstyle: {
         justifyContent: 'space-between',

@@ -12,6 +12,29 @@ import { connect } from 'react-redux'
 
 function Profile(props) {
 
+    this.fieldsearch = React.createRef('');
+    const [search, setsearch] = useState("")
+
+    const [keydata, setkeydata] = useState([])
+
+    const fetchUsers = (search) => {
+        firebase.firestore()
+            .collection("keycollection")
+            .doc(firebase.auth().currentUser.uid)
+            .collection("keylist")
+
+            .where('keyname', '>=', search)
+            .get()
+            .then((snapshot) => {
+                let keydata = snapshot.docs.map(doc => {
+                    const data = doc.data();
+                    const id = doc.id;
+                    return { id, ...data }
+                });
+                setkeydata(keydata);
+            })
+    }
+
     const { currentUser, keyinfo, keyinfodetails } = props;
 
     const [searchQuery, setSearchQuery] = React.useState('');
@@ -62,6 +85,10 @@ function Profile(props) {
         }
     }
 
+    
+
+
+
     return (
 
         <View style={styles.container}>
@@ -72,16 +99,13 @@ function Profile(props) {
 
             <Card style={styles.maincardstyle}>
                 <View style={styles.containerInfo}>
-                    <Searchbar
-                        style={{ elevation: 0 }}
-                        placeholder="Search"
-                        onChangeText={onChangeSearch}
-                        value={searchQuery}
-                    />
+                    
+                    <TextInput 
+                    placeholder="Search . . . ." 
+                    onChangeText={(search) => fetchUsers(search)}
+                    ref={this.fieldsearch} />
 
                     <Divider style={{marginBottom: 10}}/>
-
-                    <TextInput fetchUsers/>
 
                     <Caption style={{ fontSize: 20, margin: 5 }}> Welcome {currentUser.name} </Caption>
                 </View>
@@ -92,7 +116,21 @@ function Profile(props) {
             <Divider />
 
             <View style={styles.containerGallery}>
-                <FlatList
+
+                {
+                    this.fieldsearch == '' ?
+                    <FlatList
+                numColumns={1}
+                horizontal={false}
+                data={keydata}
+                renderItem={({ item }) => (
+
+                    <Text> {item.name} </Text>
+
+                    )}
+            />
+                    :
+                    <FlatList
                     numColumns={1}
                     horizontal={false}
                     data={keyinfo}
@@ -126,6 +164,11 @@ function Profile(props) {
                             </View>
                         </Card>
                     )}/>
+                    
+                }
+
+
+                
             </View>
 
             <FAB
