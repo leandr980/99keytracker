@@ -1,6 +1,6 @@
 // JavaScript source code
 import React, { useEffect, useState, useRef } from 'react'
-import { View, FlatList, StyleSheet, ScrollView, Image, ImageBackground, TextInput } from 'react-native'
+import { View, StyleSheet, ScrollView, Image, ImageBackground, TextInput } from 'react-native'
 import { Card,  IconButton, Divider, Button, Text, Portal, Dialog, Provider, Switch } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import * as ImagePicker from 'expo-image-picker';
@@ -388,7 +388,7 @@ export default function NewHistoryLandlord(props, { navigation }) {
                                     <Button
                                     onPress={showModalPhotoBack} >
                                         NEW PHOTO
-                                        </Button>
+                                    </Button>
                                         
                                     <Button
                                     onPress={() => pickImage('idback')} >
