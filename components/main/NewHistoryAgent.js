@@ -1,7 +1,7 @@
 // JavaScript source code
 import React, { useEffect, useState, useRef } from 'react'
-import { View, FlatList, StyleSheet, ScrollView, Image, ImageBackground, TouchableHighlight, TouchableOpacity } from 'react-native'
-import { Card,  IconButton, Paragraph, Divider, Button, Chip, Text, TextInput, Portal, Dialog, Provider, Modal, ProgressBar } from 'react-native-paper'
+import { View, StyleSheet, ScrollView, Image, ImageBackground, TouchableOpacity, TextInput} from 'react-native'
+import { Card,  IconButton, Paragraph, Divider, Button, Chip, Text, Portal, Dialog, Provider, Modal, ProgressBar } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import * as ImagePicker from 'expo-image-picker';
 import { Camera } from 'expo-camera';
@@ -241,8 +241,20 @@ export default function NewHistroyAgent(props) {
 
     // Clear All Fields
     const clearKeyData = () => {
-        handleUpload()
+        setImageIDback(null)
+        setImageIDfront(null)
+        setText(null)
+        this.fieldname.current.clear()
+        this.fieldnumber.current.clear()
+        this.fieldagency.current.clear()
+        this.fieldnotes.current.clear()
+        console.log('clear')
     }
+
+    this.fieldname = React.createRef();
+    this.fieldnumber = React.createRef();
+    this.fieldagency = React.createRef();
+    this.fieldnotes = React.createRef();
 
     const [visibleSignature, setVisibleSignature] = React.useState(false);
     const showModalSignature = () => setVisibleSignature(true);
@@ -358,23 +370,27 @@ export default function NewHistroyAgent(props) {
                             style={styles.textinputstyle}
                             onChangeText={(name) => setfeildname(name)}
                             placeholder='Name . . .'
+                            ref={this.fieldname}
                         />
 
                         <TextInput
                             style={styles.textinputstyle}
                             onChangeText={(number) => setfieldnumber(number)}
                             placeholder='Phone Number . . .'
+                            ref={this.fieldnumber}
                         />
 
                         <TextInput
                             style={styles.textinputstyle}
-                            onChangeText={(notes) => setfieldnotes(notes)}
+                            onChangeText={(notes) => setfieldagency(notes)}
                             placeholder='Real Estate Agency . . .'
+                            ref={this.fieldagency}
                         />
                         <TextInput
                             style={styles.textinputstyle}
                             onChangeText={(notes) => setfieldnotes(notes)}
                             placeholder='Notes . . .'
+                            ref={this.fieldnotes}
                         />
                     </Card.Content>
                 </Card>
@@ -449,7 +465,7 @@ export default function NewHistroyAgent(props) {
                             SAVE
                         </Button>
                         <Button
-                            onPress={() => uploadsignature(text)} >
+                            onPress={() => clearKeyData()} >
                             CLEAR
                         </Button>
                     </Card.Actions>
@@ -490,7 +506,11 @@ const styles = StyleSheet.create({
         bottom: 0,
     },
     textinputstyle: {
-        marginVertical: 10
+        height: 40,
+        borderBottomWidth: 1,
+        borderBottomColor: 'grey',
+        margin: 12,
+        padding: 10
     },
     cardcontentstyle: {
         justifyContent: 'space-between',

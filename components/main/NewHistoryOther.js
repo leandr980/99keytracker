@@ -1,7 +1,7 @@
 // JavaScript source code
 import React, { useEffect, useState, useRef } from 'react'
-import { View, FlatList, StyleSheet, ScrollView, Image, ImageBackground } from 'react-native'
-import { Card,  IconButton, Paragraph, Divider, Button, Chip, Text, TextInput, Portal, Dialog, Provider, ProgressBar, Switch } from 'react-native-paper'
+import { View, StyleSheet, ScrollView, Image, ImageBackground, TextInput } from 'react-native'
+import { Card,  IconButton, Paragraph, Divider, Button, Chip, Text, Portal, Dialog, Provider, ProgressBar, Switch } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import * as ImagePicker from 'expo-image-picker';
 import { Camera } from 'expo-camera';
@@ -237,8 +237,15 @@ export default function NewHistoryOther(props, { navigation }) {
     const clearKeyData = () => {
         setImageIDback(null)
         setImageIDfront(null)
-        setfeildname("")
+        this.fieldname.current.clear()
+        this.fieldnumber.current.clear()
+        this.fieldnotes.current.clear()
+        console.log('clear')
     }
+
+    this.fieldname = React.createRef();
+    this.fieldnumber = React.createRef();
+    this.fieldnotes = React.createRef();
 
     const [isSwitchOn, setIsSwitchOn] = React.useState(false);
     const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
@@ -305,18 +312,21 @@ export default function NewHistoryOther(props, { navigation }) {
                                 style={styles.textinputstyle}
                                 onChangeText={(name) => setfeildname(name)}
                                 placeholder='Name . . .'
+                                ref={this.fieldname}
                             />
 
                             <TextInput
                                 style={styles.textinputstyle}
                                 onChangeText={(number) => setfieldnumber(number)}
                                 placeholder='Number . . .'
+                                ref={this.fieldnumber}
                             />
 
                             <TextInput
                                 style={styles.textinputstyle}
                                 onChangeText={(notes) => setfieldnotes(notes)}
                                 placeholder='Notes . . .'
+                                ref={this.fieldnotes}
                             />
                         </Card.Content>
                     </Card>
@@ -428,7 +438,11 @@ const styles = StyleSheet.create({
         bottom: 0,
     },
     textinputstyle: {
-        marginVertical: 10
+        height: 40,
+        borderBottomWidth: 1,
+        borderBottomColor: 'grey',
+        margin: 12,
+        padding: 10
     },
     cardcontentstyle: {
         justifyContent: 'space-between',
