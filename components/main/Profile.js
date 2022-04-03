@@ -25,9 +25,10 @@ function Profile(props) {
                 <Divider/>
 
                 <Card.Content>
-                    <Caption> Company: </Caption>
                     <Caption> Name: { currentUser.name }</Caption>
                     <Caption> Email: { currentUser.email }</Caption>
+                    <Caption> Company: </Caption>
+                    <Caption> Address: </Caption>
                     <Caption> Number: </Caption>
                 </Card.Content>
             </Card>

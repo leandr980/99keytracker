@@ -1,7 +1,7 @@
 // JavaScript source code
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { View, Text, FlatList, StyleSheet, ImageBackground, TextInput } from 'react-native'
-import { Card, FAB, Searchbar, IconButton, Divider, Chip, Caption } from 'react-native-paper'
+import { Card, FAB, IconButton, Divider, Chip, Caption } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { format } from 'date-fns'
 
@@ -12,33 +12,7 @@ import { connect } from 'react-redux'
 
 function Profile(props) {
 
-    this.fieldsearch = React.createRef('');
-    const [search, setsearch] = useState("")
-
-    const [keydata, setkeydata] = useState([])
-
-    const fetchUsers = (search) => {
-        firebase.firestore()
-            .collection("keycollection")
-            .doc(firebase.auth().currentUser.uid)
-            .collection("keylist")
-
-            .where('keyname', '>=', search)
-            .get()
-            .then((snapshot) => {
-                let keydata = snapshot.docs.map(doc => {
-                    const data = doc.data();
-                    const id = doc.id;
-                    return { id, ...data }
-                });
-                setkeydata(keydata);
-            })
-    }
-
-    const { currentUser, keyinfo, keyinfodetails } = props;
-
-    const [searchQuery, setSearchQuery] = React.useState('');
-    const onChangeSearch = query => fetchUsers(query);
+    const { currentUser, keyinfo } = props;
 
     if (currentUser === null) {
         return <View/>
@@ -85,10 +59,6 @@ function Profile(props) {
         }
     }
 
-    
-
-
-
     return (
 
         <View style={styles.container}>
@@ -99,15 +69,8 @@ function Profile(props) {
 
             <Card style={styles.maincardstyle}>
                 <View style={styles.containerInfo}>
-                    
-                    <TextInput 
-                    placeholder="Search . . . ." 
-                    onChangeText={(search) => fetchUsers(search)}
-                    ref={this.fieldsearch} />
-
-                    <Divider style={{marginBottom: 10}}/>
-
                     <Caption style={{ fontSize: 20, margin: 5 }}> Welcome {currentUser.name} </Caption>
+                    <IconButton icon={'magnify'} onPress={() => props.navigation.navigate('Search', {uid: firebase.auth().currentUser.uid})}/>
                 </View>
             </Card>
 
@@ -116,59 +79,45 @@ function Profile(props) {
             <Divider />
 
             <View style={styles.containerGallery}>
-
-                {
-                    this.fieldsearch == '' ?
-                    <FlatList
+                <FlatList
                 numColumns={1}
                 horizontal={false}
-                data={keydata}
+                data={keyinfo}
                 renderItem={({ item }) => (
 
-                    <Text> {item.name} </Text>
+                    <Card style={styles.cardstyle}>
 
-                    )}
-            />
-                    :
-                    <FlatList
-                    numColumns={1}
-                    horizontal={false}
-                    data={keyinfo}
-                    renderItem={({ item }) => (
+                        <Card.Title
+                        left={() => <MaterialCommunityIcons name="folder-key-outline" size={40} />}
+                        right={()=> <IconButton icon="eye" 
+                        onPress={() => props.navigation.navigate("Keyinfo", { keyId: item.id, uid: firebase.auth().currentUser.uid })}/>}
+                        title={item.keyname}
+                        subtitle={item.keybuildingvilla + ', ' +item.keyarea}
+                        />
 
-                        <Card style={styles.cardstyle}>
-                            <Card.Title
-                            left={() => <MaterialCommunityIcons name="folder-key-outline" size={40} />}
-                            right={()=> <IconButton icon="eye" 
-                            onPress={() => props.navigation.navigate("Keyinfo", { keyId: item.id, uid: firebase.auth().currentUser.uid })}/>}
-                            title={item.keyname}
-                            subtitle={item.keylocation}
-                            />
-
-                            <Divider/>
-
-                            <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap', margin: 10}}>
-                                <Text>Most recent log:</Text>
-                                <Chip >{item.name}</Chip>
-                                {
-                                    item.entrytype == 'NEW ENTRY' ? 
-                                    <></> 
-                                    : 
-                                    <Chip>{item.number}</Chip>
-                                }
+                          <Divider/>
+                          
+                        <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap', margin: 10, alignItems: 'center'}}>
+                            <Text style={{marginLeft: 5, marginRight: 10}}>Most recent log:</Text>
+                            
+                            {
+                                item.entrytype == 'NEW ENTRY' ? 
+                                <></> 
+                                : 
+                                <>
+                                <Chip>{item.number}</Chip>
+                                <Chip>{item.name}</Chip>
+                                </>
                                     
-                                <Chip 
-                                style={changechipcolor(item.entrytype)} 
-                                icon={changechipicon(item.entrytype)}
-                                >{item.entrytype}</Chip>
-                            </View>
-                        </Card>
-                    )}/>
-                    
-                }
-
-
-                
+                            }
+                                    
+                            <Chip 
+                            style={changechipcolor(item.entrytype)} 
+                            icon={changechipicon(item.entrytype)}
+                            >{item.entrytype}</Chip>
+                        </View>
+                    </Card>
+                )}/>                
             </View>
 
             <FAB
@@ -193,6 +142,9 @@ const styles = StyleSheet.create({
     },
     containerInfo: {
         margin: 10,
+        justifyContent: 'space-between',
+        flexDirection: 'row',
+        alignItems: 'center'
     },
     containerGallery: {
         flex: 1,

@@ -60,23 +60,23 @@ export default function Keyinfo(props) {
         switch(itementry){
             case 'LANDLORD':
                 return{
-                    backgroundColor: (`#ffd60a`)
+                    backgroundColor: (`#ffd60a`), margin: 10
                 }
             case 'COMPANY':
                 return{
-                    backgroundColor: (`#fb8500`)
+                    backgroundColor: (`#fb8500`), margin: 10
                 }
             case 'AGENT':
                 return{
-                    backgroundColor: (`#a2d2ff`)
+                    backgroundColor: (`#a2d2ff`), margin: 10
                 }
             case 'OTHER':
                 return{
-                    backgroundColor: (`#ffd60a`)
+                    backgroundColor: (`#ffd60a`), margin: 10
                 }
             case 'NEW ENTRY':
                 return{
-                    backgroundColor: (`#8eecf5`)
+                    backgroundColor: (`#8eecf5`), margin: 10
                 }
         }
 
@@ -185,7 +185,7 @@ export default function Keyinfo(props) {
                                     fontWeight: 'bold'
                                 }}
                                 title={keydetails.keyname}
-                                subtitle={keydetails.keylocation}
+                                subtitle={keydetails.keybuildingvilla + ', ' + keydetails.keyarea}
                             />
 
                         </Card>
@@ -205,9 +205,9 @@ export default function Keyinfo(props) {
                                             title={'Added ' + format(new Date(item.creation.toDate().toString()), 'PP')}
                                             right={()=>
 
-                                            <Chip style={
-                                                changechipcolor(item.entrytype)
-                                            } icon={changechipicon(item.entrytype)}
+                                            <Chip 
+                                            style={ changechipcolor(item.entrytype)} 
+                                            icon={changechipicon(item.entrytype)}
 
                                             > {item.entrytype}</Chip>}/>
                                         <Divider />
@@ -257,28 +257,28 @@ export default function Keyinfo(props) {
                                                 <List.Section>
                                                     <List.Accordion title='View Media'>
                                                         <Divider/>
-
                                                         <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap'}}>
-
-                                                            <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
-                                                                <Card.Cover source={{ uri: item.imageIDfrontURL}} 
-                                                                defaultSource={require('../../assets/99nomedia.jpg')}
-                                                                style={{alignSelf: "center",  width: 300}}/>
-                                                                <Card.Title title={"Emirates ID Front"}/>
-                                                            </Card>
-
-                                                            <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
-                                                                <Card.Cover source={{ uri: item.imageIDbackURL }}
-                                                                defaultSource={require('../../assets/99nomedia.jpg')}
-                                                                style={{alignSelf: "center", width: 300}}/>
-                                                                <Card.Title title={"Emirates ID Front"}/>
-                                                            </Card>
-                                                            <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
-                                                                <Card.Cover source={{ uri: item.signatureURL }}
-                                                                defaultSource={require('../../assets/99nomedia.jpg')}
-                                                                style={{alignSelf: "center", width: 300}}/>
-                                                                <Card.Title title={"Agent Signature"}/>
+                                                            <ScrollView horizontal>
+                                                                <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
+                                                                    <Card.Cover source={{ uri: item.imageIDfrontURL}} 
+                                                                    defaultSource={require('../../assets/99nomedia.jpg')}
+                                                                    style={{alignSelf: "center",  width: 300}}/>
+                                                                    <Card.Title title={"Emirates ID Front"}/>
                                                                 </Card>
+
+                                                                <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
+                                                                    <Card.Cover source={{ uri: item.imageIDbackURL }}
+                                                                    defaultSource={require('../../assets/99nomedia.jpg')}
+                                                                    style={{alignSelf: "center", width: 300}}/>
+                                                                    <Card.Title title={"Emirates ID Front"}/>
+                                                                </Card>
+                                                                <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
+                                                                    <Card.Cover source={{ uri: item.signatureURL }}
+                                                                    defaultSource={require('../../assets/99nomedia.jpg')}
+                                                                    style={{alignSelf: "center", width: 300}}/>
+                                                                    <Card.Title title={"Agent Signature"}/>
+                                                                </Card>
+                                                            </ScrollView>                                                            
                                                         </View>
                                                     </List.Accordion>                                    
                                                 </List.Section>,

@@ -10,7 +10,8 @@ require("firebase/firebase-storage")
 export default function Addkey(props) {
 
     const [keyname, setkeyname] = useState("")
-    const [keylocation, setKeylocation] = useState("")
+    const [keybuildingvilla, setKeybuildingvilla] = useState("")
+    const [keyarea, setKeyarea] = useState("")
 
     const [name, setfeildname] = useState("")
     //const [entrytype, setfieldentrytype] = useState("")
@@ -21,7 +22,7 @@ export default function Addkey(props) {
 
     const saveKeyData = () => {
 
-        if (!keyname.trim() || !keylocation.trim() || !name.trim() || !company.trim() === "") {
+        if (!keyname.trim() || !keybuildingvilla.trim() || !keyarea.trim() === "") {
             console.log("blank")
         }
         else {
@@ -36,10 +37,9 @@ export default function Addkey(props) {
                 .collection("keylist")
                 .add({
                     keyname,
-                    keylocation,
+                    keybuildingvilla,
+                    keyarea,
                     entrytype,
-                    name,
-                    company,
                     creation
                 })
                 .then(function (docRef) {
@@ -52,10 +52,7 @@ export default function Addkey(props) {
                         .doc(docRef.id)
                         .collection("keyhistory")
                         .add({
-                            name,
                             entrytype,
-                            company,
-                            notes,
                             creation: firebase.firestore.FieldValue.serverTimestamp()
                         },
                             function (error) {
@@ -97,43 +94,19 @@ export default function Addkey(props) {
                             placeholder="Key name . . ."
                             onChangeText={(keyname) => setkeyname(keyname)}/>
                             
-                            <HelperText type="error" visible={hasErrors}>
-                                Field cannot be empty.
-                            </HelperText>
-                            
                             <TextInput
                             style={styles.textinputstyle}
                             type='outlined'
-                            placeholder="Building/Community . . ."
-                            onChangeText={(keylocation) => setKeylocation(keylocation)}
-                        />
-                        </Card.Content>
+                            placeholder="Building . . ."
+                            onChangeText={(keybuildingvilla) => setKeybuildingvilla(keybuildingvilla)}
+                            />
 
-                    </Card>
-                    
-                    <Card style={styles.cardstyle}>
-
-                        <Card.Title title='New Key History Entry' />
-
-                        <Card.Content >
                             <TextInput
                             style={styles.textinputstyle}
                             type='outlined'
-                            label="Name . . ."
-                            onChangeText={(name) => setfeildname(name)}/>
-                            
-                            <TextInput
-                            style={styles.textinputstyle}
-                            label="Company . . ."
-                            onChangeText={(company) => setfieldcompany(company)}
+                            placeholder="Area/Community . . ."
+                            onChangeText={(keyarea) => setKeyarea(keyarea)}
                             />
-                            
-                            <TextInput
-                            style={styles.textinputstyle}
-                            label="Notes . . ."
-                            onChangeText={(notes) => setfieldnotes(notes)}
-                            />
-
                         </Card.Content>
 
                     </Card>
