@@ -29,6 +29,7 @@ import NewHistoryLandlord from './components/main/NewHistoryLandlord'
 import NewHistoryCompany from './components/main/NewHistoryCompany'
 import NewHistoryAgent from './components/main/NewHistoryAgent'
 import NewHistoryOther from './components/main/NewHistoryOther'
+import SearchScreen from './components/main/Search'
 
 //LogBox.ignoreLogs(['Warning: ...']);
 //console.disableYellowBox = true;
@@ -176,6 +177,14 @@ export class App extends Component {
                             }}/>
                             
                         <Stack.Screen name="Other" component={NewHistoryOther}
+                            options={{
+                                headerStyle: {
+                                    backgroundColor: '#efefef',
+                                    elevation: 0,
+                                }
+                            }}/>
+
+                        <Stack.Screen name="Search" component={SearchScreen}
                             options={{
                                 headerStyle: {
                                     backgroundColor: '#efefef',

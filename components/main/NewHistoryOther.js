@@ -23,16 +23,19 @@ export default function NewHistoryOther(props, { navigation }) {
 
     const [visiblePhotoFront, setVisiblePhotoFront] = React.useState(false);
     const showModalPhotoFront = () => setVisiblePhotoFront(true);
-    const hideModalPhotoFront = () => setVisiblePhotoFront(false);
 
     const [visiblePhotoBack, setVisiblePhotoBack] = React.useState(false);
     const showModalPhotoBack = () => setVisiblePhotoBack(true);
-    const hideModalPhotoBack = () => setVisiblePhotoBack(false);
+
+    const [visibleAlert, setVisibleAlert] = React.useState(false);
+    const showModalAlert = () => setVisibleAlert(true);
+    const hideModalAlert = () => setVisibleAlert(false);
 
     const [imageIDfront, setImageIDfront] = useState(null);
     const [imageIDback, setImageIDback] = useState(null);
 
     const containerStylePhoto = {flex: 1, justifyContent: 'center', backgroundColor: 'white', margin: 20, padding: 5, borderRadius: 10};
+    const containerStyleAlert = {flex: 1, justifyContent: 'center', width: 300};
 
     const mounted = useRef(false);
 
@@ -202,7 +205,16 @@ export default function NewHistoryOther(props, { navigation }) {
     
     //loop images into uploadimage
     const downloadURLarray = async () => {
-        setLoading(true);
+        if(isSwitchOn == true && !name.trim() || !number.trim() === ""){
+            console.log('empty fields')
+            showModalAlert(true)
+        }
+        else if(isSwitchOn == false && ((imageIDfront === null) || (imageIDback === null))){
+            console.log('empty images')
+            showModalAlert(true)
+        }
+        else{
+            setLoading(true);
 
         console.log('-----------------------')
 
@@ -230,22 +242,18 @@ export default function NewHistoryOther(props, { navigation }) {
         const url2 = urls[1]
 
         saveKeyData(url1,url2)
-        
+        }
     }
 
     // Clear All Fields
     const clearKeyData = () => {
         setImageIDback(null)
         setImageIDfront(null)
-        this.fieldname.current.clear()
-        this.fieldnumber.current.clear()
-        this.fieldnotes.current.clear()
+    
         console.log('clear')
     }
 
-    this.fieldname = React.createRef();
-    this.fieldnumber = React.createRef();
-    this.fieldnotes = React.createRef();
+ 
 
     const [isSwitchOn, setIsSwitchOn] = React.useState(false);
     const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
@@ -283,6 +291,16 @@ export default function NewHistoryOther(props, { navigation }) {
                 </Card>
             </Dialog>
 
+            <Dialog visible={visibleAlert} dismissable={false} contentContainerStyle={containerStyleAlert}>
+                <View style={{flexDirection: 'row', margin: 10, alignItems: 'center'}}>
+                    <IconButton icon={'alert'}/>
+                    <Text> Some text fields/media are empty</Text>
+                </View>
+                
+                <Dialog.Actions>
+                    <Button onPress={hideModalAlert}>OK</Button>
+                </Dialog.Actions>
+            </Dialog>
         </Portal>
 
         <View style={styles.container}>
@@ -312,21 +330,18 @@ export default function NewHistoryOther(props, { navigation }) {
                                 style={styles.textinputstyle}
                                 onChangeText={(name) => setfeildname(name)}
                                 placeholder='Name . . .'
-                                ref={this.fieldname}
                             />
 
                             <TextInput
                                 style={styles.textinputstyle}
                                 onChangeText={(number) => setfieldnumber(number)}
                                 placeholder='Number . . .'
-                                ref={this.fieldnumber}
                             />
 
                             <TextInput
                                 style={styles.textinputstyle}
                                 onChangeText={(notes) => setfieldnotes(notes)}
                                 placeholder='Notes . . .'
-                                ref={this.fieldnotes}
                             />
                         </Card.Content>
                     </Card>
