@@ -108,7 +108,6 @@ function Profile(props) {
                                 <Chip>{item.number}</Chip>
                                 <Chip>{item.name}</Chip>
                                 </>
-                                    
                             }
                                     
                             <Chip 

@@ -68,8 +68,6 @@ export function fetchKeyInfo() {
                 if (!docSnapshot.metadata.hasPendingWrites) {  // <======
                     dispatch({ type: USER_KEYINFO_STATE_CHANGE, keyinfo })
                  }
-
-                
             })
     })
 }
