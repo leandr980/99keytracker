@@ -17,7 +17,7 @@ export default function NewHistoryCompany(props, { navigation }) {
 
     const creation = firebase.firestore.FieldValue.serverTimestamp()
 
-    const [companyname, setfeildcompanyname] = useState("")
+    const [name, setfeildname] = useState("")
     const [number, setfieldnumber] = useState("")
     const [supervisor, setfieldsupervisor] = useState("")
     const [notes, setfieldnotes] = useState("")
@@ -122,7 +122,7 @@ export default function NewHistoryCompany(props, { navigation }) {
             .doc(props.route.params.keyId)
             .collection("keyhistory")
             .add({
-                companyname,
+                name,
                 entrytype,
                 supervisor,
                 number,
@@ -209,7 +209,7 @@ export default function NewHistoryCompany(props, { navigation }) {
     
     //loop images into uploadimage
     const downloadURLarray = async () => {
-        if(isSwitchOn == true && !companyname.trim() || !supervisor.trim() || !number.trim() === ""){
+        if(isSwitchOn == true && !name.trim() || !supervisor.trim() || !number.trim() === ""){
             console.log('empty fields')
             showModalAlert(true)
         }
@@ -330,7 +330,7 @@ export default function NewHistoryCompany(props, { navigation }) {
                     <Card.Content style={styles.cardcontentstyle}>
                         <TextInput
                             style={styles.textinputstyle}
-                            onChangeText={(name) => setfeildcompanyname(name)}
+                            onChangeText={(name) => setfeildname(name)}
                             placeholder='Company Name . . .'
                         />
 
