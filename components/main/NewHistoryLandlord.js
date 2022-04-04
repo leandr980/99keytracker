@@ -138,7 +138,6 @@ export default function NewHistoryLandlord(props, { navigation }) {
                 }
             )
 
-
             firebase.firestore()
             .collection('keycollection')
             .doc(firebase.auth().currentUser.uid)
@@ -216,45 +215,36 @@ export default function NewHistoryLandlord(props, { navigation }) {
         }
         else{
             setLoading(true);
-
-        console.log('-----------------------')
-
-        
-
-        if(isSwitchOn == true){
-
-            saveKeyData('../../assets/99nomedia.jpg','../../assets/99nomedia.jpg')
-
-        }
-        else{
-            const images = []
-            const urls = []
-
-            const response1 = await fetch(imageIDfront);
-            const blob1 = await response1.blob();
-        
-            const response2 = await fetch(imageIDback);
-            const blob2 = await response2.blob();
-        
-            images.push(blob1)
-            images.push(blob2)
-
-            for (const image of images) {
-                const dd = await uploadimage(image)
-                urls.push(dd)
-                console.log('uploading')
+            console.log('-----------------------')
+            if(isSwitchOn == true){
+                saveKeyData('../../assets/99nomedia.jpg','../../assets/99nomedia.jpg')
             }
-            console.log(urls[0], 'results1')
-            console.log(urls[1], 'results2')
-    
-            const url1 = urls[0]
-            const url2 = urls[1]
-    
-            saveKeyData(url1,url2)
-        }
+            else {
+                const images = []
+                const urls = []
 
+                const response1 = await fetch(imageIDfront);
+                const blob1 = await response1.blob();
+            
+                const response2 = await fetch(imageIDback);
+                const blob2 = await response2.blob();
+            
+                images.push(blob1)
+                images.push(blob2)
 
+                for (const image of images) {
+                    const dd = await uploadimage(image)
+                    urls.push(dd)
+                    console.log('uploading')
+                }
+                console.log(urls[0], 'results1')
+                console.log(urls[1], 'results2')
         
+                const url1 = urls[0]
+                const url2 = urls[1]
+        
+                saveKeyData(url1,url2)
+            }
         }
 
     }
@@ -280,11 +270,11 @@ export default function NewHistoryLandlord(props, { navigation }) {
                 style={styles.fixedratio}
                 ratio={'1:1'} />
                 <Card style={{position: 'absolute', bottom: 10, left: 10, borderRadius: 100, justifyContent: 'center'}}>
-                    <IconButton icon="camera" size={60} onPress={() => takePicture('front')}/> 
+                    <IconButton icon="camera" size={40} onPress={() => takePicture('front')}/> 
                 </Card>
 
                 <Card style={{position: 'absolute', bottom: 10, right: 10, borderRadius: 100, justifyContent: 'center'}}>
-                    <IconButton  icon="close-box-outline" size={60} onPress={() => setVisiblePhotoFront(false)}/>
+                    <IconButton  icon="close" size={40} onPress={() => setVisiblePhotoFront(false)}/>
                 </Card>
             </Dialog>
 
@@ -294,11 +284,11 @@ export default function NewHistoryLandlord(props, { navigation }) {
                 style={styles.fixedratio}
                 ratio={'1:1'} />
                 <Card style={{position: 'absolute', bottom: 10, left: 10, borderRadius: 100, justifyContent: 'center'}}>
-                    <IconButton  icon="camera" size={60} onPress={() => takePicture('back')}/>
+                    <IconButton  icon="camera" size={40} onPress={() => takePicture('back')}/>
                 </Card>
 
                 <Card style={{position: 'absolute', bottom: 10, right: 10, borderRadius: 100, justifyContent: 'center'}}>
-                    <IconButton  icon="close-box-outline" size={60} onPress={() => setVisiblePhotoBack(false)}/>
+                    <IconButton  icon="close" size={40} onPress={() => setVisiblePhotoBack(false)}/>
                 </Card>
             </Dialog>
 
@@ -344,23 +334,18 @@ export default function NewHistoryLandlord(props, { navigation }) {
                                 style={styles.textinputstyle}
                                 onChangeText={(name) => setfeildname(name)}
                                 placeholder='Name . . .'
-                                
                             />
 
                             <TextInput
                                 style={styles.textinputstyle}
                                 onChangeText={(number) => setfieldnumber(number)}
                                 placeholder='Number . . .'
-                                
-
                             />
 
                             <TextInput
                                 style={styles.textinputstyle}
                                 onChangeText={(notes) => setfieldnotes(notes)}
                                 placeholder='Notes . . .'
-                              
-                                
                             />
                         </Card.Content>
                     </Card>
@@ -380,7 +365,7 @@ export default function NewHistoryLandlord(props, { navigation }) {
                         <View>
                             <Card style={styles.cardstyle}>
                                 <Card.Title title='Emirates ID Front:' />
-                                <Card.Cover source={{ uri: imageIDfront }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center", height: 300}} />
+                                <Card.Cover source={{ uri: imageIDfront }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center"}} />
                                 
                                 <Card.Actions style={{ justifyContent: 'space-between' }}>
                                     <Button
@@ -397,7 +382,7 @@ export default function NewHistoryLandlord(props, { navigation }) {
 
                             <Card style={styles.cardstyle}>
                                 <Card.Title title='Emirates ID Back:' />
-                                <Card.Cover source={{ uri: imageIDback }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center", height: 300}} />
+                                <Card.Cover source={{ uri: imageIDback }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center"}} />
                                 
                                 <Divider />
                                 
@@ -417,8 +402,6 @@ export default function NewHistoryLandlord(props, { navigation }) {
                     }
 
                     <Card style={styles.cardstyle}>
-
-                        <Divider styles={{margin: 10}}/>
 
                         <Card.Actions style={{ justifyContent: 'space-between', alignItems: 'center' }}>
                             <Button

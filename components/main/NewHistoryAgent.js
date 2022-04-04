@@ -1,6 +1,6 @@
 // JavaScript source code
 import React, { useEffect, useState, useRef } from 'react'
-import { View, StyleSheet, ScrollView, Image, ImageBackground, TouchableOpacity, TextInput} from 'react-native'
+import { View, StyleSheet, ScrollView, Image, ImageBackground, TextInput, SafeAreaView, Dimensions} from 'react-native'
 import { Card,  IconButton, Paragraph, Divider, Button, Chip, Text, Portal, Dialog, Provider, Modal, ProgressBar } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import * as ImagePicker from 'expo-image-picker';
@@ -14,6 +14,9 @@ require("firebase/firebase-storage")
 
 
 export default function NewHistroyAgent(props) {
+
+    const windowWidth = Dimensions.get('window').width;
+    const windowHeight = Dimensions.get('window').height;
 
     const creation = firebase.firestore.FieldValue.serverTimestamp()
 
@@ -37,6 +40,7 @@ export default function NewHistroyAgent(props) {
     
 
     const containerStylePhoto = {flex: 1, justifyContent: 'center', backgroundColor: 'white', margin: 20, padding: 5, borderRadius: 10};
+    const containerStyleSign = {justifyContent: 'center', backgroundColor: 'white', margin: 20, padding: 5, borderRadius: 10, height: 580};
 
     const mounted = useRef(false);
 
@@ -110,7 +114,7 @@ export default function NewHistroyAgent(props) {
     }
 
     // Save Data to Firebase
-    const saveKeyData = (imageIDbackURL, imageIDfrontURL, signatureURL) => {
+    const saveKeyData = (imageIDbackURL, imageIDfrontURL) => {
 
         // Saving data to keyhistory db
         firebase.firestore()
@@ -265,11 +269,11 @@ export default function NewHistroyAgent(props) {
                 ratio={'1:1'} />
                 
                 <Card style={{position: 'absolute', bottom: 10, left: 10, borderRadius: 100, justifyContent: 'center'}}>
-                    <IconButton icon="camera" size={60} onPress={() => takePicture('front')}/> 
+                    <IconButton icon="camera" size={40} onPress={() => takePicture('front')}/> 
                 </Card>
 
                 <Card style={{position: 'absolute', bottom: 10, right: 10, borderRadius: 100, justifyContent: 'center'}}>
-                    <IconButton  icon="close-box-outline" size={60} onPress={() => setVisiblePhotoFront(false)}/>
+                    <IconButton  icon="close" size={40} onPress={() => setVisiblePhotoFront(false)}/>
                 </Card>
             </Dialog>
 
@@ -280,18 +284,18 @@ export default function NewHistroyAgent(props) {
                 ratio={'1:1'} />
 
                 <Card style={{position: 'absolute', bottom: 10, left: 10, borderRadius: 100, justifyContent: 'center'}}>
-                    <IconButton  icon="camera" size={60} onPress={() => takePicture('back')}/>
+                    <IconButton  icon="camera" size={40} onPress={() => takePicture('back')}/>
                 </Card>
 
                 <Card style={{position: 'absolute', bottom: 10, right: 10, borderRadius: 100, justifyContent: 'center'}}>
-                    <IconButton  icon="close-box-outline" size={60} onPress={() => setVisiblePhotoBack(false)}/>
+                    <IconButton  icon="close" size={40} onPress={() => setVisiblePhotoBack(false)}/>
                 </Card>
                 
             </Dialog>
 
-            <Modal visible={visibleSignature} onDismiss={hideModalSignature} contentContainerStyle={containerStylePhoto}>
-                <View style={{ flex: 1}}>
-                    <SignatureView
+            <Modal visible={visibleSignature} dismissable={false} contentContainerStyle={containerStyleSign}>
+                <SafeAreaView style={{ flex: 1, justifyContent: 'center'}}>
+                <SignatureView
                     style={{
                         borderWidth:2,
                         aspectRatio: 4/3
@@ -310,27 +314,16 @@ export default function NewHistroyAgent(props) {
                         setText('')
                     }}
                     />
-                        
-                    <View style={{flexDirection: 'row', justifyContent:'center', height: 50}}>
-                    
-                        <TouchableOpacity
-                        style={{ justifyContent:'center',alignItems:'center', flex:1}}
-                        onPress={() => {
-                            signatureRef.current.clearSignature();
-                        }}>
-                            <Text>Clear</Text>
-                            </TouchableOpacity>
-                            
-                        <TouchableOpacity
-                        style={{ justifyContent:'center',alignItems:'center', flex:1}}
-                        onPress={() => {
-                            signatureRef.current.saveSignature();
-                        }}>
-                            <Text>Save</Text>
-                        </TouchableOpacity>
 
-                    </View>
-                </View>
+                    <Card style={{position: 'absolute', bottom: 10, left: 10, borderRadius: 100, justifyContent: 'center'}}>
+                        <IconButton  icon="check" size={40} onPress={() => {signatureRef.current.saveSignature(), setVisibleSignature(false)}}/>
+                        <IconButton  icon="eraser" size={40} onPress={() => {signatureRef.current.clearSignature();}}/>
+                    </Card>
+
+                    <Card style={{position: 'absolute', bottom: 10, right: 10, borderRadius: 100, justifyContent: 'center'}}>
+                        <IconButton  icon="close" size={40} onPress={() => setVisibleSignature(false)}/>
+                    </Card>
+                    </SafeAreaView>
             </Modal>
         </Portal>
 
@@ -381,10 +374,12 @@ export default function NewHistroyAgent(props) {
                     </Card.Content>
                 </Card>
 
+                
+
                 <Card style={styles.cardstyle}>
                     <Card.Title title='Emirates ID Front:' />
-                    <Card.Cover source={{ uri: imageIDfront }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center", height: 300}} />
-                    
+                    <Card.Cover source={{ uri: imageIDfront }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center"}} />
+                    <Divider/>
                     <Card.Actions style={{ justifyContent: 'space-between' }}>
                         <Button
                         onPress={showModalPhotoFront} >
@@ -400,7 +395,7 @@ export default function NewHistroyAgent(props) {
 
                 <Card style={styles.cardstyle}>
                     <Card.Title title='Emirates ID Back:' />
-                    <Card.Cover source={{ uri: imageIDback }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center", height: 300}} />
+                    <Card.Cover source={{ uri: imageIDback }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center",}} />
                     
                     <Divider />
                     
@@ -417,9 +412,10 @@ export default function NewHistroyAgent(props) {
                     </Card.Actions>
                 </Card>
 
+
                 <Card style={styles.cardstyle}>
                     <Card.Title title='Agent Signature:' />
-                    <Card.Cover source={text ? { uri: text } : null} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center", height: 300}} />
+                    <Card.Cover source={text ? { uri: text } : null} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center"}} />
 
                     <Divider />
                     
