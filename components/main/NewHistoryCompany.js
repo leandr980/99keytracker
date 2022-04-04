@@ -269,11 +269,11 @@ export default function NewHistoryCompany(props, { navigation }) {
                 style={styles.fixedratio}
                 ratio={'1:1'} />
                 <Card style={{position: 'absolute', bottom: 10, left: 10, borderRadius: 100, justifyContent: 'center'}}>
-                    <IconButton icon="camera" size={60} onPress={() => takePicture('front')}/> 
+                    <IconButton icon="camera" size={40} onPress={() => takePicture('front')}/> 
                 </Card>
 
                 <Card style={{position: 'absolute', bottom: 10, right: 10, borderRadius: 100, justifyContent: 'center'}}>
-                    <IconButton  icon="close-box-outline" size={60} onPress={() => setVisiblePhotoFront(false)}/>
+                    <IconButton  icon="close" size={40} onPress={() => setVisiblePhotoFront(false)}/>
                 </Card>
             </Dialog>
 
@@ -283,11 +283,11 @@ export default function NewHistoryCompany(props, { navigation }) {
                 style={styles.fixedratio}
                 ratio={'1:1'} />
                 <Card style={{position: 'absolute', bottom: 10, left: 10, borderRadius: 100, justifyContent: 'center'}}>
-                    <IconButton  icon="camera" size={60} onPress={() => takePicture('back')}/>
+                    <IconButton  icon="camera" size={40} onPress={() => takePicture('back')}/>
                 </Card>
 
                 <Card style={{position: 'absolute', bottom: 10, right: 10, borderRadius: 100, justifyContent: 'center'}}>
-                    <IconButton  icon="close-box-outline" size={60} onPress={() => setVisiblePhotoBack(false)}/>
+                    <IconButton  icon="close" size={40} onPress={() => setVisiblePhotoBack(false)}/>
                 </Card>
             </Dialog>
 
@@ -369,7 +369,7 @@ export default function NewHistoryCompany(props, { navigation }) {
                     <View>
                         <Card style={styles.cardstyle}>
                             <Card.Title title='Emirates ID Front:' />
-                            <Card.Cover source={{ uri: imageIDfront }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center", height: 300}} />
+                            <Card.Cover source={{ uri: imageIDfront }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center"}} />
                             
                             <Card.Actions style={{ justifyContent: 'space-between' }}>
                                 <Button
@@ -386,7 +386,7 @@ export default function NewHistoryCompany(props, { navigation }) {
 
                         <Card style={styles.cardstyle}>
                             <Card.Title title='Emirates ID Back:' />
-                            <Card.Cover source={{ uri: imageIDback }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center", height: 300}} />
+                            <Card.Cover source={{ uri: imageIDback }} style={{ flex: 1, margin: 10, aspectRatio: 4/3, alignSelf: "center"}} />
                             
                             <Divider />
                             
@@ -406,13 +406,6 @@ export default function NewHistoryCompany(props, { navigation }) {
                 }
 
                 <Card style={styles.cardstyle}>
-
-                    <Card.Content style= {{marginBottom: 10}}>
-                        <Paragraph>{progress}</Paragraph>
-                        <ProgressBar progress={progress}/>
-                    </Card.Content>
-
-                    <Divider styles={{margin: 10}}/>
 
                     <Card.Actions style={{ justifyContent: 'space-between', alignItems: 'center' }}>
                         <Button
