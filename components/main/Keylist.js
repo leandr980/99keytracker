@@ -1,6 +1,6 @@
 // JavaScript source code
 import React, {useState, useEffect}from 'react'
-import { View, Text, FlatList, StyleSheet, ImageBackground, TextInput } from 'react-native'
+import { View, Text, FlatList, StyleSheet, ImageBackground, TextInput, RefreshControl } from 'react-native'
 import { Card, FAB, IconButton, Divider, Chip, Caption } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { format } from 'date-fns'
@@ -10,7 +10,16 @@ require ("firebase/firestore")
 
 import { connect } from 'react-redux'
 
-function Profile(props) {
+const wait = (timeout) => {
+        return new Promise(resolve => setTimeout(resolve, timeout));
+      }
+
+function Keylist(props) {
+
+    const [refreshing, setRefreshing] = React.useState(false);
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        wait(2000).then(() => setRefreshing(false));}, []);
 
     const { currentUser, keyinfo } = props;
 
@@ -83,6 +92,7 @@ function Profile(props) {
                 numColumns={1}
                 horizontal={false}
                 data={keyinfo}
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}
                 renderItem={({ item }) => (
 
                     <Card style={styles.cardstyle}>
@@ -181,4 +191,4 @@ const mapStateToProps = (store) => ({
     keyinfodetails: store.userState.keyinfodetails
 })
 
-export default connect(mapStateToProps, null)(Profile)
+export default connect(mapStateToProps, null)(Keylist)
