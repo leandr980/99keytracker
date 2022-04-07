@@ -43,6 +43,15 @@ const alerthandler = (error) =>{
             ]
           );
     }
+    else if (error == 'Error: The email address is already in use by another account.'){
+        Alert.alert(
+            "Alert",
+            "The email address is already in use by another account",
+            [
+              { text: "OK" }
+            ]
+          );
+    }
     else{
         console.log(error)
     }
