@@ -1,14 +1,11 @@
 // JavaScript source code
 import React, { useEffect, useState, useRef } from 'react'
 import { View, StyleSheet, ScrollView, Image, ImageBackground, TextInput } from 'react-native'
-import { Card,  IconButton, Paragraph, Divider, Button, Text, Portal, Dialog, Provider, ProgressBar, Switch } from 'react-native-paper'
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import { Card,  IconButton, Divider, Button, Text, Portal, Dialog, Provider, Switch } from 'react-native-paper'
 import * as ImagePicker from 'expo-image-picker';
 import { Camera } from 'expo-camera';
 
 import firebase from 'firebase'
-import reactDom from 'react-dom';
-import { Icon } from 'react-native-elements';
 require("firebase/firestore")
 require("firebase/firebase-storage")
 

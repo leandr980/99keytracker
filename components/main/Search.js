@@ -1,9 +1,8 @@
 import React, { useState } from 'react'
-import { View, Text, TextInput, FlatList } from 'react-native'
+import { View, TextInput, FlatList } from 'react-native'
 
 import firebase from 'firebase'
 import { Card, Divider, IconButton } from 'react-native-paper'
-import { Icon } from 'react-native-elements'
 require('firebase/firestore')
 
 export default function Search(props) {
@@ -31,8 +30,11 @@ export default function Search(props) {
         <View style={{flex: 1}}>
             <Card >
                 <View style={{flexDirection: 'row'}}>
-                    <IconButton icon={'magnify'}/>
-                    <TextInput placeholder="Search . . . ." onChangeText={(search) => fetchUsers(search)} />
+                    <IconButton icon={'magnify'} size={30}/>
+                    <View style={{flex:1, justifyContent: 'center'}}>
+                        <TextInput style={{fontSize: 20}} placeholder="Search . . . ." onChangeText={(search) => fetchUsers(search)}/>
+                    </View>
+                    
                 </View>
             </Card>
             <Card>
@@ -42,7 +44,14 @@ export default function Search(props) {
                     data={keydata}
                     renderItem={({ item }) => (
                     <View style={{padding: 10}}>
-                        <Text onPress={() => props.navigation.navigate("Keyinfo", { keyId: item.id, uid: firebase.auth().currentUser.uid })}> {item.keyname} </Text>
+                        <Card>
+                            <Card.Title
+                            title={item.keyname}
+                            subtitle={item.keybuildingvilla + ', ' +item.keyarea}
+                            right={()=> <IconButton icon="chevron-right" 
+                            onPress={() => props.navigation.navigate("Keyinfo", { keyId: item.id, uid: firebase.auth().currentUser.uid })}/>}
+                            />
+                        </Card>
                         <Divider/>
                     </View>
                     )}
