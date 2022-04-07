@@ -2,7 +2,6 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { View, StyleSheet, ScrollView, Image, ImageBackground } from 'react-native'
 import { Card,  IconButton, Divider, Button, Text, Portal, Dialog, Provider, Switch, TextInput } from 'react-native-paper'
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import * as ImagePicker from 'expo-image-picker';
 import { Camera } from 'expo-camera';
 

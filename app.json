@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/smoll.png",
     "splash": {
-      "image": "./assets/smoll.png",
+      "image": "./assets/99_with_text.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },

@@ -1,6 +1,6 @@
 // JavaScript source code
-import React, {useState, useEffect}from 'react'
-import { View, Text, FlatList, StyleSheet, ImageBackground, TextInput, RefreshControl } from 'react-native'
+import React from 'react'
+import { View, Text, FlatList, StyleSheet, ImageBackground, RefreshControl } from 'react-native'
 import { Card, FAB, IconButton, Divider, Chip, Caption } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { format } from 'date-fns'
@@ -112,7 +112,7 @@ function Keylist(props) {
                             
                             {
                                 item.entrytype == 'NEW ENTRY' ? 
-                                <></> 
+                                <></>
                                 : 
                                 <>
                                 <Chip>{item.number}</Chip>
