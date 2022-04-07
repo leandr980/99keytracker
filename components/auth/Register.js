@@ -1,10 +1,52 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Text, ImageBackground } from 'react-native'
-import { Card, FAB, Searchbar, IconButton, Paragraph, Divider, Chip, Button, TextInput } from 'react-native-paper'
+import { View, StyleSheet, Text, ImageBackground, Alert } from 'react-native'
+import { Card, Button, TextInput } from 'react-native-paper'
 
 import firebase from 'firebase/app'
 import 'firebase/auth'
 import 'firebase/firebase-firestore'
+
+const alerthandler = (error) =>{
+    if(error == 'Error: The email address is badly formatted.'){
+        Alert.alert(
+            "Alert",
+            "The email address is badly formatted or missing",
+            [
+              { text: "OK" }
+            ]
+          );
+    }
+    else if(error == 'Error: The password is invalid or the user does not have a password.'){
+        Alert.alert(
+            "Alert",
+            "The password is invalid or the user does not have a password.",
+            [
+              { text: "OK" }
+            ]
+          );
+    }
+    else if (error == 'Error: There is no user record corresponding to this identifier. The user may have been deleted.'){
+        Alert.alert(
+            "Alert",
+            "This user does not exit",
+            [
+              { text: "OK" }
+            ]
+          );
+    }
+    else if (error == 'repassdoesnotmatch'){
+        Alert.alert(
+            "Alert",
+            "Passwords must be the same",
+            [
+              { text: "OK" }
+            ]
+          );
+    }
+    else{
+        console.log(error)
+    }
+}
 
 export class Register extends Component {
 
@@ -21,22 +63,32 @@ export class Register extends Component {
     }
 
     onSignUp() {
-        const { email, password, name } = this.state;
-        firebase.auth().createUserWithEmailAndPassword(email, password)
-            .then((result) => {
-                firebase.firestore().collection("users")
-                    .doc(firebase.auth().currentUser.uid)
-                    .set({
-                        name,
-                        email
-                    })
+        const { email, password, name,repassword } = this.state;
+        if(password != repassword){
+            alerthandler('repassdoesnotmatch')
+        }
+        else{
 
-                console.log(result)
-            })
-            .catch((error) => {
-                console.log(error)
-            })
+            const emailfinal = email.trim()
+            firebase.auth().createUserWithEmailAndPassword(emailfinal, password)
+                .then((result) => {
+                    firebase.firestore().collection("users")
+                        .doc(firebase.auth().currentUser.uid)
+                        .set({
+                            name,
+                            email
+                        })
+    
+                    console.log(result)
+                })
+                .catch((error) => {
+                    console.log(error)
+                    alerthandler
+                })
+        }
     }
+
+    
 
     render() {
         return (
@@ -72,6 +124,14 @@ export class Register extends Component {
                                     type='outlined'
                                     label="Password . . ."
                                     onChangeText={(password) => this.setState({ password })}
+                                    secureTextEntry={true}
+                                />
+
+                                <TextInput
+                                    style={styles.textinputstyle}
+                                    type='outlined'
+                                    label="Reconfirm Password . . ."
+                                    onChangeText={(repassword) => this.setState({ repassword })}
                                 />
                             </Card.Content>
 

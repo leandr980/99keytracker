@@ -203,13 +203,13 @@ export default function Keyinfo(props) {
                                     <Card style={styles.cardstyle}>
                                         <Card.Title
                                             title={'Added ' + format(new Date(item.creation.toDate().toString()), 'PP')}
+                                            subtitle={'Key Status'}
                                             right={()=>
-
                                             <Chip 
                                             style={ changechipcolor(item.entrytype)} 
                                             icon={changechipicon(item.entrytype)}
-
                                             > {item.entrytype}</Chip>}/>
+                                            
                                         <Divider />
                                         
                                         {

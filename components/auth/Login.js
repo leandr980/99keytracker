@@ -1,9 +1,45 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Text, ImageBackground } from 'react-native'
-import { Card, FAB, Searchbar, IconButton, Paragraph, Divider, Chip, Button, TextInput} from 'react-native-paper'
+import { View, StyleSheet, Text, ImageBackground, Alert} from 'react-native'
+import { Card, Button, TextInput} from 'react-native-paper'
 
 import firebase from 'firebase/app'
 import 'firebase/auth'
+
+const alerthandler = (error) =>{
+
+    if(error == 'Error: The email address is badly formatted.'){
+        Alert.alert(
+            "Alert",
+            "The email address is badly formatted or missing",
+            [
+              { text: "OK" }
+            ]
+          );
+    }
+    else if(error == 'Error: The password is invalid or the user does not have a password.'){
+        Alert.alert(
+            "Alert",
+            "The password is invalid or the user does not have a password.",
+            [
+              { text: "OK" }
+            ]
+          );
+    }
+    else if (error == 'Error: There is no user record corresponding to this identifier. The user may have been deleted.'){
+        Alert.alert(
+            "Alert",
+            "This user does not exit",
+            [
+              { text: "OK" }
+            ]
+          );
+    }
+    else{
+        console.log(error)
+    }
+}
+
+    
 
 export class Login extends Component {
 
@@ -21,12 +57,13 @@ export class Login extends Component {
 
     onSignUp() {
         const { email, password } = this.state;
-        firebase.auth().signInWithEmailAndPassword(email, password)
+        const emailfinal = email.trim()
+        firebase.auth().signInWithEmailAndPassword(emailfinal, password)
             .then((result) => {
                 console.log(result)
             })
             .catch((error) => {
-                console.log(error)
+                alerthandler(error)
             })
     }
 
@@ -58,6 +95,7 @@ export class Login extends Component {
                                     type='outlined'
                                     label="Password . . ."
                                     onChangeText={(password) => this.setState({ password })}
+                                    secureTextEntry={true}
                                 />
                             </Card.Content>
 

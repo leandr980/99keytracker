@@ -1,11 +1,20 @@
-import React, { useEffect, useState } from 'react'
-import { View, Image, StyleSheet, ScrollView, ImageBackground} from 'react-native'
-import { Card, Divider, Button, Paragraph, TextInput, Provider, Dialog, Portal, HelperText} from 'react-native-paper'
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import React, {useState } from 'react'
+import { View, StyleSheet, ScrollView, ImageBackground, Alert} from 'react-native'
+import { Card, Button, TextInput, Provider, Dialog} from 'react-native-paper'
 
 import firebase from 'firebase'
 require("firebase/firestore")
 require("firebase/firebase-storage")
+
+const alerthandler = () =>{
+    Alert.alert(
+        "Alert",
+        "Feilds must not be left empty",
+        [
+          { text: "OK" }
+        ]
+      );
+}
 
 export default function Addkey(props) {
 
@@ -13,17 +22,12 @@ export default function Addkey(props) {
     const [keybuildingvilla, setKeybuildingvilla] = useState("")
     const [keyarea, setKeyarea] = useState("")
 
-    const [name, setfeildname] = useState("")
-    //const [entrytype, setfieldentrytype] = useState("")
-    const [company, setfieldcompany] = useState("")
-    const [notes, setfieldnotes] = useState("")
-
     const creation = firebase.firestore.FieldValue.serverTimestamp()
 
     const saveKeyData = () => {
 
         if (!keyname.trim() || !keybuildingvilla.trim() || !keyarea.trim() === "") {
-            console.log("blank")
+            alerthandler()
         }
         else {
 
@@ -69,10 +73,6 @@ export default function Addkey(props) {
         }
     }
 
-    const hasErrors = () => {
-        return !text.includes('');
-    }
-
     return (
         <Provider>
             
@@ -97,7 +97,7 @@ export default function Addkey(props) {
                             <TextInput
                             style={styles.textinputstyle}
                             type='outlined'
-                            placeholder="Building . . ."
+                            placeholder="Building/Villa . . ."
                             onChangeText={(keybuildingvilla) => setKeybuildingvilla(keybuildingvilla)}
                             />
 
@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
     cardstyle: {
         borderRadius: 10,
         margin: 10,
-        elevation: 10,
+        elevation: 5,
         justifyContent: 'space-between'
     },
     textinputstyle: {
