@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity, ImageBackground, ScrollView } from 'react-native'
-import { Card, FAB, IconButton, Chip, Paragraph, Button, Divider, Caption, Provider, Portal, Dialog, RadioButton, TouchableRipple, List, Switch, Banner } from 'react-native-paper'
+import { Card, FAB, IconButton, Chip, Paragraph, Button, Divider, Caption, Provider, Portal, Dialog, RadioButton, TouchableRipple, List } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import {format } from 'date-fns'
 
@@ -72,7 +72,7 @@ export default function Keyinfo(props) {
                 }
             case 'OTHER':
                 return{
-                    backgroundColor: (`#ffd60a`), margin: 10
+                    backgroundColor: (`#bdb2ff`), margin: 10
                 }
             case 'NEW ENTRY':
                 return{
@@ -91,83 +91,18 @@ export default function Keyinfo(props) {
             case 'AGENT':
                 return "account-tie"
             case 'OTHER':
-                return "help-box"
+                return "account-question-outline"
             case 'NEW ENTRY':
                 return "folder-plus"
         }
     }
 
+    const [state, setState] = React.useState({ open: false });
+    const onStateChange = ({ open }) => setState({ open });
+    const { open } = state;
+
     return (
-        <Provider >
-
-            <Portal >
-
-                <Dialog visible={visibleCategory} onDismiss={hideModalCategory}>
-
-                    <Dialog.Title>Choose an option</Dialog.Title>
-
-                    <Dialog.Content>
-
-                        <TouchableRipple onPress={() => setChecked('Landlord')}>
-                            <View style={styles.row}>
-                                <Paragraph>Landlord</Paragraph>
-                                <View pointerEvents="none">
-                                    <RadioButton
-                                        value="Landlord"
-                                        status={checked === 'Landlord' ? 'checked' : 'unchecked'}/>
-                                </View>
-                            </View>
-                        </TouchableRipple>
-                        
-                        <TouchableRipple onPress={() => setChecked('Company')}>
-                            <View style={styles.row}>
-                                <Paragraph>Company</Paragraph>
-                                <View pointerEvents="none">
-                                    <RadioButton
-                                        value="Company"
-                                        status={checked === 'Company' ? 'checked' : 'unchecked'}/>
-                                </View>
-                            </View>
-                        </TouchableRipple>
-
-                        <TouchableRipple onPress={() => setChecked('Agent')}>
-                            <View style={styles.row}>
-                                <Paragraph>Agent</Paragraph>
-                                <View pointerEvents="none">
-                                    <RadioButton
-                                        value="Agent"
-                                        status={checked === 'Agent' ? 'checked' : 'unchecked'}/>
-                                </View>
-                            </View>
-                        </TouchableRipple>
-
-                        <TouchableRipple onPress={() => setChecked('Other')}>
-                            <View style={styles.row}>
-                                <Paragraph>Other</Paragraph>
-                                <View pointerEvents="none">
-                                    <RadioButton
-                                        value="Other"
-                                        status={checked === 'Other' ? 'checked' : 'unchecked'}/>
-                                </View>
-                            </View>
-                        </TouchableRipple>
-
-                    </Dialog.Content>
-                    
-                    <Dialog.Actions>
-                        <Button onPress={ () => { if (checked == null) {
-                            
-                        }
-                        else {
-                            props.navigation.navigate(checked, { keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid }),
-                            hideModalCategory()
-                        }
-                            
-                        }}>Done</Button>
-                    </Dialog.Actions>
-
-                </Dialog>                
-            </Portal>
+        <Provider>
 
             <View style={styles.container}>
 
@@ -180,6 +115,7 @@ export default function Keyinfo(props) {
 
                             <Card.Title
                                 left={() => <MaterialCommunityIcons name="file-key-outline" size={40} />}
+                                right={()=> <IconButton icon={'pencil-outline'} onPress={()=> props.navigation.navigate( 'Edit Key', { keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid })}/>}
                                 style={{
                                     fontSize: 30,
                                     fontWeight: 'bold'
@@ -315,23 +251,52 @@ export default function Keyinfo(props) {
                                     </Card>
                                 )
                             }/>
-
+                            
                             </View>
-
-                            <FAB
-                            style={styles.fab}
-                            theme={{ colors: { accent: 'white' } }}
+                            <FAB.Group
+                            open={open}
+                            icon={open ? 'help-box' : 'plus'}
                             color='blue'
-                            large
-                            icon="plus"
-                            label="NEW LOG"
-
-                            onPress={showModalCategory}
-                            />
-     
-
-                
-
+                            theme={{ colors: { accent: 'white' } }}
+                            actions={[
+                                {
+                                    icon: 'delete-outline',
+                                    label: 'DELETE',
+                                    onPress: () => console.log('Pressed notifications'),
+                                    small: false,
+                                    },
+                                    {
+                                    icon: 'account-star',
+                                    label: 'LANDLORD',
+                                    onPress: () => props.navigation.navigate('Landlord', { keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid }),
+                                    small: false,
+                                    },
+                                    {
+                                    icon: 'domain',
+                                    label: 'COMPANY',
+                                    onPress: () => props.navigation.navigate('Company', { keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid }),
+                                    small: false,
+                                    },
+                                    {
+                                    icon: 'account-tie',
+                                    label: 'AGENT',
+                                    onPress: () => props.navigation.navigate('Agent', { keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid }),
+                                    small: false,
+                                    },
+                                    {
+                                    icon: 'account-question-outline',
+                                    label: 'OTHER',
+                                    onPress: () => props.navigation.navigate('Other', { keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid }),
+                                    small: false,
+                                    },
+                                ]}
+                                onStateChange={onStateChange}
+                                onPress={() => {
+                                    if (open) {
+                                    // do something if the speed dial is open
+                                    }
+                                }}
+                                />
                 </ImageBackground>
             </View>
         </Provider>

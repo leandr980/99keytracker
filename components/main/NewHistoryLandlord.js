@@ -145,7 +145,8 @@ export default function NewHistoryLandlord(props, { navigation }) {
             .update({
                 name: name,
                 entrytype: entrytype,
-                number: number
+                number: number,
+                creation: creation
             },
                 function (error) {
                     if (error) {

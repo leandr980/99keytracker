@@ -111,6 +111,27 @@ export default function NewHistroyAgent(props) {
 
     // Save Data to Firebase
     const saveKeyData = (imageIDbackURL, imageIDfrontURL) => {
+        firebase.firestore()
+            .collection('keycollection')
+            .doc(firebase.auth().currentUser.uid)
+            .collection("keylist")
+            .doc(props.route.params.keyId)
+            .update({
+                name: name,
+                entrytype: entrytype,
+                number: number,
+                creation: creation
+            },
+                function (error) {
+                    if (error) {
+                        console.log("Data could not be saved." + error);
+                    } else {
+                        console.log("Data saved successfully.");
+                    }
+                }
+            )
+
+            console.log("Document written with ID: ", props.route.params.keyId)
 
         // Saving data to keyhistory db
         firebase.firestore()
@@ -138,32 +159,13 @@ export default function NewHistroyAgent(props) {
                         console.log("Data saved successfully.");
                     }
                 }
-            )
-
-
-        // Updates the cards in key list screen
-        firebase.firestore()
-            .collection('keycollection')
-            .doc(firebase.auth().currentUser.uid)
-            .collection("keylist")
-            .doc(props.route.params.keyId)
-            .update({
-                name: name,
-                entrytype: entrytype,
-                number: number
-            },
-                function (error) {
-                    if (error) {
-                        console.log("Data could not be saved." + error);
-                    } else {
-                        console.log("Data saved successfully.");
-                    }
-                }
             ).then((function () {
                 props.navigation.pop()
             }))
 
-            console.log("Document written with ID: ", props.route.params.keyId)
+
+        // Updates the cards in key list screen
+        
 
         if(mounted.current){
             setLoading(false)
