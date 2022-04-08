@@ -7,50 +7,36 @@ import 'firebase/auth'
 import 'firebase/firebase-firestore'
 
 const alerthandler = (error) =>{
+    
     if(error == 'Error: The email address is badly formatted.'){
         Alert.alert(
             "Alert",
             "The email address is badly formatted or missing",
-            [
-              { text: "OK" }
-            ]
-          );
+            [{ text: "OK" }]);
     }
     else if(error == 'Error: The password is invalid or the user does not have a password.'){
         Alert.alert(
             "Alert",
             "The password is invalid or the user does not have a password.",
-            [
-              { text: "OK" }
-            ]
-          );
+            [{ text: "OK" }]);
     }
     else if (error == 'Error: There is no user record corresponding to this identifier. The user may have been deleted.'){
         Alert.alert(
             "Alert",
             "This user does not exit",
-            [
-              { text: "OK" }
-            ]
-          );
+            [{ text: "OK" }]);
     }
     else if (error == 'repassdoesnotmatch'){
         Alert.alert(
             "Alert",
             "Passwords must be the same",
-            [
-              { text: "OK" }
-            ]
-          );
+            [{ text: "OK" }]);
     }
     else if (error == 'Error: The email address is already in use by another account.'){
         Alert.alert(
             "Alert",
             "The email address is already in use by another account",
-            [
-              { text: "OK" }
-            ]
-          );
+            [{ text: "OK" }]);
     }
     else{
         console.log(error)

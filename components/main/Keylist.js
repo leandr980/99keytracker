@@ -43,7 +43,7 @@ function Keylist(props) {
                 }
             case 'OTHER':
                 return{
-                    backgroundColor: (`#ffd60a`)
+                    backgroundColor: (`#bdb2ff`)
                 }
             case 'NEW ENTRY':
                 return{
@@ -62,7 +62,7 @@ function Keylist(props) {
             case 'AGENT':
                 return "account-tie"
             case 'OTHER':
-                return "help-box"
+                return "account-question-outline"
             case 'NEW ENTRY':
                 return "folder-plus"
         }
