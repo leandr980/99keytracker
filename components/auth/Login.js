@@ -6,33 +6,23 @@ import firebase from 'firebase/app'
 import 'firebase/auth'
 
 const alerthandler = (error) =>{
-
     if(error == 'Error: The email address is badly formatted.'){
         Alert.alert(
             "Alert",
             "The email address is badly formatted or missing",
-            [
-              { text: "OK" }
-            ]
-          );
+            [{ text: "OK" }]);
     }
     else if(error == 'Error: The password is invalid or the user does not have a password.'){
         Alert.alert(
             "Alert",
             "The password is invalid or the user does not have a password.",
-            [
-              { text: "OK" }
-            ]
-          );
+            [{ text: "OK" }]);
     }
     else if (error == 'Error: There is no user record corresponding to this identifier. The user may have been deleted.'){
         Alert.alert(
             "Alert",
             "This user does not exit",
-            [
-              { text: "OK" }
-            ]
-          );
+            [{ text: "OK" }]);
     }
     else{
         console.log(error)

@@ -147,7 +147,8 @@ export default function NewHistoryCompany(props, { navigation }) {
             .update({
                 name: name,
                 entrytype: entrytype,
-                number: number
+                number: number,
+                creation: creation
             },
                 function (error) {
                     if (error) {
@@ -216,33 +217,37 @@ export default function NewHistoryCompany(props, { navigation }) {
         }
         else{
             setLoading(true);
+            console.log('-----------------------')
+            if(isSwitchOn == true){
+                saveKeyData('../../assets/99nomedia.jpg','../../assets/99nomedia.jpg')
+            }
+            else{
 
-        console.log('-----------------------')
-
-        const images = []
-        const urls = []
-
-        const response1 = await fetch(imageIDfront);
-        const blob1 = await response1.blob();
-    
-        const response2 = await fetch(imageIDback);
-        const blob2 = await response2.blob();
-    
-        images.push(blob1)
-        images.push(blob2)
-
-        for (const image of images) {
-            const dd = await uploadimage(image)
-            urls.push(dd)
-            console.log('uploading')
-        }
-        console.log(urls[0], 'results1')
-        console.log(urls[1], 'results2')
-
-        const url1 = urls[0]
-        const url2 = urls[1]
-
-        saveKeyData(url1,url2)
+                const images = []
+                const urls = []
+        
+                const response1 = await fetch(imageIDfront);
+                const blob1 = await response1.blob();
+            
+                const response2 = await fetch(imageIDback);
+                const blob2 = await response2.blob();
+            
+                images.push(blob1)
+                images.push(blob2)
+        
+                for (const image of images) {
+                    const dd = await uploadimage(image)
+                    urls.push(dd)
+                    console.log('uploading')
+                }
+                console.log(urls[0], 'results1')
+                console.log(urls[1], 'results2')
+        
+                const url1 = urls[0]
+                const url2 = urls[1]
+        
+                saveKeyData(url1,url2)
+            }
         }
     }
 
