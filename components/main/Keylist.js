@@ -1,6 +1,6 @@
 // JavaScript source code
 import React from 'react'
-import { View, Text, FlatList, StyleSheet, ImageBackground, RefreshControl } from 'react-native'
+import { View, Text, FlatList, StyleSheet, ImageBackground, RefreshControl} from 'react-native'
 import { Card, FAB, IconButton, Divider, Chip, Caption } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { format } from 'date-fns'
@@ -105,11 +105,19 @@ function Keylist(props) {
                         subtitle={item.keybuildingvilla + ', ' +item.keyarea}
                         />
 
-                          <Divider/>
-                          
+                        <Card.Content>
+                            <Caption style={{marginLeft: 55}}>{'Added: '+format(new Date(item.creation.toDate().toString()), 'PP')}</Caption>
+                        </Card.Content>
+
+                        <Card.Content style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', marginBottom: 5}}>
+                            <Caption style={{marginLeft: 55}}>Key Status: </Caption>
+                            <Chip backgroundColor={''}>Returned</Chip>
+                        </Card.Content>
+
+                        <Divider/>  
                         <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap', margin: 10, alignItems: 'center'}}>
                             <Text style={{marginLeft: 5, marginRight: 10}}>Most recent log:</Text>
-                            
+                            <Chip>{format(new Date(item.creation.toDate().toString()), 'PP')}</Chip>
                             {
                                 item.entrytype == 'NEW ENTRY' ? 
                                 <></>

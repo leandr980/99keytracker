@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity, ImageBackground, ScrollView } from 'react-native'
-import { Card, FAB, IconButton, Chip, Paragraph, Button, Divider, Caption, Provider, Portal, Dialog, RadioButton, TouchableRipple, List } from 'react-native-paper'
+import { View, Text, Image, FlatList, StyleSheet, ImageBackground, ScrollView } from 'react-native'
+import { Card, FAB, IconButton, Chip, Divider, Caption, Provider, List } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import {format } from 'date-fns'
 
@@ -11,6 +11,7 @@ export default function Keyinfo(props) {
 
     const [keydetails, setKeydetails] = useState([])
     const [keyHistory, setKeyHistory] = useState([])
+    const [keyHistorydate, setKeyHistorydate] = useState('')
 
     useEffect(() => {
 
@@ -23,7 +24,9 @@ export default function Keyinfo(props) {
                 .doc(props.route.params.keyId)
                 .onSnapshot((docSnapshot) => {
                     if (!docSnapshot.metadata.hasPendingWrites) {  
+                        console.log(docSnapshot.data())
                         setKeydetails(docSnapshot.data())
+                        setKeyHistorydate(docSnapshot.data().creation.toDate().toString())
                     }
                 })
 
@@ -50,11 +53,6 @@ export default function Keyinfo(props) {
                     subscribe2()
                 }
     }, [])
-
-    const [visibleCategory, setVisibleCategory] = React.useState(false);
-    const showModalCategory = () => setVisibleCategory(true);
-    const hideModalCategory = () => setVisibleCategory(false);
-    const [checked, setChecked] = React.useState();
 
     const changechipcolor =(itementry)=> {
         switch(itementry){
@@ -123,7 +121,9 @@ export default function Keyinfo(props) {
                                 title={keydetails.keyname}
                                 subtitle={keydetails.keybuildingvilla + ', ' + keydetails.keyarea}
                             />
-
+                            <Card.Content>
+                                <Caption style={{marginLeft: 55}}>{'Added: '+keyHistorydate.substring(4, 15) }</Caption>
+                            </Card.Content>
                         </Card>
 
                             <View style={styles.containerGallery}>
