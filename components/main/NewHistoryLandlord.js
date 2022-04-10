@@ -20,6 +20,7 @@ export default function NewHistoryLandlord(props, { navigation }) {
     const [notes, setfieldnotes] = useState("")
 
     const entrytype = "LANDLORD"
+    const returnedstatus = "NOT RETURNED"
 
     const [visiblePhotoFront, setVisiblePhotoFront] = React.useState(false);
     const showModalPhotoFront = () => setVisiblePhotoFront(true);
@@ -126,12 +127,12 @@ export default function NewHistoryLandlord(props, { navigation }) {
                 notes,
                 creation,
                 imageIDbackURL,
-                imageIDfrontURL
-
+                imageIDfrontURL,
+                returnedstatus
             },
                 function (error) {
                     if (error) {
-                        console.log("Data could not be saved." + error);
+                        console.log("Data could not be saved." + error); 
                     } else {
                         console.log("Data saved successfully.");
                     }
