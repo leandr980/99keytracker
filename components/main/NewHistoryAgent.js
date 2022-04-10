@@ -147,7 +147,7 @@ export default function NewHistroyAgent(props) {
                 entrytype,
                 number,
                 notes,
-                keyhistorycreation,
+                creation,
                 imageIDbackURL,
                 imageIDfrontURL,
                 signatureURL: text
@@ -432,11 +432,6 @@ export default function NewHistroyAgent(props) {
                 </Card>
 
                 <Card style={styles.cardstyle}>
-
-                    <Card.Content style= {{marginBottom: 10}}>
-                        <Paragraph>{progress}</Paragraph>
-                        <ProgressBar progress={progress}/>
-                    </Card.Content>
 
                     <Divider styles={{margin: 10}}/>
 

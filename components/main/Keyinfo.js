@@ -106,7 +106,10 @@ export default function Keyinfo(props) {
 
     //<IconButton icon={'pencil-outline'} onPress={()=> props.navigation.navigate( 'Edit Key', { keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid })}/>
 
+    const [updatedata, setupdatedata] = useState([])
+
     const deletesingledoc = (historyid) =>{
+        //delete
         firebase.firestore()
             .collection('keycollection')
             .doc(props.route.params.uid)
@@ -115,18 +118,39 @@ export default function Keyinfo(props) {
             .collection('keyhistory')
             .doc(historyid)
             .delete()
-            .then(
+            console.log('deleted doc')
 
+            //set array with new data after
+            firebase.firestore()
+                .collection('keycollection')
+                .doc(props.route.params.uid)
+                .collection('keylist')
+                .doc(props.route.params.keyId)
+                .collection('keyhistory')
+                .orderBy("creation", "desc")
+                .onSnapshot((docSnapshot) => {
+                    let keyHistory = docSnapshot.docs.map(doc => {
+                        const data = doc.data();
+                        const id = doc.id;
+                        return { id, ...data }
+                    })
+                    if (!docSnapshot.metadata.hasPendingWrites) {  
+                        setupdatedata(keyHistory)
+                        console.log(keyHistory)
+                    }  
+                })
+                
+                //update db
                 firebase.firestore()
                     .collection('keycollection')
                     .doc(firebase.auth().currentUser.uid)
                     .collection("keylist")
                     .doc(props.route.params.keyId)
                     .update({
-                        name: keyHistory.name,
-                        entrytype: keyHistory.entrytype,
-                        number: keyHistory.number,
-                        keyhistorycreation: keyHistory.keyhistorycreation
+                        name: updatedata.name,
+                        entrytype: updatedata.entrytype,
+                        number: updatedata.number,
+                        keyhistorycreation: updatedata.keyhistorycreation
                     },
                         function (error) {
                             if (error) {
@@ -136,9 +160,6 @@ export default function Keyinfo(props) {
                             }
                         }
                     )
-            )
-            console.log('deleted doc')
-        
     }
 
     return (
@@ -161,7 +182,6 @@ export default function Keyinfo(props) {
                                 <Divider/>
                                 <Menu.Item onPress={() => setVisiblesettings('')} title="CANCEL" />
                                 </Menu>
-                                
                                 }
                                 style={{
                                     fontSize: 30,
@@ -170,7 +190,9 @@ export default function Keyinfo(props) {
                                 title={keydetails.keyname}
                                 subtitle={keydetails.keybuildingvilla + ', ' + keydetails.keyarea}
                             />
-                            <Card.Content>
+                            
+                            <Card.Content style={{flexDirection: 'row'}}>
+                                <IconButton icon={'pencil-outline'} onPress={()=> props.navigation.navigate( 'Edit Key', { keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid })}/>
                                 <Caption style={{marginLeft: 55}}>{'Added: '+keyHistorydate.substring(4, 15) }</Caption>
                             </Card.Content>
                         </Card>
@@ -188,18 +210,13 @@ export default function Keyinfo(props) {
                                     <View style={{flex: 1, flexDirection: 'row'}}>
 
                                         {
-                                            visiblesettings == '' &&
-                                            <></>
-                                        }
-                                        {
                                             visiblesettings == 'delete' &&
                                                 <IconButton style={{marginTop: 20}} icon={'delete-outline'} onPress={() => deletesingledoc(item.id)}/>
                                         }
                                         {
                                             visiblesettings == 'edit' &&
-                                            <IconButton style={{margin: 10}} icon={'pencil-outline'}/>
+                                            <IconButton style={{marginTop: 20}} icon={'pencil-outline'}/>
                                         }
-
 
                                     <Card style={styles.cardstyle}>
                                         <Card.Title
@@ -318,15 +335,8 @@ export default function Keyinfo(props) {
                             <FAB.Group
                             open={open}
                             icon={open ? 'help-box' : 'plus'}
-                            color='blue'
                             theme={{ colors: { accent: 'white' } }}
                             actions={[
-                                {
-                                    icon: 'delete-outline',
-                                    label: 'DELETE',
-                                    onPress: () => console.log('Pressed notifications'),
-                                    small: false,
-                                    },
                                     {
                                     icon: 'account-star',
                                     label: 'LANDLORD',
