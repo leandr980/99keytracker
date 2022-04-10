@@ -23,6 +23,7 @@ export default function Addkey(props) {
     const [keyarea, setKeyarea] = useState("")
 
     const creation = firebase.firestore.FieldValue.serverTimestamp()
+    const keyhistorycreation = creation
 
     const saveKeyData = () => {
 
@@ -44,7 +45,8 @@ export default function Addkey(props) {
                     keybuildingvilla,
                     keyarea,
                     entrytype,
-                    creation
+                    creation,
+                    keyhistorycreation
                 })
                 .then(function (docRef) {
                     console.log("Document written with ID: ", docRef.id);
