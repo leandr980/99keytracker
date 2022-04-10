@@ -15,6 +15,7 @@ require("firebase/firebase-storage")
 export default function NewHistroyAgent(props) {
 
     const creation = firebase.firestore.FieldValue.serverTimestamp()
+    const keyhistorycreation = creation
 
     const [name, setfeildname] = useState("")
     const [agency, setfieldagency] = useState("")
@@ -120,7 +121,7 @@ export default function NewHistroyAgent(props) {
                 name: name,
                 entrytype: entrytype,
                 number: number,
-                creation: creation
+                keyhistorycreation: keyhistorycreation
             },
                 function (error) {
                     if (error) {
@@ -146,7 +147,7 @@ export default function NewHistroyAgent(props) {
                 entrytype,
                 number,
                 notes,
-                creation,
+                keyhistorycreation,
                 imageIDbackURL,
                 imageIDfrontURL,
                 signatureURL: text
