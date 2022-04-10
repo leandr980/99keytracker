@@ -13,6 +13,7 @@ require("firebase/firebase-storage")
 export default function NewHistoryCompany(props, { navigation }) {
 
     const creation = firebase.firestore.FieldValue.serverTimestamp()
+    const keyhistorycreation = creation
 
     const [name, setfeildname] = useState("")
     const [number, setfieldnumber] = useState("")
@@ -148,7 +149,7 @@ export default function NewHistoryCompany(props, { navigation }) {
                 name: name,
                 entrytype: entrytype,
                 number: number,
-                creation: creation
+                keyhistorycreation: keyhistorycreation
             },
                 function (error) {
                     if (error) {

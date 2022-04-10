@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { View, Text, Image, FlatList, StyleSheet, ImageBackground, ScrollView } from 'react-native'
-import { Card, FAB, IconButton, Chip, Divider, Caption, Provider, List } from 'react-native-paper'
+import { Card, FAB, IconButton, Chip, Divider, Caption, Provider, List, Menu, Button} from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import {format } from 'date-fns'
 
@@ -24,7 +24,6 @@ export default function Keyinfo(props) {
                 .doc(props.route.params.keyId)
                 .onSnapshot((docSnapshot) => {
                     if (!docSnapshot.metadata.hasPendingWrites) {  
-                        console.log(docSnapshot.data())
                         setKeydetails(docSnapshot.data())
                         setKeyHistorydate(docSnapshot.data().creation.toDate().toString())
                     }
@@ -99,9 +98,51 @@ export default function Keyinfo(props) {
     const onStateChange = ({ open }) => setState({ open });
     const { open } = state;
 
+    const [visible, setVisible] = React.useState(false);
+    const openMenu = () => setVisible(true);
+    const closeMenu = () => setVisible(false);
+
+    const [visiblesettings, setVisiblesettings ] = React.useState('');
+
+    //<IconButton icon={'pencil-outline'} onPress={()=> props.navigation.navigate( 'Edit Key', { keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid })}/>
+
+    const deletesingledoc = (historyid) =>{
+        firebase.firestore()
+            .collection('keycollection')
+            .doc(props.route.params.uid)
+            .collection('keylist')
+            .doc(props.route.params.keyId)
+            .collection('keyhistory')
+            .doc(historyid)
+            .delete()
+            .then(
+
+                firebase.firestore()
+                    .collection('keycollection')
+                    .doc(firebase.auth().currentUser.uid)
+                    .collection("keylist")
+                    .doc(props.route.params.keyId)
+                    .update({
+                        name: keyHistory.name,
+                        entrytype: keyHistory.entrytype,
+                        number: keyHistory.number,
+                        keyhistorycreation: keyHistory.keyhistorycreation
+                    },
+                        function (error) {
+                            if (error) {
+                                console.log("Data could not be saved." + error);
+                            } else {
+                                console.log("Data saved successfully.");
+                            }
+                        }
+                    )
+            )
+            console.log('deleted doc')
+        
+    }
+
     return (
         <Provider>
-
             <View style={styles.container}>
 
             <ImageBackground 
@@ -113,7 +154,15 @@ export default function Keyinfo(props) {
 
                             <Card.Title
                                 left={() => <MaterialCommunityIcons name="file-key-outline" size={40} />}
-                                right={()=> <IconButton icon={'pencil-outline'} onPress={()=> props.navigation.navigate( 'Edit Key', { keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid })}/>}
+                                right={()=> 
+                                <Menu visible={visible} onDismiss={closeMenu} anchor={<IconButton icon={'cog'} onPress={openMenu}/>}>
+                                <Menu.Item onPress={() => setVisiblesettings('edit')} title="EDIT" />
+                                <Menu.Item onPress={() => setVisiblesettings('delete')} title="DELETE" />
+                                <Divider/>
+                                <Menu.Item onPress={() => setVisiblesettings('')} title="CANCEL" />
+                                </Menu>
+                                
+                                }
                                 style={{
                                     fontSize: 30,
                                     fontWeight: 'bold'
@@ -136,10 +185,26 @@ export default function Keyinfo(props) {
                                 renderItem={({ item, index }) => 
 
                                 ( 
+                                    <View style={{flex: 1, flexDirection: 'row'}}>
+
+                                        {
+                                            visiblesettings == '' &&
+                                            <></>
+                                        }
+                                        {
+                                            visiblesettings == 'delete' &&
+                                                <IconButton style={{marginTop: 20}} icon={'delete-outline'} onPress={() => deletesingledoc(item.id)}/>
+                                        }
+                                        {
+                                            visiblesettings == 'edit' &&
+                                            <IconButton style={{margin: 10}} icon={'pencil-outline'}/>
+                                        }
+
+
                                     <Card style={styles.cardstyle}>
                                         <Card.Title
                                             title={'Added ' + format(new Date(item.creation.toDate().toString()), 'PP')}
-                                            subtitle={'Key Status'}
+                                            subtitle={format(new Date(item.creation.toDate().toString()), 'p')}
                                             right={()=>
                                             <Chip 
                                             style={ changechipcolor(item.entrytype)} 
@@ -161,6 +226,7 @@ export default function Keyinfo(props) {
                                             <Card.Content>
                                                 <Caption> Name: {item.name} </Caption>
                                                 <Caption> Phone Number: {item.number} </Caption>
+                                                <Caption> Agency: {item.agency} </Caption>
                                                 <Caption> Notes: {item.notes} </Caption>
                                             </Card.Content>
                                         }
@@ -178,12 +244,6 @@ export default function Keyinfo(props) {
                                                 <Caption> Name: {item.name} </Caption>
                                                 <Caption> Phone Number: {item.number} </Caption>
                                                 <Caption> Notes: {item.notes} </Caption>
-                                            </Card.Content>
-                                        }
-                                        {
-                                        item.entrytype == 'NEW ENTRY' &&
-                                            <Card.Content>
-                                                <Caption> This is a new entry</Caption>
                                             </Card.Content>
                                         }
 
@@ -249,6 +309,8 @@ export default function Keyinfo(props) {
                                             </List.Section>
                                         }
                                     </Card>
+                                    </View>
+                                    
                                 )
                             }/>
                             
