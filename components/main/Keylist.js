@@ -106,7 +106,11 @@ function Keylist(props) {
                         />
 
                         <Card.Content>
-                            <Caption style={{marginLeft: 55}}>{'Added: '+format(new Date(item.creation.toDate().toString()), 'PP')}</Caption>
+                            <Caption style={{marginLeft: 55}}>
+                                {'Added: '+format(new Date(item.creation.toDate().toString()), 'PP') + 
+                                ' ' + 
+                                format(new Date(item.creation.toDate().toString()), 'p') }
+                            </Caption>
                         </Card.Content>
 
                         <Divider/>  

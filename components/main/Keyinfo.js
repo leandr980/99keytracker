@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { View, Text, Image, FlatList, StyleSheet, ImageBackground, ScrollView } from 'react-native'
-import { Card, FAB, IconButton, Chip, Divider, Caption, Provider, List, Menu, Button} from 'react-native-paper'
+import { Card, FAB, IconButton, Chip, Divider, Caption, Provider, List, Menu, Switch} from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import {format } from 'date-fns'
 
@@ -8,6 +8,8 @@ import firebase from 'firebase'
 require("firebase/firestore")
 
 export default function Keyinfo(props) {
+
+    const creation = firebase.firestore.FieldValue.serverTimestamp()
 
     const [keydetails, setKeydetails] = useState([])
     const [keyHistory, setKeyHistory] = useState([])
@@ -75,6 +77,15 @@ export default function Keyinfo(props) {
                 return{
                     backgroundColor: (`#8eecf5`), margin: 10
                 }
+
+            case 'NOT RETURNED':
+                return{
+                    backgroundColor: (`#ff002b`), marginRight: 10, marginLeft: 5
+                }
+            case 'RETURNED':
+                return{
+                    backgroundColor: (`#70e000`), marginRight: 10, marginLeft: 5
+                }
         }
 
     }
@@ -91,6 +102,11 @@ export default function Keyinfo(props) {
                 return "account-question-outline"
             case 'NEW ENTRY':
                 return "folder-plus"
+
+            case 'NOT RETURNED':
+                return "close"
+            case 'RETURNED':
+                return "check"
         }
     }
 
@@ -121,7 +137,8 @@ export default function Keyinfo(props) {
             console.log('deleted doc')
 
             //set array with new data after
-            firebase.firestore()
+            /*
+            const task = firebase.firestore()
                 .collection('keycollection')
                 .doc(props.route.params.uid)
                 .collection('keylist')
@@ -141,7 +158,7 @@ export default function Keyinfo(props) {
                 })
                 
                 //update db
-                firebase.firestore()
+               const taskCompleted = firebase.firestore()
                     .collection('keycollection')
                     .doc(firebase.auth().currentUser.uid)
                     .collection("keylist")
@@ -160,7 +177,117 @@ export default function Keyinfo(props) {
                             }
                         }
                     )
+
+                    task.on("state_changed", taskCompleted)
+                    */
     }
+
+    const returnedstatus =(status,historyid)=>{
+        console.log(historyid)
+        if(status == 'RETURNED'){
+            const finstatus = 'NOT RETURNED'
+            firebase.firestore()
+            .collection('keycollection')
+            .doc(props.route.params.uid)
+            .collection('keylist')
+            .doc(props.route.params.keyId)
+            .collection('keyhistory')
+            .doc(historyid)
+            .update({
+                returnedstatus: finstatus,
+                creation: creation
+            })
+        }
+        else if (status == 'NOT RETURNED'){
+            const finstatus = 'RETURNED'
+            firebase.firestore()
+            .collection('keycollection')
+            .doc(props.route.params.uid)
+            .collection('keylist')
+            .doc(props.route.params.keyId)
+            .collection('keyhistory')
+            .doc(historyid)
+            .update({
+                returnedstatus: finstatus,
+                creation: creation
+            })
+        }
+
+    }
+
+    const setdisablechip =(index, historyid,returnedstatus)=>{
+        if(index > 0) {
+            if(returnedstatus == 'NOT RETURNED' && index != 0) {
+                const finstatus = 'RETURNED'
+                firebase.firestore()
+                .collection('keycollection')
+                .doc(props.route.params.uid)
+                .collection('keylist')
+                .doc(props.route.params.keyId)
+                .collection('keyhistory')
+                .doc(historyid)
+                .update({
+                    returnedstatus: finstatus,
+                    creation: creation
+                })
+            }
+            return true
+        }
+    }
+
+    const deletecollection = async()=>{
+
+        for (let i = 0; i < keyHistory.length; i++) {
+            if(keyHistory[i].entrytype != 'NEW ENTRY'){
+                firebase.firestore()
+                .collection('keycollection')
+                .doc(props.route.params.uid)
+                .collection('keylist')
+                .doc(props.route.params.keyId)
+                .collection('keyhistory')
+                .doc(keyHistory[i].id)
+                .delete()
+            }
+            firebase.firestore()
+                    .collection('keycollection')
+                    .doc(firebase.auth().currentUser.uid)
+                    .collection("keylist")
+                    .doc(props.route.params.keyId)
+                    .update({
+                        entrytype: 'NEW ENTRY',
+                        keyhistorycreation: keyHistory.keyhistorycreation
+                    },
+                        function (error) {
+                            if (error) {
+                                console.log("Data could not be saved." + error);
+                            } else {
+                                console.log("Data saved successfully.");
+                            }
+                        }
+                    )
+
+    }
+
+    /*firebase.firestore()
+        .collection('keycollection')
+        .doc(props.route.params.uid)
+        .collection('keylist')
+        .doc(props.route.params.keyId)
+        .delete()*/
+    }
+
+    /*
+                                            {
+                                            visiblesettings == 'edit' &&
+                                            <IconButton style={{marginTop: 20}} icon={'pencil-outline'}/>
+                                        }
+                                         {
+                                            visiblesettings == 'delete' &&
+                                                <IconButton style={{marginTop: 20}} icon={'delete-outline'} onPress={() => deletesingledoc(item.id)}/>
+                                        }
+
+                                        
+    */
 
     return (
         <Provider>
@@ -192,10 +319,19 @@ export default function Keyinfo(props) {
                             />
                             
                             <Card.Content style={{flexDirection: 'row'}}>
-                                <IconButton icon={'pencil-outline'} onPress={()=> props.navigation.navigate( 'Edit Key', { keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid })}/>
                                 <Caption style={{marginLeft: 55}}>{'Added: '+keyHistorydate.substring(4, 15) }</Caption>
+                                {
+                                visiblesettings == 'edit' &&
+                                <IconButton style={{position: 'absolute', bottom: 10, left: 13}} icon={'pencil-outline'} onPress={()=> props.navigation.navigate( 'Edit Key', { keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid })}/>
+                                }
+                                {
+                                visiblesettings == 'delete' &&
+                                <IconButton style={{position: 'absolute', bottom: 10, left: 13}} icon={'delete-outline'} onPress={()=> deletecollection()}/>
+                                }
                             </Card.Content>
                         </Card>
+
+                        
 
                             <View style={styles.containerGallery}>
 
@@ -209,14 +345,8 @@ export default function Keyinfo(props) {
                                 ( 
                                     <View style={{flex: 1, flexDirection: 'row'}}>
 
-                                        {
-                                            visiblesettings == 'delete' &&
-                                                <IconButton style={{marginTop: 20}} icon={'delete-outline'} onPress={() => deletesingledoc(item.id)}/>
-                                        }
-                                        {
-                                            visiblesettings == 'edit' &&
-                                            <IconButton style={{marginTop: 20}} icon={'pencil-outline'}/>
-                                        }
+                                       
+
 
                                     <Card style={styles.cardstyle}>
                                         <Card.Title
@@ -229,7 +359,9 @@ export default function Keyinfo(props) {
                                             > {item.entrytype}</Chip>}/>
                                             
                                         <Divider />
-                                        
+                                        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+
+                                        <View>
                                         {
                                         item.entrytype == 'LANDLORD' &&
                                             <Card.Content>
@@ -263,6 +395,22 @@ export default function Keyinfo(props) {
                                                 <Caption> Notes: {item.notes} </Caption>
                                             </Card.Content>
                                         }
+                                        </View>
+                                        {
+                                            item.entrytype != 'NEW ENTRY' &&
+                                        <View style={{alignItems: 'center', flexDirection: 'row'}}>
+                                            <Caption>Key status</Caption>
+                                            <Chip 
+                                            icon={changechipicon(item.returnedstatus)} 
+                                            style={changechipcolor(item.returnedstatus)} 
+                                            onPress={()=>returnedstatus(item.returnedstatus, item.id)}
+                                            disabled={setdisablechip(index, item.id, item.returnedstatus)}
+                                            >{item.returnedstatus}</Chip>
+                                            
+                                        </View>
+                                        
+                                        }
+                                        </View>
 
                                         {
                                             {

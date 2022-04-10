@@ -21,6 +21,7 @@ export default function NewHistoryCompany(props, { navigation }) {
     const [notes, setfieldnotes] = useState("")
 
     const entrytype = "COMPANY"
+    const returnedstatus = "NOT RETURNED"
 
     const [visiblePhotoFront, setVisiblePhotoFront] = React.useState(false);
     const showModalPhotoFront = () => setVisiblePhotoFront(true);
@@ -127,7 +128,8 @@ export default function NewHistoryCompany(props, { navigation }) {
                 notes,
                 creation,
                 imageIDbackURL,
-                imageIDfrontURL
+                imageIDfrontURL,
+                returnedstatus
 
             },
                 function (error) {
