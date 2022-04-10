@@ -411,7 +411,7 @@ export default function NewHistoryLandlord(props, { navigation }) {
                             </Button>
                             <Button
                                 onPress={() => clearKeyData()} >
-                                CLEAR
+                                CLEAR MEDIA
                             </Button>
                         </Card.Actions>
                     </Card>
