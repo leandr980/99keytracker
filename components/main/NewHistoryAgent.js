@@ -23,6 +23,7 @@ export default function NewHistroyAgent(props) {
     const [notes, setfieldnotes] = useState("")
 
     const entrytype = "AGENT"
+    const returnedstatus = "NOT RETURNED"
 
     const [visiblePhotoFront, setVisiblePhotoFront] = React.useState(false);
     const showModalPhotoFront = () => setVisiblePhotoFront(true);
@@ -150,7 +151,8 @@ export default function NewHistroyAgent(props) {
                 creation,
                 imageIDbackURL,
                 imageIDfrontURL,
-                signatureURL: text
+                signatureURL: text,
+                returnedstatus
 
             },
                 function (error) {
