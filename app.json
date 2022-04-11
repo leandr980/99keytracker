@@ -22,7 +22,7 @@
     "android": {
       "package": "ninetyninerealestate.keytracker",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/99-adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       }
     },
