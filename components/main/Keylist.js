@@ -1,7 +1,7 @@
 // JavaScript source code
-import React from 'react'
+import React, { useState } from 'react'
 import { View, Text, FlatList, StyleSheet, ImageBackground, RefreshControl} from 'react-native'
-import { Card, FAB, IconButton, Divider, Chip, Caption } from 'react-native-paper'
+import { Card, FAB, IconButton, Divider, Chip, Caption, Button } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { format } from 'date-fns'
 
@@ -9,6 +9,7 @@ import firebase from 'firebase'
 require ("firebase/firestore")
 
 import { connect } from 'react-redux'
+import { useSafeAreaFrame } from 'react-native-safe-area-context'
 
 const wait = (timeout) => {
         return new Promise(resolve => setTimeout(resolve, timeout));
@@ -17,6 +18,7 @@ const wait = (timeout) => {
 function Keylist(props) {
 
     const [refreshing, setRefreshing] = React.useState(false);
+    const [keyhistory, setkeyhistory] = React.useState([]);
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
         wait(2000).then(() => setRefreshing(false));}, []);
@@ -50,7 +52,6 @@ function Keylist(props) {
                     backgroundColor: (`#8eecf5`)
                 }
         }
-
     }
 
     const changechipicon =(itementry)=> {
@@ -66,6 +67,30 @@ function Keylist(props) {
             case 'NEW ENTRY':
                 return "folder-plus"
         }
+    }
+
+    const keyhistorydetails = (keyid) => {
+        console.log('pressed')
+        firebase.firestore()
+                .collection('keycollection')
+                .doc(firebase.auth().currentUser.uid)
+                .collection('keylist')
+                .doc(keyid)
+                .collection('keyhistory')
+                .orderBy("creation", "desc")
+                .get()
+                .then((docSnapshot) => {
+                    let keyHistory = docSnapshot.docs.map(doc => {
+                        const data = doc.data();
+                        const id = doc.id;
+                        return { id, ...data }
+                    })
+                    if (!docSnapshot.metadata.hasPendingWrites) {  
+                        console.log(keyHistory)
+                        setkeyhistory(keyHistory)
+                    }  
+                })
+                return(keyhistory)
     }
 
     return (
@@ -133,6 +158,8 @@ function Keylist(props) {
                             icon={changechipicon(item.entrytype)}
                             >{item.entrytype}</Chip>
                         </View>
+
+
                     </Card>
                 )}/>                
             </View>
