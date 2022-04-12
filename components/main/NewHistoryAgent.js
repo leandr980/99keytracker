@@ -197,7 +197,7 @@ export default function NewHistroyAgent(props) {
 
                 (error) => { console.log(error); },
 
-                async () => {
+                async () => {   
                     await firebase
                         .storage()
                         .ref()

@@ -237,6 +237,8 @@ export default function Keyinfo(props) {
 
     const deletecollection = async()=>{
 
+        
+
         for (let i = 0; i < keyHistory.length; i++) {
             if(keyHistory[i].entrytype != 'NEW ENTRY'){
                 firebase.firestore()
@@ -248,32 +250,9 @@ export default function Keyinfo(props) {
                 .doc(keyHistory[i].id)
                 .delete()
             }
-            firebase.firestore()
-                    .collection('keycollection')
-                    .doc(firebase.auth().currentUser.uid)
-                    .collection("keylist")
-                    .doc(props.route.params.keyId)
-                    .update({
-                        entrytype: 'NEW ENTRY',
-                        keyhistorycreation: keyHistory.keyhistorycreation
-                    },
-                        function (error) {
-                            if (error) {
-                                console.log("Data could not be saved." + error);
-                            } else {
-                                console.log("Data saved successfully.");
-                            }
-                        }
-                    )
+            
+        }
 
-    }
-
-    /*firebase.firestore()
-        .collection('keycollection')
-        .doc(props.route.params.uid)
-        .collection('keylist')
-        .doc(props.route.params.keyId)
-        .delete()*/
     }
 
     /*

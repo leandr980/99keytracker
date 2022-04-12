@@ -9,7 +9,6 @@ import firebase from 'firebase'
 require ("firebase/firestore")
 
 import { connect } from 'react-redux'
-import { useSafeAreaFrame } from 'react-native-safe-area-context'
 
 const wait = (timeout) => {
         return new Promise(resolve => setTimeout(resolve, timeout));
@@ -18,12 +17,11 @@ const wait = (timeout) => {
 function Keylist(props) {
 
     const [refreshing, setRefreshing] = React.useState(false);
-    const [keyhistory, setkeyhistory] = React.useState([]);
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
         wait(2000).then(() => setRefreshing(false));}, []);
 
-    const { currentUser, keyinfo } = props;
+    const { currentUser, keyinfo, keyinfodetails} = props;
 
     if (currentUser === null) {
         return <View/>
@@ -69,29 +67,6 @@ function Keylist(props) {
         }
     }
 
-    const keyhistorydetails = (keyid) => {
-        console.log('pressed')
-        firebase.firestore()
-                .collection('keycollection')
-                .doc(firebase.auth().currentUser.uid)
-                .collection('keylist')
-                .doc(keyid)
-                .collection('keyhistory')
-                .orderBy("creation", "desc")
-                .get()
-                .then((docSnapshot) => {
-                    let keyHistory = docSnapshot.docs.map(doc => {
-                        const data = doc.data();
-                        const id = doc.id;
-                        return { id, ...data }
-                    })
-                    if (!docSnapshot.metadata.hasPendingWrites) {  
-                        console.log(keyHistory)
-                        setkeyhistory(keyHistory)
-                    }  
-                })
-                return(keyhistory)
-    }
 
     return (
 
@@ -109,6 +84,7 @@ function Keylist(props) {
             </Card>
 
             <Text style={{ fontSize: 30, fontWeight: 'bold', marginLeft: 20, marginBottom: 5 }}> Recent Entries </Text>
+            <Text onPress={()=> console.log(keyinfodetails)}> test</Text>
 
             <Divider />
 

@@ -2,7 +2,7 @@ import {
     USER_STATE_CHANGE,
     USER_POSTS_STATE_CHANGE,
     USER_KEYINFO_STATE_CHANGE,
-    USER_KEYINFO_DETAILS_STATE_CHANGE,
+    USER_KEYINFO_DETAILS_STATE_CHANGE
 } from '../constants/index'
 
 import firebase from 'firebase'
@@ -72,30 +72,57 @@ export function fetchKeyInfo() {
     })
 }
 
-export function fetchKeyInfoDetails() {
+export function fetchKeyInfoDetails () {
     return ((dispatch) => {
         firebase.firestore()
-            .collection('keycollection')
+            .collection("keycollection")
             .doc(firebase.auth().currentUser.uid)
-            .collection('keylist')
-            .doc(props.route.params.keyId)
-            .collection('keyhistory')
+            .collection("keylist")
             .orderBy("creation", "desc")
             .onSnapshot((docSnapshot) => {
                 let keyinfodetails = docSnapshot.docs.map(doc => {
-                    const data = doc.data();
                     const id = doc.id;
-                    return { id, ...data }
-                
+                    return { id }
+                })
+                //console.log(keyinfo)
+                if (!docSnapshot.metadata.hasPendingWrites) { 
+                    console.log('redux action start')
+                    const arrayid = []
+                    for (let i = 0; i < keyinfodetails.length; i++) {
+                        arrayid.push(keyinfodetails[i].id)
+                    }
+                    
+                    console.log('===================================')
+                    
+                    const keyhistorydetailsarr = []
+
+                    for (let i = 0; i < arrayid.length; i++) {
+
+                        //console.log(arrayid[i])
+                        firebase.firestore()
+                            .collection('keycollection')
+                            .doc(firebase.auth().currentUser.uid)
+                            .collection('keylist')
+                            .doc(arrayid[i])
+                            .collection('keyhistory')
+                            .orderBy("creation", "desc")
+                            .onSnapshot((docSnapshot) => {
+                                let keyHistory = docSnapshot.docs.map(doc => {
+                                    const data = doc.data()
+                                    const id = doc.id
+                                    return { id, ...data }
+                                })
+                                if (!docSnapshot.metadata.hasPendingWrites) {
+                                    keyhistorydetailsarr.push(keyHistory[0])
+                                    //console.log(keyHistory[0])
+                                }
+                            })
+                    }
+
+                    console.log(keyhistorydetailsarr)
+                    dispatch({ type: USER_KEYINFO_DETAILS_STATE_CHANGE, keyinfodetails })
+
+                 }
             })
-            console.log(keyinfodetails)
-            if (!docSnapshot.metadata.hasPendingWrites) {
-                dispatch({ type: USER_KEYINFO_DETAILS_STATE_CHANGE, keyinfodetails })
-            }
-
-
-            
-            })
-
     })
 }
