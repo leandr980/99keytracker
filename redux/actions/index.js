@@ -72,8 +72,15 @@ export function fetchKeyInfo() {
     })
 }
 
-export function fetchKeyInfoDetails () {
+export function fetchKeyInfoDetails(keyid) {
     return ((dispatch) => {
+
+        
+
+
+
+        
+        
         firebase.firestore()
             .collection("keycollection")
             .doc(firebase.auth().currentUser.uid)
@@ -84,45 +91,53 @@ export function fetchKeyInfoDetails () {
                     const id = doc.id;
                     return { id }
                 })
-                //console.log(keyinfo)
-                if (!docSnapshot.metadata.hasPendingWrites) { 
-                    console.log('redux action start')
+                //console.log(keyinfodetails)
+                if (!docSnapshot.metadata.hasPendingWrites) {  // <======
                     const arrayid = []
                     for (let i = 0; i < keyinfodetails.length; i++) {
                         arrayid.push(keyinfodetails[i].id)
                     }
+                    console.log(arrayid, 'list of ids')
                     
-                    console.log('===================================')
+
+                        const finalarr = loopshit(arrayid)
+                        
+                        
+
+                        console.log(finalarr, 'list of objects')
+                        console.log(finalarr[0], 'list of objects')
                     
-                    const keyhistorydetailsarr = []
-
-                    for (let i = 0; i < arrayid.length; i++) {
-
-                        //console.log(arrayid[i])
-                        firebase.firestore()
-                            .collection('keycollection')
-                            .doc(firebase.auth().currentUser.uid)
-                            .collection('keylist')
-                            .doc(arrayid[i])
-                            .collection('keyhistory')
-                            .orderBy("creation", "desc")
-                            .onSnapshot((docSnapshot) => {
-                                let keyHistory = docSnapshot.docs.map(doc => {
-                                    const data = doc.data()
-                                    const id = doc.id
-                                    return { id, ...data }
-                                })
-                                if (!docSnapshot.metadata.hasPendingWrites) {
-                                    keyhistorydetailsarr.push(keyHistory[0])
-                                    //console.log(keyHistory[0])
-                                }
-                            })
-                    }
-
-                    console.log(keyhistorydetailsarr)
                     dispatch({ type: USER_KEYINFO_DETAILS_STATE_CHANGE, keyinfodetails })
-
                  }
-            })
+                    
+                })
     })
 }
+
+async function loopshit (arrayid){
+    const finalarr = []
+    for (let i = 0; i < arrayid.length; i++) {
+        await new Promise((resolve) => {
+            firebase.firestore()
+                .collection('keycollection')
+                .doc(firebase.auth().currentUser.uid)
+                .collection('keylist')
+                .doc(arrayid[i])
+                .collection('keyhistory')
+                .orderBy("creation", "desc")
+                .onSnapshot((docSnapshot) => {
+                    let keyHistory = docSnapshot.docs.map(doc => {
+                        const data = doc.data()
+                        const id = doc.id
+                        return { id, ...data }
+                    })
+                    if (!docSnapshot.metadata.hasPendingWrites) {
+                        //console.log(keyHistory[0])
+                        resolve(keyHistory[0])
+                    }
+                })
+        }).then((result)=> finalarr.push(result))
+    }
+    return finalarr
+}
+
