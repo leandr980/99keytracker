@@ -31,23 +31,23 @@ function Keylist(props) {
         switch(itementry){
             case 'LANDLORD':
                 return{
-                    backgroundColor: (`#ffd60a`)
+                    backgroundColor: (`#ffd60a`), margin: 2
                 }
             case 'COMPANY':
                 return{
-                    backgroundColor: (`#fb8500`)
+                    backgroundColor: (`#fb8500`), margin: 2
                 }
             case 'AGENT':
                 return{
-                    backgroundColor: (`#a2d2ff`)
+                    backgroundColor: (`#a2d2ff`), margin: 2
                 }
             case 'OTHER':
                 return{
-                    backgroundColor: (`#bdb2ff`)
+                    backgroundColor: (`#bdb2ff`), margin: 2
                 }
             case 'NEW ENTRY':
                 return{
-                    backgroundColor: (`#8eecf5`)
+                    backgroundColor: (`#8eecf5`), margin: 2
                 }
         }
     }
@@ -66,7 +66,17 @@ function Keylist(props) {
                 return "folder-plus"
         }
     }
-
+    const testredux =(id)=> {
+        const arrayid = []
+        for (let i = 0; i < keyinfodetails.length; i++) {
+            if (id == keyinfodetails[i].id){
+                return keyinfodetails[i].id
+            }
+            //arrayid.push(keyinfodetails[i].id)
+        }
+        //return arrayid
+    }
+    
 
     return (
 
@@ -114,18 +124,22 @@ function Keylist(props) {
                             </Caption>
                         </Card.Content>
 
+                        <Text>
+                            {testredux(item.id)}
+                        </Text>
+
                         <Divider/>  
-                        <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap', margin: 10, alignItems: 'center'}}>
-                            <Text style={{marginLeft: 5, marginRight: 10}}>Most recent log:</Text>
-                            <Chip>{format(new Date(item.keyhistorycreation.toDate().toString()), 'PP')}</Chip>
-                            <Chip>{format(new Date(item.keyhistorycreation.toDate().toString()), 'p')}</Chip>
+                        <Text style={{marginLeft: 5, marginLeft: 15}}>Most recent log:</Text>
+                        <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap', marginBottom: 10, marginLeft: 10, marginRight: 10, alignItems: 'center'}}>
+                            <Chip style={{margin: 2}}>{format(new Date(item.keyhistorycreation.toDate().toString()), 'PP')}</Chip>
+                            <Chip style={{margin: 2}}>{format(new Date(item.keyhistorycreation.toDate().toString()), 'p')}</Chip>
                             {
                                 item.entrytype == 'NEW ENTRY' ? 
                                 <></>
                                 : 
                                 <>
-                                <Chip>{item.number}</Chip>
-                                <Chip>{item.name}</Chip>
+                                <Chip style={{margin: 2}}>{item.number}</Chip>
+                                <Chip style={{margin: 2}}>{item.name}</Chip>
                                 </>
                             }
                                     

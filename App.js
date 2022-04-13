@@ -83,11 +83,7 @@ export class App extends Component {
         const { loggedIn, loaded } = this.state;
         if (!loaded) {
             return (
-                <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-
-                        <Image  source={require('./assets/LOADING-GIF_3.gif')}/>
-
-                    </View>
+  <></>
                 )
         }
 
