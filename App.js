@@ -31,6 +31,7 @@ import NewHistoryAgent from './components/main/NewHistoryAgent'
 import NewHistoryOther from './components/main/NewHistoryOther'
 import SearchScreen from './components/main/Search'
 import EditKeyScreen from './components/main/EditKey'
+import NewLeadScreen from './components/main/NewLead'
 
 //LogBox.ignoreLogs(['Warning: ...']);
 //console.disableYellowBox = true;
@@ -190,6 +191,14 @@ export class App extends Component {
                             }}/>
 
                         <Stack.Screen name="Edit Key" component={EditKeyScreen}
+                            options={{
+                                headerStyle: {
+                                    backgroundColor: '#efefef',
+                                    elevation: 0,
+                                }
+                            }}/>
+
+                        <Stack.Screen name="New Lead" component={NewLeadScreen}
                             options={{
                                 headerStyle: {
                                     backgroundColor: '#efefef',
