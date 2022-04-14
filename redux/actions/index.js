@@ -2,7 +2,8 @@ import {
     USER_STATE_CHANGE,
     USER_POSTS_STATE_CHANGE,
     USER_KEYINFO_STATE_CHANGE,
-    USER_KEYINFO_DETAILS_STATE_CHANGE
+    USER_KEYINFO_DETAILS_STATE_CHANGE,
+    USER_KEYINFO2_STATE_CHANGE
 } from '../constants/index'
 
 import firebase from 'firebase'
@@ -42,7 +43,6 @@ export function fetchUserPosts() {
                     const data = doc.data();
                     const id = doc.id;
                     return {id, ...data}
-
                 })
                 //console.log(posts)
                 dispatch({type: USER_POSTS_STATE_CHANGE, posts})
@@ -72,15 +72,8 @@ export function fetchKeyInfo() {
     })
 }
 
-export function fetchKeyInfoDetails(keyid) {
+export function fetchKeyInfoDetails() {
     return ((dispatch) => {
-
-        
-
-
-
-        
-        
         firebase.firestore()
             .collection("keycollection")
             .doc(firebase.auth().currentUser.uid)
@@ -92,28 +85,24 @@ export function fetchKeyInfoDetails(keyid) {
                     return { id }
                 })
                 //console.log(keyinfodetails)
-                if (!docSnapshot.metadata.hasPendingWrites) {  // <======
-                    const arrayid = []
+                if (!docSnapshot.metadata.hasPendingWrites) {  
+                   /* const arrayid = []
                     for (let i = 0; i < keyinfodetails.length; i++) {
                         arrayid.push(keyinfodetails[i].id)
                     }
                     console.log(arrayid, 'list of ids')
                     
-
-                        const finalarr = loopshit(arrayid)
-                        
-                        
+                        const finalarr = []
 
                         console.log(finalarr, 'list of objects')
-                        console.log(finalarr[0], 'list of objects')
+                        console.log(finalarr[0], 'list of objects')*/
                     
                     dispatch({ type: USER_KEYINFO_DETAILS_STATE_CHANGE, keyinfodetails })
-                 }
-                    
-                })
+                }
+            })
     })
 }
-
+/*
 async function loopshit (arrayid){
     const finalarr = []
     for (let i = 0; i < arrayid.length; i++) {
@@ -140,4 +129,26 @@ async function loopshit (arrayid){
     }
     return finalarr
 }
+*/
 
+export function fetchKeyInfo2() {
+    return ((dispatch) => {
+        firebase.firestore()
+            .collection("keycollection")
+            .doc(firebase.auth().currentUser.uid)
+            .collection("keylist")
+            .orderBy("creation", "desc")
+            .onSnapshot((docSnapshot) => {
+                let keyinfo = docSnapshot.docs.map(doc => {
+                    const data = doc.data();
+                    const id = doc.id;
+                    return { id, ...data }
+
+                })
+                //console.log(keyinfo)
+                if (!docSnapshot.metadata.hasPendingWrites) {  // <======
+                    dispatch({ type: USER_KEYINFO2_STATE_CHANGE, keyinfo })
+                 }
+            })
+    })
+}

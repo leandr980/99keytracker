@@ -6,7 +6,7 @@ import firebase from 'firebase'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
-import { fetchUser, fetchUserPosts, fetchKeyInfo, fetchKeyInfoDetails } from '../redux/actions/index'
+import { fetchUser, fetchUserPosts, fetchKeyInfo, fetchKeyInfoDetails} from '../redux/actions/index'
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -17,6 +17,8 @@ import KeyScreen from './main/Keylist'
 //import SearchScreen from './main/Search'
 import AddkeyScreen from './main/Addkey'
 import ProfileScreen from './main/Profile'
+
+import LeadTrackerScreen from './main/LeadTracker'
 
 const Tab = createBottomTabNavigator();
 
@@ -52,7 +54,7 @@ export class Main extends Component {
 						headerShown: false
 					}} />
 
-				<Tab.Screen name='Profile' component={ProfileScreen}
+				<Tab.Screen name='LeadTracker' component={LeadTrackerScreen}
 					options={{
 						tabBarIcon: ({ color, size }) => (
 							<MaterialCommunityIcons name="account-circle" color={color} size={26} />
@@ -60,6 +62,13 @@ export class Main extends Component {
 						headerShown: false
 					}} />
 
+				<Tab.Screen name='Profile' component={ProfileScreen}
+					options={{
+						tabBarIcon: ({ color, size }) => (
+							<MaterialCommunityIcons name="account-circle" color={color} size={26} />
+						),
+						headerShown: false
+					}} />
 			</Tab.Navigator>
 
 		)
