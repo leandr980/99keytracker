@@ -134,20 +134,20 @@ async function loopshit (arrayid){
 export function fetchKeyInfo2() {
     return ((dispatch) => {
         firebase.firestore()
-            .collection("keycollection")
+            .collection("leadscollection")
             .doc(firebase.auth().currentUser.uid)
-            .collection("keylist")
+            .collection("leadslist")
             .orderBy("creation", "desc")
             .onSnapshot((docSnapshot) => {
-                let keyinfo = docSnapshot.docs.map(doc => {
+                let keyinfo2 = docSnapshot.docs.map(doc => {
                     const data = doc.data();
                     const id = doc.id;
                     return { id, ...data }
 
                 })
-                //console.log(keyinfo)
+                //console.log(keyinfo2, 'fetchkeyinfo2')
                 if (!docSnapshot.metadata.hasPendingWrites) {  // <======
-                    dispatch({ type: USER_KEYINFO2_STATE_CHANGE, keyinfo })
+                    dispatch({ type: USER_KEYINFO2_STATE_CHANGE, keyinfo2 })
                  }
             })
     })

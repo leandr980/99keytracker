@@ -28,6 +28,8 @@ export default function NewLead(props) {
     const [propertytype, setPropertytype] = useState("")
     const [furnishing, setFurnishing] = useState("")
 
+    const [propertytypeother, setpropertytypeother] = useState(false)
+
     const creation = firebase.firestore.FieldValue.serverTimestamp()
     const keyhistorycreation = creation
 
@@ -117,6 +119,19 @@ export default function NewLead(props) {
                         </Card.Content>
                     </Card>
                     </View>
+                    <Card style={styles.cardstyle}>
+                        <Card.Title title='Lead Source:'/>
+                        <Card.Content style={{flexDirection: 'row', flexWrap: 'wrap', marginBottom: 10}}>
+                            <Chip >Walk-in</Chip>
+                            <Chip >Property Finder</Chip>
+                            <Chip >Dubizzle</Chip>
+                            <Chip >Bayut</Chip>
+                            <Chip >Website</Chip>
+                            <Chip >Cold Call</Chip>
+                            <Chip >Facebook / Instagram</Chip>
+                            <Chip >Other</Chip>
+                        </Card.Content>
+                    </Card>
 
                     
                     <Card style={styles.cardstyle}>
@@ -124,8 +139,12 @@ export default function NewLead(props) {
                         <Card.Content style={{flexDirection: 'row', flexWrap: 'wrap', marginBottom: 10}}>
                             <Chip onPress={()=>setPropertytype('Villa')}>Villa</Chip>
                             <Chip onPress={()=>setPropertytype('Apartment')}>Apartment</Chip>
+                            <Chip onPress={()=>setPropertytype('Apartment')}>Plot</Chip>
+                            <Chip onPress={()=>setPropertytype('Apartment')}>Retail</Chip>
                             <Chip onPress={()=>setPropertytype('Other')}>Other</Chip>
                         </Card.Content>
+                        {
+                            propertytypeother &&
                         <Card.Content>
                             <TextInput
                             style={styles.textinputstyle}
@@ -133,6 +152,7 @@ export default function NewLead(props) {
                             placeholder=". . ."
                             onChangeText={(name) => setName(name)}/>
                         </Card.Content>
+                        }
                     </Card>
 
                     <Card style={styles.cardstyle}>
