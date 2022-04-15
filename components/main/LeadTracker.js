@@ -1,7 +1,7 @@
 // JavaScript source code
 import React, { useState } from 'react'
 import { View, Text, FlatList, StyleSheet, ImageBackground, RefreshControl} from 'react-native'
-import { Card, FAB, IconButton, Divider, Chip, Caption, Button } from 'react-native-paper'
+import { Card, FAB, IconButton, Divider, Chip, DataTable} from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { format } from 'date-fns'
 
@@ -21,12 +21,30 @@ function LeadTracker(props) {
         setRefreshing(true);
         wait(2000).then(() => setRefreshing(false));}, []);
 
-    const { currentUser, keyinfo } = props;
-    //console.log(leadlist, 'leadlist')
+    const { currentUser, keyinfo2 } = props;
+    console.log(keyinfo2, 'leadlist')
 
     if (currentUser === null) {
         return <View/>
     }
+    
+    /*
+    <Card style={{flex: 1,borderRadius: 10, margin: 10, elevation: 5}}>
+                        <Card.Title
+                        left={() => <MaterialCommunityIcons name="account" size={40} />}
+                        title={item.name}
+                        />
+                        <Text style={{marginLeft: 20}}>Number: {item.number}</Text>
+                        <Text style={{marginLeft: 20}}>Budget: {item.budget}</Text>
+                        <Divider/>
+                        <Card.Content style={{flexDirection: 'row', flexWrap: 'wrap'}}>
+                            <Chip>{item.salerent} </Chip>
+                            <Chip>{item.propertytype} </Chip>
+                            <Chip>{item.bedroom} </Chip>
+                            <Chip>{item.furnishing} </Chip> 
+                        </Card.Content>
+                    </Card>
+    */
     
     return (
 
@@ -37,17 +55,32 @@ function LeadTracker(props) {
             source={require('../../assets/bg-image/99-whatsapp-bg-small.jpg')}>
 
             <View style={styles.containerGallery}>
-                <Text>hi</Text>
+                <Text>Leads</Text>
                 <FlatList
                 numColumns={1}
                 horizontal={false}
-                data={keyinfo}
+                data={keyinfo2}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}
                 renderItem={({ item }) => ( 
+                    <Card style={{flex: 1,borderRadius: 10, margin: 10, elevation: 5}}>
+                        <DataTable>
 
-                    <Card style={styles.cardstyle}>
-                        <Text>{item.id}id</Text>
+                        <DataTable.Header>
+                            <DataTable.Title>{item.name}</DataTable.Title>
+                            <DataTable.Title >{item.number}</DataTable.Title>
+                            <DataTable.Title >Status</DataTable.Title>
+                        </DataTable.Header>
+
+                        </DataTable>
+                        <Card.Content style={{flexDirection: 'row', flexWrap: 'wrap'}}>
+                            <Chip>{item.salerent} </Chip>
+                            <Chip>{item.propertytype} </Chip>
+                            <Chip>{item.bedroom} </Chip>
+                            <Chip>{item.furnishing} </Chip> 
+                        </Card.Content>
                     </Card>
+                    
+                    
                 )}/>                
             </View>
 
@@ -108,7 +141,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (store) => ({
     currentUser: store.userState.currentUser,
-    keyinfo: store.userState.keyinfo,
+    keyinfo2: store.userState.keyinfo2,
 })
 
 export default connect(mapStateToProps, null)(LeadTracker)

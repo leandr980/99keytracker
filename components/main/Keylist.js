@@ -124,13 +124,9 @@ function Keylist(props) {
                             </Caption>
                         </Card.Content>
 
-                        <Text>
-                            {testredux(item.id)}
-                        </Text>
-
                         <Divider/>  
-                        <Text style={{marginLeft: 5, marginLeft: 15}}>Most recent log:</Text>
-                        <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap', marginBottom: 10, marginLeft: 10, marginRight: 10, alignItems: 'center'}}>
+                        <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap', marginTop: 10, marginBottom: 10, marginLeft: 10, marginRight: 10, alignItems: 'center'}}>
+                            <Chip style={{margin: 2}}>Most Recent Log:</Chip>
                             <Chip style={{margin: 2}}>{format(new Date(item.keyhistorycreation.toDate().toString()), 'PP')}</Chip>
                             <Chip style={{margin: 2}}>{format(new Date(item.keyhistorycreation.toDate().toString()), 'p')}</Chip>
                             {

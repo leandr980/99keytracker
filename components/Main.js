@@ -6,7 +6,7 @@ import firebase from 'firebase'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
-import { fetchUser, fetchUserPosts, fetchKeyInfo, fetchKeyInfoDetails} from '../redux/actions/index'
+import { fetchUser, fetchUserPosts, fetchKeyInfo, fetchKeyInfoDetails, fetchKeyInfo2} from '../redux/actions/index'
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -32,6 +32,7 @@ export class Main extends Component {
 		this.props.fetchUserPosts();
 		this.props.fetchKeyInfo();
 		this.props.fetchKeyInfoDetails();
+		this.props.fetchKeyInfo2();
 		
 	}
 	render() {
@@ -57,7 +58,7 @@ export class Main extends Component {
 				<Tab.Screen name='LeadTracker' component={LeadTrackerScreen}
 					options={{
 						tabBarIcon: ({ color, size }) => (
-							<MaterialCommunityIcons name="account-circle" color={color} size={26} />
+							<MaterialCommunityIcons name="clipboard-account-outline" color={color} size={26} />
 						),
 						headerShown: false
 					}} />
@@ -79,7 +80,7 @@ const mapStateToProps = (store) => ({
 	currentUser: store.userState.currentUser
 })
 
-const mapDispatchToProps = (dispatch) => bindActionCreators({ fetchUser, fetchUserPosts, fetchKeyInfo, fetchKeyInfoDetails }, dispatch);
+const mapDispatchToProps = (dispatch) => bindActionCreators({ fetchUser, fetchUserPosts, fetchKeyInfo, fetchKeyInfoDetails, fetchKeyInfo2}, dispatch);
 
 
 export default connect(mapStateToProps, mapDispatchToProps)(Main)
