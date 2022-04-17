@@ -1,6 +1,7 @@
 import React, {useState } from 'react'
-import { View, StyleSheet, ScrollView, ImageBackground, Alert} from 'react-native'
+import { View, StyleSheet, ScrollView, ImageBackground, Alert, SafeAreaView, FlatList, Text, } from 'react-native'
 import { Card, Button, TextInput, Provider, Chip} from 'react-native-paper'
+import DropDownPicker from 'react-native-dropdown-picker'
 
 import firebase from 'firebase'
 require("firebase/firestore")
@@ -27,6 +28,7 @@ export default function NewLead(props) {
     const [bedroom, setBedroom] = useState("")
     const [propertytype, setPropertytype] = useState("")
     const [furnishing, setFurnishing] = useState("")
+    const [leadsource, setLeadsource] = useState("")
 
     const [propertytypeother, setpropertytypeother] = useState(false)
 
@@ -57,6 +59,8 @@ export default function NewLead(props) {
         }
     }
 
+
+
     return (
         <Provider>
             
@@ -64,7 +68,7 @@ export default function NewLead(props) {
             style={{flex: 1}}
             imageStyle={{resizeMode: 'repeat'}}
             source={require('../../assets/bg-image/99-whatsapp-bg-small.jpg')}>
-
+                <SafeAreaView>
                 <ScrollView>
 
                     <Card style={styles.cardstyle}>
@@ -122,18 +126,18 @@ export default function NewLead(props) {
                     <Card style={styles.cardstyle}>
                         <Card.Title title='Lead Source:'/>
                         <Card.Content style={{flexDirection: 'row', flexWrap: 'wrap', marginBottom: 10}}>
-                            <Chip >Walk-in</Chip>
-                            <Chip >Property Finder</Chip>
-                            <Chip >Dubizzle</Chip>
-                            <Chip >Bayut</Chip>
-                            <Chip >Website</Chip>
-                            <Chip >Cold Call</Chip>
-                            <Chip >Facebook / Instagram</Chip>
-                            <Chip >Other</Chip>
+                            <Chip onPress={()=> setLeadsource('Walk-in')}>Walk-in</Chip>
+                            <Chip onPress={()=> setLeadsource('Property Finder')}>Property Finder</Chip>
+                            <Chip onPress={()=> setLeadsource('Dubizzle')}>Dubizzle</Chip>
+                            <Chip onPress={()=> setLeadsource('Bayut')}>Bayut</Chip>
+                            <Chip onPress={()=> setLeadsource('Wbsite')}>Website</Chip>
+                            <Chip onPress={()=> setLeadsource('Cold Call')}>Cold Call</Chip>
+                            <Chip onPress={()=> setLeadsource('Facebook / Instagram')}>Facebook / Instagram</Chip>
+                            <Chip onPress={()=> setLeadsource('Other')}>Other</Chip>
                         </Card.Content>
                     </Card>
 
-                    
+
                     <Card style={styles.cardstyle}>
                         <Card.Title title='Property Type'/>
                         <Card.Content style={{flexDirection: 'row', flexWrap: 'wrap', marginBottom: 10}}>
@@ -207,6 +211,7 @@ export default function NewLead(props) {
 
                     </Card>
                 </ScrollView>
+                </SafeAreaView>
             </ImageBackground>
         </Provider>
     )
