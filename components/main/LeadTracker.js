@@ -1,14 +1,17 @@
 // JavaScript source code
 import React, { useState } from 'react'
-import { View, Text, FlatList, StyleSheet, ImageBackground, RefreshControl} from 'react-native'
-import { Card, FAB, IconButton, Divider, Chip, DataTable} from 'react-native-paper'
+import { View, Text, FlatList, StyleSheet, ImageBackground, RefreshControl, ScrollView} from 'react-native'
+import { Card, FAB, IconButton, Divider, Chip, DataTable, Searchbar, Caption, IconButton} from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { format } from 'date-fns'
+import differenceInDays from 'date-fns/differenceInDays'
+import startOfDay from 'date-fns/startOfToday'
 
 import firebase from 'firebase'
 require ("firebase/firestore")
 
 import { connect } from 'react-redux'
+import { ScrollView } from 'react-native-gesture-handler'
 
 const wait = (timeout) => {
         return new Promise(resolve => setTimeout(resolve, timeout));
@@ -21,12 +24,13 @@ function LeadTracker(props) {
         setRefreshing(true);
         wait(2000).then(() => setRefreshing(false));}, []);
 
-    const { currentUser, keyinfo2 } = props;
-    console.log(keyinfo2, 'leadlist')
+    const { currentUser, keyinfo2, leadfiltersale} = props;
 
     if (currentUser === null) {
         return <View/>
     }
+
+    const [ezfilter, setezfilter] = React.useState(keyinfo2)
     
     /*
     <Card style={{flex: 1,borderRadius: 10, margin: 10, elevation: 5}}>
@@ -55,31 +59,63 @@ function LeadTracker(props) {
             source={require('../../assets/bg-image/99-whatsapp-bg-small.jpg')}>
 
             <View style={styles.containerGallery}>
-                <Text>Leads</Text>
+                <Card>
+                <Searchbar placeholder="Search"/>
+                <ScrollView horizontal style={{margin: 5}}>
+                    <Chip style={{margin: 2}} onPress={()=> setezfilter(keyinfo2)}>All</Chip>
+                    <Chip style={{margin: 2}} onPress={()=> setezfilter('Other')}>Rent</Chip>
+                    <Chip style={{margin: 2}} onPress={()=> setezfilter(leadfiltersale)}>Sale</Chip>
+                    <Chip style={{margin: 2}} onPress={()=> setezfilter('Yearly')}>Yearly</Chip>
+                    <Chip style={{margin: 2}} onPress={()=> setezfilter('Monthly')}>Monthly</Chip>
+                    <Chip style={{margin: 2}} onPress={()=> setezfilter('Studio')}>Studio</Chip>
+                    <Chip style={{margin: 2}} onPress={()=> setezfilter('Apartment')}>Apartment</Chip>
+                    <Chip style={{margin: 2}} onPress={()=> setezfilter('Villa')}>Villa</Chip>
+                    <Chip style={{margin: 2}} onPress={()=> setezfilter('Plot')}>Plot</Chip>
+                    <Chip style={{margin: 2}} onPress={()=> setezfilter('Retail')}>Retail</Chip>
+                    <Chip style={{margin: 2}} onPress={()=> setezfilter('1 BR')}>1 BR</Chip>
+                    <Chip style={{margin: 2}} onPress={()=> setezfilter('2 BR')}>2 BR</Chip>
+                    <Chip style={{margin: 2}} onPress={()=> setezfilter('3 BR')}>3 BR</Chip>
+                    <Chip style={{margin: 2}} onPress={()=> setezfilter('4 BR')}>4 BR</Chip>
+                    <Chip style={{margin: 2}} onPress={()=> setezfilter('Furnished')}>Furnished</Chip>
+                    <Chip style={{margin: 2}} onPress={()=> setezfilter('Un-Furnished')}>Un-Furnished</Chip>
+                </ScrollView>
+                </Card>
+
                 <FlatList
                 numColumns={1}
                 horizontal={false}
-                data={keyinfo2}
+                data={ezfilter}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}
-                renderItem={({ item }) => ( 
+                renderItem={({ item }) => (
+
                     <Card style={{flex: 1,borderRadius: 10, margin: 10, elevation: 5}}>
+                        <View style={{flexDirection: 'row'}}>
+                            <IconButton icon='magnify'/>
+                            <View>
                         <DataTable>
+                            <DataTable.Header>
+                            <DataTable.Cell>{item.name}</DataTable.Cell>
+                            <DataTable.Cell numeric>{item.number}</DataTable.Cell>
+                            <DataTable.Cell numeric>status</DataTable.Cell>
 
-                        <DataTable.Header>
-                            <DataTable.Title>{item.name}</DataTable.Title>
-                            <DataTable.Title >{item.number}</DataTable.Title>
-                            <DataTable.Title >Status</DataTable.Title>
-                        </DataTable.Header>
-
+                            </DataTable.Header>
                         </DataTable>
+
                         <Card.Content style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                            <Chip>{item.salerent} </Chip>
-                            <Chip>{item.propertytype} </Chip>
-                            <Chip>{item.bedroom} </Chip>
-                            <Chip>{item.furnishing} </Chip> 
+                            <Chip style={{marginRight: 2, marginTop: 2}}>{Math.abs(differenceInDays(new Date(item.creation.toDate().toString()), startOfDay()))} days ago </Chip>
+                            <Chip style={{marginRight: 2, marginTop: 2}}>{item.salerent} </Chip>
+                            <Chip style={{marginRight: 2, marginTop: 2}}>{item.propertytype} </Chip>
+                            <Chip style={{marginRight: 2, marginTop: 2}}>{item.bedroom} </Chip>
+                            <Chip style={{marginRight: 2, marginTop: 2}}>{item.furnishing} </Chip> 
                         </Card.Content>
-                    </Card>
+
+                            </View>
+
+
+
+                        </View>
                     
+                    </Card>
                     
                 )}/>                
             </View>
@@ -127,7 +163,6 @@ const styles = StyleSheet.create({
     },
 
     cardstyle: {
-        borderRadius: 10,
         margin: 10,
         elevation: 5
     },
@@ -142,6 +177,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = (store) => ({
     currentUser: store.userState.currentUser,
     keyinfo2: store.userState.keyinfo2,
+    leadfiltersale: store.userState.leadfiltersale,
 })
 
 export default connect(mapStateToProps, null)(LeadTracker)

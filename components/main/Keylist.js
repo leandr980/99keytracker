@@ -4,6 +4,8 @@ import { View, Text, FlatList, StyleSheet, ImageBackground, RefreshControl} from
 import { Card, FAB, IconButton, Divider, Chip, Caption, Button } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { format } from 'date-fns'
+import differenceInDays from 'date-fns/differenceInDays'
+import startOfDay from 'date-fns/startOfToday'
 
 import firebase from 'firebase'
 require ("firebase/firestore")
@@ -118,9 +120,7 @@ function Keylist(props) {
 
                         <Card.Content>
                             <Caption style={{marginLeft: 55}}>
-                                {'Added: '+format(new Date(item.creation.toDate().toString()), 'PP') + 
-                                ' ' + 
-                                format(new Date(item.creation.toDate().toString()), 'p') }
+                            {Math.abs(differenceInDays(new Date(item.creation.toDate().toString()), startOfDay()))} days ago 
                             </Caption>
                         </Card.Content>
 
