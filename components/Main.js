@@ -6,7 +6,7 @@ import firebase from 'firebase'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
-import { fetchUser, fetchUserPosts, fetchKeyInfo, fetchKeyInfoDetails, fetchKeyInfo2} from '../redux/actions/index'
+import { fetchUser, fetchUserPosts, fetchKeyInfo, fetchKeyInfoDetails, fetchKeyInfo2, leadfiltersale} from '../redux/actions/index'
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -33,6 +33,7 @@ export class Main extends Component {
 		this.props.fetchKeyInfo();
 		this.props.fetchKeyInfoDetails();
 		this.props.fetchKeyInfo2();
+		this.props.leadfiltersale();
 		
 	}
 	render() {
@@ -80,7 +81,7 @@ const mapStateToProps = (store) => ({
 	currentUser: store.userState.currentUser
 })
 
-const mapDispatchToProps = (dispatch) => bindActionCreators({ fetchUser, fetchUserPosts, fetchKeyInfo, fetchKeyInfoDetails, fetchKeyInfo2}, dispatch);
+const mapDispatchToProps = (dispatch) => bindActionCreators({ fetchUser, fetchUserPosts, fetchKeyInfo, fetchKeyInfoDetails, fetchKeyInfo2, leadfiltersale}, dispatch);
 
 
 export default connect(mapStateToProps, mapDispatchToProps)(Main)
