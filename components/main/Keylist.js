@@ -95,7 +95,7 @@ function Keylist(props) {
                 </View>
             </Card>
 
-            <Text style={{ fontSize: 30, fontWeight: 'bold', marginLeft: 20, marginBottom: 5 }}> Recent Entries </Text>
+
             <Text onPress={()=> console.log(keyinfodetails)}> test</Text>
 
             <Divider />
@@ -104,6 +104,16 @@ function Keylist(props) {
                 <FlatList
                 numColumns={1}
                 horizontal={false}
+                ListHeaderComponent={
+                    <View>
+                        <Text style={{ fontSize: 30, fontWeight: 'bold', marginLeft: 10 }}> Recent Entries </Text>
+                    </View>
+                }
+                ListFooterComponent={
+                <View style={{alignItems: 'center', margin: 10}}>
+                    <Caption> End of list</Caption>
+                </View> 
+                }
                 data={keyinfo}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}
                 renderItem={({ item }) => (
