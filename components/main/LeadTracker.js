@@ -1,17 +1,15 @@
 // JavaScript source code
 import React, { useState } from 'react'
-import { View, Text, FlatList, StyleSheet, ImageBackground, RefreshControl, ScrollView} from 'react-native'
-import { Card, FAB, IconButton, Divider, Chip, DataTable, Searchbar, Caption, IconButton} from 'react-native-paper'
+import { View, Text, FlatList, StyleSheet, ImageBackground, RefreshControl, ScrollView, InteractionManager} from 'react-native'
+import { Card, FAB, IconButton, Divider, Chip, DataTable, Searchbar, Caption} from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { format } from 'date-fns'
-import differenceInDays from 'date-fns/differenceInDays'
-import startOfDay from 'date-fns/startOfToday'
+import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 
 import firebase from 'firebase'
 require ("firebase/firestore")
 
 import { connect } from 'react-redux'
-import { ScrollView } from 'react-native-gesture-handler'
 
 const wait = (timeout) => {
         return new Promise(resolve => setTimeout(resolve, timeout));
@@ -31,6 +29,10 @@ function LeadTracker(props) {
     }
 
     const [ezfilter, setezfilter] = React.useState(keyinfo2)
+
+    const datediff =(itemdate)=>{
+        return formatDistanceToNow(new Date(itemdate.toString()))
+    }
     
     /*
     <Card style={{flex: 1,borderRadius: 10, margin: 10, elevation: 5}}>
@@ -50,17 +52,38 @@ function LeadTracker(props) {
                     </Card>
     */
     
+
+                    /*
+                     <DataTable>
+                            <DataTable.Header>
+                            <DataTable.Cell>{item.name}</DataTable.Cell>
+                            <DataTable.Cell numeric>{item.number}</DataTable.Cell>
+                            <DataTable.Cell numeric>status</DataTable.Cell>
+                            </DataTable.Header>
+                        </DataTable>
+                    */
+
+                        /*
+                        <Card style={{flex: 1,borderRadius: 10, margin: 10, elevation: 5}}>
+                        <Card.Title 
+                        title={item.name}
+                        right={()=> <IconButton icon="chevron-right" />}/>
+                            <Card.Content>
+                                <Text>{item.number}</Text>
+                                <Caption>{item.propertytype} • {item.salerent} • {item.bedroom} • {item.furnishing} • Added {datediff(item.creation.toDate())} ago</Caption>
+
+                            </Card.Content>
+                    </Card>
+                        */
     return (
 
         <View style={styles.container}>
-            <ImageBackground 
-            style={{flex: 1}}
-            imageStyle={{resizeMode: 'repeat'}}
-            source={require('../../assets/bg-image/99-whatsapp-bg-small.jpg')}>
+        
 
             <View style={styles.containerGallery}>
                 <Card>
                 <Searchbar placeholder="Search"/>
+                <View style={{flexDirection: 'row', justifyContent: 'center'}}>
                 <ScrollView horizontal style={{margin: 5}}>
                     <Chip style={{margin: 2}} onPress={()=> setezfilter(keyinfo2)}>All</Chip>
                     <Chip style={{margin: 2}} onPress={()=> setezfilter('Other')}>Rent</Chip>
@@ -79,7 +102,19 @@ function LeadTracker(props) {
                     <Chip style={{margin: 2}} onPress={()=> setezfilter('Furnished')}>Furnished</Chip>
                     <Chip style={{margin: 2}} onPress={()=> setezfilter('Un-Furnished')}>Un-Furnished</Chip>
                 </ScrollView>
+                <IconButton icon='cog'/>
+                </View>
                 </Card>
+
+                <DataTable>
+                    <DataTable.Header>
+                    <DataTable.Cell ><IconButton icon='account'/></DataTable.Cell>
+                    <DataTable.Cell ><IconButton icon='phone'/></DataTable.Cell>
+                    <DataTable.Cell numeric><IconButton icon='key'/></DataTable.Cell>
+                    <DataTable.Cell numeric><IconButton icon='domain'/></DataTable.Cell>
+                    <DataTable.Cell numeric><IconButton icon='bed'/></DataTable.Cell>
+                    </DataTable.Header>
+                </DataTable>
 
                 <FlatList
                 numColumns={1}
@@ -87,35 +122,15 @@ function LeadTracker(props) {
                 data={ezfilter}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}
                 renderItem={({ item }) => (
-
-                    <Card style={{flex: 1,borderRadius: 10, margin: 10, elevation: 5}}>
-                        <View style={{flexDirection: 'row'}}>
-                            <IconButton icon='magnify'/>
-                            <View>
-                        <DataTable>
-                            <DataTable.Header>
-                            <DataTable.Cell>{item.name}</DataTable.Cell>
-                            <DataTable.Cell numeric>{item.number}</DataTable.Cell>
-                            <DataTable.Cell numeric>status</DataTable.Cell>
-
-                            </DataTable.Header>
-                        </DataTable>
-
-                        <Card.Content style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                            <Chip style={{marginRight: 2, marginTop: 2}}>{Math.abs(differenceInDays(new Date(item.creation.toDate().toString()), startOfDay()))} days ago </Chip>
-                            <Chip style={{marginRight: 2, marginTop: 2}}>{item.salerent} </Chip>
-                            <Chip style={{marginRight: 2, marginTop: 2}}>{item.propertytype} </Chip>
-                            <Chip style={{marginRight: 2, marginTop: 2}}>{item.bedroom} </Chip>
-                            <Chip style={{marginRight: 2, marginTop: 2}}>{item.furnishing} </Chip> 
-                        </Card.Content>
-
-                            </View>
-
-
-
-                        </View>
-                    
-                    </Card>
+                <DataTable>
+                    <DataTable.Row>
+                    <DataTable.Cell>{item.name}</DataTable.Cell>
+                    <DataTable.Cell >{item.number}</DataTable.Cell>
+                    <DataTable.Cell numeric>{item.salerent}</DataTable.Cell>
+                    <DataTable.Cell numeric>{item.propertytype}</DataTable.Cell>
+                    <DataTable.Cell numeric>{item.bedroom}</DataTable.Cell>
+                    </DataTable.Row>
+                </DataTable>
                     
                 )}/>                
             </View>
@@ -125,11 +140,11 @@ function LeadTracker(props) {
                 theme={{ colors: { accent: 'white' } }}
                 color = 'blue'
                 large
-                icon="key-plus"
+                icon="account-edit-outline"
                 label="New Lead"
                 onPress={() => props.navigation.navigate('New Lead')}
             />
-            </ImageBackground>
+            
         </View>)
         }
 
@@ -163,7 +178,7 @@ const styles = StyleSheet.create({
     },
 
     cardstyle: {
-        margin: 10,
+        margin: 5,
         elevation: 5
     },
     fab: {

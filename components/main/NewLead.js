@@ -21,7 +21,7 @@ export default function NewLead(props) {
 
     const [name, setName] = useState("")
     const [number, setNumber] = useState("")
-    const [area, setArea] = useState("")
+    const [area, setArea] = useState()
     const [budget, setBudget] = useState("")
 
     const [salerent, setSalerent] = useState("")
@@ -131,9 +131,9 @@ function close() {
                             style={styles.pickerstyle}
                             mode='dropdown'
                             ref={pickerRef}
-                            selectedValue={selectedLanguage}
+                            selectedValue={area}
                             onValueChange={(itemValue, itemIndex) =>
-                                setSelectedLanguage(itemValue)
+                                setArea(itemValue)
                             }>
                             <Picker.Item label="Pick An Area" value="Pick An Area" />
                             <Picker.Item label="Al Barsha" value="Al Barsha" />
@@ -204,11 +204,11 @@ function close() {
                     <Card style={styles.cardstyle}>
                         <Card.Title title='Property Type'/>
                         <Card.Content style={{flexDirection: 'row', flexWrap: 'wrap', marginBottom: 10}}>
-                            <Chip onPress={()=>setPropertytype('Villa')}>Villa</Chip>
-                            <Chip onPress={()=>setPropertytype('Apartment')}>Apartment</Chip>
-                            <Chip onPress={()=>setPropertytype('Apartment')}>Plot</Chip>
-                            <Chip onPress={()=>setPropertytype('Apartment')}>Retail</Chip>
-                            <Chip onPress={()=>setPropertytype('Other')}>Other</Chip>
+                            <Chip onPress={()=>setPropertytype('Vill')}>Villa</Chip>
+                            <Chip onPress={()=>setPropertytype('Apt')}>Apartment</Chip>
+                            <Chip onPress={()=>setPropertytype('Plt')}>Plot</Chip>
+                            <Chip onPress={()=>setPropertytype('Rtl')}>Retail</Chip>
+                            <Chip onPress={()=>setPropertytype('Otr')}>Other</Chip>
                         </Card.Content>
 
                         {
@@ -239,10 +239,10 @@ function close() {
                         </Card.Content>
               
                         <Card.Content style={{flexDirection: 'row', flexWrap: 'wrap', marginBottom: 10}}>
-                            <Chip onPress={()=>setFurnishing('Other')}>Furnished</Chip>
-                            <Chip onPress={()=>setFurnishing('Other')}>Un-Furnished</Chip>
-                            <Chip onPress={()=>setFurnishing('Other')}>Partially Furnished</Chip>
-                            <Chip onPress={()=>setFurnishing('Other')}>Any</Chip>
+                            <Chip onPress={()=>setFurnishing('Furnished')}>Furnished</Chip>
+                            <Chip onPress={()=>setFurnishing('Un-Furnished')}>Un-Furnished</Chip>
+                            <Chip onPress={()=>setFurnishing('Partial Furnishing')}>Partially Furnished</Chip>
+                            <Chip onPress={()=>setFurnishing('Any')}>Any</Chip>
                         </Card.Content>
                     </Card>
 
