@@ -32,6 +32,7 @@ import NewHistoryOther from './components/main/NewHistoryOther'
 import SearchScreen from './components/main/Search'
 import EditKeyScreen from './components/main/EditKey'
 import NewLeadScreen from './components/main/NewLead'
+import LeadInfoScreen from './components/main/Leadinfo'
 
 //LogBox.ignoreLogs(['Warning: ...']);
 //console.disableYellowBox = true;
@@ -199,6 +200,14 @@ export class App extends Component {
                             }}/>
 
                         <Stack.Screen name="New Lead" component={NewLeadScreen}
+                            options={{
+                                headerStyle: {
+                                    backgroundColor: '#efefef',
+                                    elevation: 0,
+                                }
+                            }}/>
+
+                        <Stack.Screen name="Lead Info" component={LeadInfoScreen}
                             options={{
                                 headerStyle: {
                                     backgroundColor: '#efefef',
