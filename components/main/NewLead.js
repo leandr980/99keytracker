@@ -21,6 +21,7 @@ export default function NewLead(props) {
 
     const [name, setName] = useState("")
     const [number, setNumber] = useState("")
+    const [email, setEmail] = useState("")
     const [area, setArea] = useState()
     const [budget, setBudget] = useState("")
 
@@ -29,6 +30,8 @@ export default function NewLead(props) {
     const [propertytype, setPropertytype] = useState("")
     const [furnishing, setFurnishing] = useState("")
     const [leadsource, setLeadsource] = useState("")
+
+    const status = 'NOT CONTACTED'
 
     const [propertytypeother, setpropertytypeother] = useState(false)
 
@@ -54,6 +57,7 @@ export default function NewLead(props) {
                     bedroom,
                     propertytype,
                     furnishing,
+                    status,
                     creation
                 }).then((function () {
                     props.navigation.pop()
@@ -63,41 +67,6 @@ export default function NewLead(props) {
 
     const [selectedLanguage, setSelectedLanguage] = useState();
     const [selectedLanguage1, setSelectedLanguage1] = useState();
-
-    const pickerRef = useRef();
-
-function open() {
-  pickerRef.current.focus();
-}
-
-function close() {
-  pickerRef.current.blur();
-}
-
-/*
-                            <TextInput
-                            style={styles.textinputstyle}
-                            type='outlined'
-                            placeholder="Area/Community . . ."
-                            onChangeText={(area) => setArea(area)}
-                            />
-
-
-
-
-                            <Card.Content style={{flexDirection: 'row', flexWrap: 'wrap', marginBottom: 10}}>
-                            <Chip onPress={()=> setLeadsource('Walk-in')}>Walk-in</Chip>
-                            <Chip onPress={()=> setLeadsource('Property Finder')}>Property Finder</Chip>
-                            <Chip onPress={()=> setLeadsource('Dubizzle')}>Dubizzle</Chip>
-                            <Chip onPress={()=> setLeadsource('Bayut')}>Bayut</Chip>
-                            <Chip onPress={()=> setLeadsource('Wbsite')}>Website</Chip>
-                            <Chip onPress={()=> setLeadsource('Cold Call')}>Cold Call</Chip>
-                            <Chip onPress={()=> setLeadsource('Facebook / Instagram')}>Facebook / Instagram</Chip>
-                            <Chip onPress={()=> setLeadsource('Other')}>Other</Chip>
-                        </Card.Content>
-*/
-
-
 
     return (
         <Provider>
@@ -126,11 +95,26 @@ function close() {
                             placeholder="Phone Number . . ."
                             onChangeText={(number) => setNumber(number)}
                             />
+                            <TextInput
+                            style={styles.textinputstyle}
+                            type='outlined'
+                            placeholder="Email . . ."
+                            onChangeText={(email) => setEmail(email)}
+                            />
+
+
+                            <TextInput
+                            style={styles.textinputstyle}
+                            type='outlined'
+                            placeholder="Budget . . ."
+                            onChangeText={(budget) => setBudget(budget)}
+                            />
+                        </Card.Content>
+                    </Card>
 
                             <Picker
                             style={styles.pickerstyle}
                             mode='dropdown'
-                            ref={pickerRef}
                             selectedValue={area}
                             onValueChange={(itemValue, itemIndex) =>
                                 setArea(itemValue)
@@ -147,16 +131,6 @@ function close() {
                             <Picker.Item label="Nad Al Sheba" value="Nad Al Sheba" />
                             <Picker.Item label="Other" value="Other" />
                             </Picker>
-
-                            <TextInput
-                            style={styles.textinputstyle}
-                            type='outlined'
-                            placeholder="Budget . . ."
-                            onChangeText={(budget) => setBudget(budget)}
-                            />
-                        </Card.Content>
-                    </Card>
-
                     <View style={{flex: 1, flexDirection: 'row'}}>
 
                     <Card style={styles.cardstyle}>
@@ -181,7 +155,6 @@ function close() {
                         <Picker
                             style={styles.pickerstyle}
                             mode='dropdown'
-                            ref={pickerRef}
                             selectedValue={selectedLanguage}
                             onValueChange={(itemValue, itemIndex) =>
                                 setSelectedLanguage(itemValue)
