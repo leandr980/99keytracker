@@ -1,6 +1,6 @@
 import React, {useState, useRef} from 'react'
 import { View, StyleSheet, ScrollView, ImageBackground, Alert, SafeAreaView, FlatList, Text, } from 'react-native'
-import { Card, Button, TextInput, Provider, Chip} from 'react-native-paper'
+import { Card, Button, TextInput, Provider, Chip, Divider} from 'react-native-paper'
 import {Picker} from '@react-native-picker/picker';
 
 import firebase from 'firebase'
@@ -242,6 +242,44 @@ export default function NewLead(props) {
                         </Card.Actions>
 
                     </Card>
+
+                    <Divider/>
+
+                    <Card style={styles.cardstyle}>
+                        <Card.Content>
+                            <Text>Name</Text>
+                            <Text>Phone Number</Text>
+                            <Text>Email</Text>
+                        </Card.Content>
+                    </Card>
+
+                    <Card style={styles.cardstyle}>
+                        <Card.Content>
+                            <Text>Property Type</Text>
+                            <Text>Area</Text>
+                            <Text>Sale / Rent</Text>
+                            <Text>Budget</Text>
+                            <Text>No. of Bedrooms</Text>
+                            <Text>Furnishing</Text>
+                        </Card.Content>
+                    </Card>
+
+                    <Card style={styles.cardstyle}>
+                        <Card.Content>
+                            <Text>Lead Source</Text>
+                            <Text>Notes</Text>
+                        </Card.Content>
+                    </Card>
+
+
+
+
+
+
+
+
+
+
                 </ScrollView>
                 </SafeAreaView>
             </ImageBackground>
@@ -258,7 +296,6 @@ const styles = StyleSheet.create({
         fontSize: 15,
     },
     cardstyle: {
-        borderRadius: 10,
         margin: 10,
         elevation: 5,
         justifyContent: 'space-between'

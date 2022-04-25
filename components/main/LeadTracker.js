@@ -1,7 +1,7 @@
 // JavaScript source code
 import React, { useState } from 'react'
-import { View, Text, FlatList, StyleSheet, ImageBackground, RefreshControl, ScrollView, InteractionManager} from 'react-native'
-import { Card, FAB, IconButton, Divider, Chip, DataTable, Searchbar, Caption} from 'react-native-paper'
+import { View, Text, FlatList, StyleSheet, RefreshControl, ScrollView} from 'react-native'
+import { Card, FAB, IconButton, Divider, Chip, DataTable, Searchbar, Caption, Button} from 'react-native-paper'
 import { format } from 'date-fns'
 import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 
@@ -28,10 +28,6 @@ function LeadTracker(props) {
     }
 
     const [ezfilter, setezfilter] = React.useState(keyinfo2)
-
-    const datediff =(itemdate)=>{
-        return formatDistanceToNow(new Date(itemdate.toString()))
-    }
     
     /*
     <Card style={{flex: 1,borderRadius: 10, margin: 10, elevation: 5}}>
@@ -74,6 +70,9 @@ function LeadTracker(props) {
                             </Card.Content>
                     </Card>
                         */
+
+
+                    
     return (
 
         <View style={styles.container}>
@@ -131,6 +130,10 @@ function LeadTracker(props) {
                 </DataTable>
                     
                 )}/>                
+            </View>
+
+            <View>
+                <Button> notification test</Button>
             </View>
 
             <FAB

@@ -49,6 +49,7 @@ export default function Leadinfo(props) {
 
     return (
         <View style={styles.container}>
+            <Divider/>
             <ImageBackground 
             style={{flex: 1}}
             imageStyle={{resizeMode: 'repeat'}}
@@ -84,7 +85,7 @@ export default function Leadinfo(props) {
                         </View>
                         <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 20}}>
                             <Text>Number of Bedrooms</Text>
-                            <Text>{leadinfo.bedrooms}</Text>
+                            <Text>{leadinfo.bedroom}</Text>
                         </View>
                         <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 20}}>
                             <Text>Rent / Sale</Text>
@@ -117,7 +118,7 @@ export default function Leadinfo(props) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginTop: 30
+
     },
     containerInfo: {
         margin: 10,
