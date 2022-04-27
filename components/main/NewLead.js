@@ -4,6 +4,7 @@ import { Card, Button, Provider, Chip, Divider} from 'react-native-paper'
 
 import {Picker} from '@react-native-picker/picker';
 import DropDownPicker from 'react-native-dropdown-picker';
+import { Dropdown } from 'react-native-element-dropdown';
 
 import firebase from 'firebase'
 require("firebase/firestore")
@@ -21,21 +22,25 @@ const alerthandler = () =>{
 
 export default function NewLead(props) {
 
+    const [value, setValue] = useState(null);
+    const [value2, setValue2] = useState(null);
+    
     const [name, setName] = useState("")
     const [number, setNumber] = useState("")
     const [email, setEmail] = useState("")
-    const [area, setArea] = useState()
-    const [budget, setBudget] = useState("")
 
     const [salerent, setSalerent] = useState("")
+    const [propertytype, setPropertytype] = useState('')
+    const [area, setArea] = useState('')
     const [bedroom, setBedroom] = useState("")
-    const [propertytype, setPropertytype] = useState("")
+    const [budget, setBudget] = useState("")
     const [furnishing, setFurnishing] = useState("")
-    const [leadsource, setLeadsource] = useState("")
-
-    const status = 'NOT CONTACTED'
-
+    
+    const [leadsource, setLeadsource] = useState('')
+    
     const [propertytypeother, setpropertytypeother] = useState(false)
+    
+    const status = 'NOT CONTACTED'
 
     const creation = firebase.firestore.FieldValue.serverTimestamp()
     const keyhistorycreation = creation
@@ -67,18 +72,31 @@ export default function NewLead(props) {
         }
     }
 
-    const [open, setOpen] = useState(false);
-    const [value, setValue] = useState(null);
-    const [items, setItems] = useState([
-      {label: 'Apartment', value: 'Apartment'},
-      {label: 'Villa', value: 'Villa'},
-      {label: 'Plot', value: 'Plot'},
-      {label: 'Land', value: 'Land'},
-      {label: 'Office', value: 'Office'},
-    ]);
+    const leadsourcedata = [
+        { label: 'Property Finder', value: 'Property Finder' },
+        { label: 'Bayut', value: 'Bayut' },
+        { label: 'Dubizzle', value: 'Dubizzle' },
+        { label: 'Walk-In', value: 'Walk-In' },
+        { label: 'Cold Calling', value: 'Cold Calling' },
+        { label: 'Facebook / Instagram', value: 'Facebook / Instagram' },
+        { label: 'Google', value: 'Google' },
+        { label: 'Website', value: 'Website' },
+        { label: 'Referral', value: 'Referral' },
+    ];
 
-    const [selectedLanguage, setSelectedLanguage] = useState();
-    const [selectedLanguage1, setSelectedLanguage1] = useState();
+    const dubaiareadata = [
+        { label: 'Al Barsha', value: 'Al Barsha' }
+    ];
+
+    const propertytypedata = [
+        { label: 'Apartment', value: 'Apartment' },
+        { label: 'Villa', value: 'Villa' },
+        { label: 'Office', value: 'Office' },
+        { label: 'Plot', value: 'Plot' },
+        { label: 'Land', value: 'Land' },
+    ];
+
+    
 
     return (
         <Provider>
@@ -87,24 +105,23 @@ export default function NewLead(props) {
             style={{flex: 1}}
             imageStyle={{resizeMode: 'repeat'}}
             source={require('../../assets/bg-image/99-whatsapp-bg-small.jpg')}>
-                <SafeAreaView>
                 <ScrollView >
 
                     <Card style={styles.cardstyle}>
                         <Card.Content>
-                            <Text>Name</Text>
+                            
                             <TextInput
                             style={styles.textinputstyle}
                             type='outlined'
                             placeholder="Name . . ."
                             onChangeText={(name) => setName(name)}/>
-                            <Text>Phone Number</Text>
+                            
                             <TextInput
                             style={styles.textinputstyle}
                             type='outlined'
                             placeholder="Phone Number . . ."
                             onChangeText={(name) => setName(name)}/>
-                            <Text>Email</Text>
+
                             <TextInput
                             style={styles.textinputstyle}
                             type='outlined'
@@ -114,59 +131,78 @@ export default function NewLead(props) {
                     </Card>
 
                     <Card style={styles.cardstyle}>
-                        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                            <View style={{padding: 10}}>
-                                <Text style={{marginVertical: 5}}>Property Type:</Text>
-                            <DropDownPicker
-                            containerStyle={{width: '50%'}}
-                            listMode="SCROLLVIEW"
-                            open={open}
-                            value={value}
-                            items={items}
-                            setOpen={setOpen}
-                            setValue={setValue}
-                            setItems={setItems}
+                        <Card.Content>
+                            <Text>Sale / Rent</Text>
+                            <View style={{flexDirection: 'row'}}>
+                                <Chip>Sale</Chip>
+                                <Chip>Rent</Chip>
+                            </View>
+                        </Card.Content>
+                        <View>
+                            <Text>{value}</Text>
+                            <Dropdown
+                                style={styles.dropdown}
+                                placeholderStyle={styles.placeholderStyle}
+                                selectedTextStyle={styles.selectedTextStyle}
+                                inputSearchStyle={styles.inputSearchStyle}
+                                iconStyle={styles.iconStyle}
+                                data={leadsourcedata}
+                                search
+                                maxHeight={300}
+                                labelField="label"
+                                valueField="value"
+                                placeholder="Select item"
+                                searchPlaceholder="Search..."
+                                value={value}
+                                onChange={item => {
+                                setValue(item.value);
+                                }}
                             />
-                            </View>
-
-                        </View>
-
-                        <View style={{flexDirection: 'row'}}>
-                            <View>
-                                <Picker
-                                selectedValue={selectedLanguage}
-                                onValueChange={(itemValue, itemIndex) =>
-                                    setSelectedLanguage(itemValue)
-                                }>
-                                <Picker.Item label="Java" value="java" />
-                                <Picker.Item label="JavaScript" value="js" />
-                                </Picker>
-                            </View>
-                            <View>
-                                <Picker
-                                selectedValue={selectedLanguage}
-                                onValueChange={(itemValue, itemIndex) =>
-                                    setSelectedLanguage(itemValue)
-                                }>
-                                <Picker.Item label="Java" value="java" />
-                                <Picker.Item label="JavaScript" value="js" />
-                                </Picker>
-                            </View>
+                            <Text>{value2}</Text>
+                            <Dropdown
+                                style={styles.dropdown}
+                                placeholderStyle={styles.placeholderStyle}
+                                selectedTextStyle={styles.selectedTextStyle}
+                                inputSearchStyle={styles.inputSearchStyle}
+                                iconStyle={styles.iconStyle}
+                                data={leadsourcedata}
+                                search
+                                maxHeight={300}
+                                labelField="label"
+                                valueField="value"
+                                placeholder="Select item"
+                                searchPlaceholder="Search..."
+                                value={value2}
+                                onChange={item => {
+                                setValue2(item.value2);
+                                }}
+                            />
                         </View>
                         <Card.Content>
-                            <Text>Property Type</Text>
-
-
-
-                            <Text>Area</Text>
-                            <Text>Sale / Rent</Text>
-                            <Text>Budget</Text>
                             <Text>No. of Bedrooms</Text>
+                            <View style={{flexDirection: 'row'}}>
+                                <Chip>Studio</Chip>
+                                <Chip>1 Bedroom</Chip>
+                                <Chip>2 Bedroom</Chip>
+                                <Chip>3 Bedroom</Chip>
+                                <Chip>4 Bedroom</Chip>
+                                <Chip>5 Bedroom</Chip>
+                            </View>
+                        </Card.Content>
+                            <Text>Budget</Text>
+
+                        <Card.Content>
                             <Text>Furnishing</Text>
+                            <View style={{flexDirection: 'row'}}>
+                                <Chip>Furnished</Chip>
+                                <Chip>Un-Furnished</Chip>
+                                <Chip>Any</Chip>
+                            </View>
                         </Card.Content>
                     </Card>
 
                     <Card style={styles.cardstyle}>
+
                         <Card.Content>
                             <Text>Lead Source</Text>
                             <Text>Notes</Text>
@@ -174,25 +210,12 @@ export default function NewLead(props) {
                     </Card>
 
                     <Card style={styles.cardstyle}>
-
                         <Card.Actions style={{ justifyContent: 'center' }}>
-
-                            <Button
-                                onPress={() => saveKeyData()}>
-                                SAVE
-                            </Button>
-
+                            <Button onPress={() => saveKeyData()}> SAVE </Button>
                         </Card.Actions>
-
                     </Card>
 
-
-
-
-
-
                 </ScrollView>
-                </SafeAreaView>
             </ImageBackground>
         </Provider>
     )
@@ -212,12 +235,37 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between'
     },
     textinputstyle: {
-        marginVertical: 10
+        marginVertical: 20,
+        borderBottomWidth: 0.5,
+        borderBottomColor: 'grey',
     },
     pickerstyle: {
         marginVertical: 10
     },
     cardcontentstyle: {
         margin: 10
-    }
+    },
+    dropdown: {
+        margin: 16,
+        height: 50,
+        borderBottomColor: 'gray',
+        borderBottomWidth: 0.5,
+      },
+      icon: {
+        marginRight: 5,
+      },
+      placeholderStyle: {
+        fontSize: 16,
+      },
+      selectedTextStyle: {
+        fontSize: 16,
+      },
+      iconStyle: {
+        width: 20,
+        height: 20,
+      },
+      inputSearchStyle: {
+        height: 40,
+        fontSize: 16,
+      },
 })
