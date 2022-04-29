@@ -5,6 +5,7 @@ import { Card, Button, Provider, Chip, Divider, Title} from 'react-native-paper'
 import {Picker} from '@react-native-picker/picker';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { Dropdown, MultiSelect} from 'react-native-element-dropdown';
+import Slider from '@react-native-community/slider';
 
 import firebase from 'firebase'
 require("firebase/firestore")
@@ -103,8 +104,8 @@ export default function NewLead(props) {
         { label: 'Jumeirah Village Triangle', value: 'Jumeirah Village Triangle' },
     ];
 
-
-    
+    const [budgetrange, setbudgetrange] = useState(0)
+    const [budgetrange1, setbudgetrange1] = useState(0)
 
     return (
         <Provider>
@@ -210,6 +211,37 @@ export default function NewLead(props) {
                         <Divider style={{margin: 10}}/>
                         <Card.Content style={{marginVertical: 15}}>
                             <Title>Budget</Title>
+                            <Text>{Math.floor(budgetrange*10)*10000}</Text>
+                            <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                                <Text>10000</Text>
+                                <Slider
+                                style={{height: 40}}
+                                onValueChange={(value)=> setbudgetrange(value)}
+                                minimumValue={0.1}
+                                maximumValue={2}
+                                minimumTrackTintColor="#d6d6d6"
+                                maximumTrackTintColor="#000000"
+                                />
+                                <Text>200000</Text>
+                            </View>
+                            <Dropdown
+                                style={styles.dropdown}
+                                placeholderStyle={styles.placeholderStyle}
+                                selectedTextStyle={styles.selectedTextStyle}
+                                inputSearchStyle={styles.inputSearchStyle}
+                                iconStyle={styles.iconStyle}
+                                data={leadsourcedata}
+                                search
+                                maxHeight={300}
+                                labelField="label"
+                                valueField="value"
+                                placeholder="Select a Lead Source"
+                                searchPlaceholder="Search..."
+                                value={value2}
+                                onChange={item1 => {
+                                setValue2(item1.value2);
+                                }}
+                            />
                         </Card.Content>
 
                         <Divider style={{margin: 10}}/>
