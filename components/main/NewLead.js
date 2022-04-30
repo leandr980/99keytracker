@@ -21,6 +21,11 @@ const alerthandler = () =>{
       );
 }
 
+import { Dimensions } from 'react-native';
+
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
+
 export default function NewLead(props) {
 
     const [value, setValue] = useState(null);
@@ -125,6 +130,7 @@ export default function NewLead(props) {
                         <Card.Title
                         title='Client Info'
                         />
+                        <Divider style={{margin: 10}}/>
                         <Card.Content>
                             <TextInput
                             style={styles.textinputstyle}
@@ -154,8 +160,8 @@ export default function NewLead(props) {
                         <Card.Content style={{marginVertical: 15}}>
                             <Title>Sale / Rent</Title>
                             <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                                <Chip style={{marginRight: 5}} selected={selectedsalerent} onPress={()=> setSalerent('Sale')}>Sale</Chip>
-                                <Chip style={{marginRight: 5}} onPress={()=> setSalerent('Rent')}>Rent</Chip>
+                                <Chip style={{marginRight: 5, marginBottom: 5}} selected={selectedsalerent} onPress={()=> setSalerent('Sale')}>Sale</Chip>
+                                <Chip style={{marginRight: 5, marginBottom: 5}} onPress={()=> setSalerent('Rent')}>Rent</Chip>
                             </View>
                         </Card.Content>
 
@@ -163,11 +169,11 @@ export default function NewLead(props) {
                         <Card.Content style={{marginVertical: 15}}>
                             <Title>Property Type</Title>
                             <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                                <Chip style={{marginRight: 5}}>Apartment</Chip>
-                                <Chip style={{marginRight: 5}}>Villa</Chip>
-                                <Chip style={{marginRight: 5}}>Office</Chip>
-                                <Chip style={{marginRight: 5}}>Plot</Chip>
-                                <Chip style={{marginRight: 5}}>Land</Chip>
+                                <Chip style={{marginRight: 5, marginBottom: 5}}>Apartment</Chip>
+                                <Chip style={{marginRight: 5, marginBottom: 5}}>Villa</Chip>
+                                <Chip style={{marginRight: 5, marginBottom: 5}}>Office</Chip>
+                                <Chip style={{marginRight: 5, marginBottom: 5}}>Plot</Chip>
+                                <Chip style={{marginRight: 5, marginBottom: 5}}>Land</Chip>
                             </View>
                         </Card.Content>
 
@@ -198,60 +204,40 @@ export default function NewLead(props) {
                         <Card.Content style={{marginVertical: 15}}>
                             <Title>No. of Bedrooms</Title>
                             <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                                <Chip style={{marginRight: 5}} >Studio</Chip>
-                                <Chip style={{marginRight: 5}}>1 Bedroom</Chip>
-                                <Chip style={{marginRight: 5}}>2 Bedrooms</Chip>
-                                <Chip style={{marginRight: 5}}>3 Bedrooms</Chip>
-                                <Chip style={{marginRight: 5}}>4 Bedrooms</Chip>
-                                <Chip style={{marginRight: 5}}>5 Bedrooms</Chip>
-                                <Chip style={{marginRight: 5}}>Other</Chip>
+                                <Chip style={{marginRight: 5, marginBottom: 5}} >Studio</Chip>
+                                <Chip style={{marginRight: 5, marginBottom: 5}}>1 Bedroom</Chip>
+                                <Chip style={{marginRight: 5, marginBottom: 5}}>2 Bedrooms</Chip>
+                                <Chip style={{marginRight: 5, marginBottom: 5}}>3 Bedrooms</Chip>
+                                <Chip style={{marginRight: 5, marginBottom: 5}}>4 Bedrooms</Chip>
+                                <Chip style={{marginRight: 5, marginBottom: 5}}>5 Bedrooms</Chip>
+                                <Chip style={{marginRight: 5, marginBottom: 5}}>Other</Chip>
                             </View>
                         </Card.Content>
 
                         <Divider style={{margin: 10}}/>
                         <Card.Content style={{marginVertical: 15}}>
                             <Title>Budget</Title>
-                            <Text>{Math.floor(budgetrange*10)*10000}</Text>
-                            <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                                <Text>10000</Text>
+                            <View style={{flexDirection: 'row', alignContent: 'center'}}>
                                 <Slider
-                                style={{height: 40}}
+                                style={{height: 40, width: windowWidth/1.2}}
                                 onValueChange={(value)=> setbudgetrange(value)}
                                 minimumValue={0.1}
                                 maximumValue={2}
                                 minimumTrackTintColor="#d6d6d6"
                                 maximumTrackTintColor="#000000"
                                 />
-                                <Text>200000</Text>
+                                <Text>{Math.floor(budgetrange*10)*10000}</Text>
                             </View>
-                            <Dropdown
-                                style={styles.dropdown}
-                                placeholderStyle={styles.placeholderStyle}
-                                selectedTextStyle={styles.selectedTextStyle}
-                                inputSearchStyle={styles.inputSearchStyle}
-                                iconStyle={styles.iconStyle}
-                                data={leadsourcedata}
-                                search
-                                maxHeight={300}
-                                labelField="label"
-                                valueField="value"
-                                placeholder="Select a Lead Source"
-                                searchPlaceholder="Search..."
-                                value={value2}
-                                onChange={item1 => {
-                                setValue2(item1.value2);
-                                }}
-                            />
                         </Card.Content>
 
                         <Divider style={{margin: 10}}/>
                         <Card.Content style={{marginVertical: 15}}>
                             <Title>Furnishing</Title>
                             <View style={{flexDirection: 'row'}}>
-                                <Chip style={{marginRight: 5}}>Furnished</Chip>
-                                <Chip style={{marginRight: 5}}>Un-Furnished</Chip>
-                                <Chip style={{marginRight: 5}}>Any</Chip>
-                                <Chip style={{marginRight: 5}}>Other</Chip>
+                                <Chip style={{marginRight: 5, marginBottom: 5}}>Furnished</Chip>
+                                <Chip style={{marginRight: 5, marginBottom: 5}}>Un-Furnished</Chip>
+                                <Chip style={{marginRight: 5, marginBottom: 5}}>Any</Chip>
+                                <Chip style={{marginRight: 5, marginBottom: 5}}>Other</Chip>
                             </View>
                         </Card.Content>
                     </Card>
@@ -287,7 +273,7 @@ export default function NewLead(props) {
                         <Card.Content style={{marginVertical: 15}}>
                             <Title>Notes</Title>
                             <TextInput
-                            style={{marginVertical: 20, borderBottomWidth: 0.5, borderBottomColor: 'grey', height: 100}}
+                            style={styles.textinputstyle}
                             type='outlined'
                             placeholder=". . ."
                             onChangeText={(notes) => setnotes(notes)}/>
