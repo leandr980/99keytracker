@@ -1,6 +1,6 @@
 import React, {useState, useRef} from 'react'
-import { View, StyleSheet, ScrollView, ImageBackground, Alert, SafeAreaView, TextInput, Text, } from 'react-native'
-import { Card, Button, Provider, Chip, Divider, Title} from 'react-native-paper'
+import { View, StyleSheet, ScrollView, ImageBackground, Alert, SafeAreaView, TextInput, Text} from 'react-native'
+import { Card, Button, Provider, Chip, Divider, Title, RadioButton, TouchableRipple} from 'react-native-paper'
 
 import {Picker} from '@react-native-picker/picker';
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -29,7 +29,7 @@ const windowHeight = Dimensions.get('window').height;
 export default function NewLead(props) {
 
     const [value, setValue] = useState(null);
-    const [value2, setValue2] = useState(null);
+    const [value2, setValue2] = useState('first');
     
     const [name, setName] = useState("")
     const [number, setNumber] = useState("")
@@ -57,7 +57,7 @@ export default function NewLead(props) {
 
     const saveKeyData = () => {
 
-        if (!name.trim() || !number.trim() || !area.trim() || !budget.trim() === "") {
+        if (!name.trim() || !number.trim() || !budget.trim() === "") {
             alerthandler()
         }
         else {
@@ -72,7 +72,7 @@ export default function NewLead(props) {
 
                     salerent,
                     propertytype,
-                    area,
+                    multiplearea,
                     bedroom,
                     budget,
                     furnishing,
@@ -112,6 +112,8 @@ export default function NewLead(props) {
     const [budgetrange, setbudgetrange] = useState(0)
     const [budgetrange1, setbudgetrange1] = useState(0)
 
+    const [checked, setChecked] = React.useState('');
+
     return (
         <Provider>
             
@@ -127,9 +129,9 @@ export default function NewLead(props) {
                         fontWeight: 'bold'}}> New Client Entry </Text>
 
                     <Card style={styles.cardstyle}>
-                        <Card.Title
-                        title='Client Info'
-                        />
+
+                        <Card.Title title='Client Info'/>
+
                         <Divider style={{margin: 10}}/>
                         <Card.Content>
                             <TextInput
@@ -160,8 +162,13 @@ export default function NewLead(props) {
                         <Card.Content style={{marginVertical: 15}}>
                             <Title>Sale / Rent</Title>
                             <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                                <Chip style={{marginRight: 5, marginBottom: 5}} selected={selectedsalerent} onPress={()=> setSalerent('Sale')}>Sale</Chip>
-                                <Chip style={{marginRight: 5, marginBottom: 5}} onPress={()=> setSalerent('Rent')}>Rent</Chip>
+                                <Chip selected={ salerent === 'Rent' ? true : false } 
+                                style={{marginRight: 5, marginBottom: 5}} 
+                                onPress={()=> setSalerent('Rent')}>Rent</Chip>
+
+                                <Chip selected={ salerent === 'Sale' ? true : false } 
+                                style={{marginRight: 5, marginBottom: 5}} 
+                                onPress={()=> setSalerent('Sale')}>Sale</Chip>
                             </View>
                         </Card.Content>
 
@@ -169,11 +176,25 @@ export default function NewLead(props) {
                         <Card.Content style={{marginVertical: 15}}>
                             <Title>Property Type</Title>
                             <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                                <Chip style={{marginRight: 5, marginBottom: 5}}>Apartment</Chip>
-                                <Chip style={{marginRight: 5, marginBottom: 5}}>Villa</Chip>
-                                <Chip style={{marginRight: 5, marginBottom: 5}}>Office</Chip>
-                                <Chip style={{marginRight: 5, marginBottom: 5}}>Plot</Chip>
-                                <Chip style={{marginRight: 5, marginBottom: 5}}>Land</Chip>
+                                <Chip selected={ propertytype === 'Apartment' ? true : false } 
+                                style={{marginRight: 5, marginBottom: 5}} 
+                                onPress={()=> setPropertytype('Apartment')}>Apartment</Chip>
+                                
+                                <Chip selected={ propertytype === 'Villa' ? true : false } 
+                                style={{marginRight: 5, marginBottom: 5}} 
+                                onPress={()=> setPropertytype('Villa')}>Villa</Chip>
+
+                                <Chip selected={ propertytype === 'Office' ? true : false } 
+                                style={{marginRight: 5, marginBottom: 5}} 
+                                onPress={()=> setPropertytype('Office')}>Office</Chip>
+
+                                <Chip selected={ propertytype === 'Plot' ? true : false } 
+                                style={{marginRight: 5, marginBottom: 5}} 
+                                onPress={()=> setPropertytype('Plot')}>Plot</Chip>
+
+                                <Chip selected={ propertytype === 'Land' ? true : false } 
+                                style={{marginRight: 5, marginBottom: 5}} 
+                                onPress={()=> setPropertytype('Land')}>Land</Chip>
                             </View>
                         </Card.Content>
 
@@ -204,13 +225,34 @@ export default function NewLead(props) {
                         <Card.Content style={{marginVertical: 15}}>
                             <Title>No. of Bedrooms</Title>
                             <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                                <Chip style={{marginRight: 5, marginBottom: 5}} >Studio</Chip>
-                                <Chip style={{marginRight: 5, marginBottom: 5}}>1 Bedroom</Chip>
-                                <Chip style={{marginRight: 5, marginBottom: 5}}>2 Bedrooms</Chip>
-                                <Chip style={{marginRight: 5, marginBottom: 5}}>3 Bedrooms</Chip>
-                                <Chip style={{marginRight: 5, marginBottom: 5}}>4 Bedrooms</Chip>
-                                <Chip style={{marginRight: 5, marginBottom: 5}}>5 Bedrooms</Chip>
-                                <Chip style={{marginRight: 5, marginBottom: 5}}>Other</Chip>
+                                <Chip selected={ bedroom === 'Studio' ? true : false } 
+                                style={{marginRight: 5, marginBottom: 5}} 
+                                onPress={()=> setBedroom('Studio')}>Studio</Chip>
+
+                                <Chip selected={ bedroom === '1 Bedroom' ? true : false } 
+                                style={{marginRight: 5, marginBottom: 5}} 
+                                onPress={()=> setBedroom('1 Bedroom')}>1 Bedroom</Chip>
+
+                                <Chip selected={ bedroom === '2 Bedrooms' ? true : false } 
+                                style={{marginRight: 5, marginBottom: 5}} 
+                                onPress={()=> setBedroom('2 Bedrooms')}>2 Bedrooms</Chip>
+
+                                <Chip selected={ bedroom === '3 Bedrooms' ? true : false } 
+                                style={{marginRight: 5, marginBottom: 5}} 
+                                onPress={()=> setBedroom('3 Bedrooms')}>3 Bedrooms</Chip>
+
+                                <Chip selected={ bedroom === '4 Bedrooms' ? true : false } 
+                                style={{marginRight: 5, marginBottom: 5}} 
+                                onPress={()=> setBedroom('4 Bedrooms')}>4 Bedrooms</Chip>
+
+                                <Chip selected={ bedroom === '5 Bedrooms' ? true : false } 
+                                style={{marginRight: 5, marginBottom: 5}} 
+                                onPress={()=> setBedroom('5 Bedrooms')}>5 Bedrooms</Chip>
+
+                                <Chip selected={ bedroom === 'Other' ? true : false } 
+                                style={{marginRight: 5, marginBottom: 5}} 
+                                onPress={()=> setBedroom('Other')}>Other</Chip>
+
                             </View>
                         </Card.Content>
 
@@ -234,10 +276,21 @@ export default function NewLead(props) {
                         <Card.Content style={{marginVertical: 15}}>
                             <Title>Furnishing</Title>
                             <View style={{flexDirection: 'row'}}>
-                                <Chip style={{marginRight: 5, marginBottom: 5}}>Furnished</Chip>
-                                <Chip style={{marginRight: 5, marginBottom: 5}}>Un-Furnished</Chip>
-                                <Chip style={{marginRight: 5, marginBottom: 5}}>Any</Chip>
-                                <Chip style={{marginRight: 5, marginBottom: 5}}>Other</Chip>
+                                <Chip selected={ furnishing === 'Furnished' ? true : false } 
+                                style={{marginRight: 5, marginBottom: 5}} 
+                                onPress={()=> setFurnishing('Furnished')}>Furnished</Chip>
+
+                                <Chip selected={ furnishing === 'Un-Furnished' ? true : false } 
+                                onPress={()=> setFurnishing('Un-Furnished')}
+                                style={{marginRight: 5, marginBottom: 5}}>Un-Furnished</Chip>
+
+                                <Chip selected={ furnishing === 'Any' ? true : false } 
+                                onPress={()=> setFurnishing('Any')}
+                                style={{marginRight: 5, marginBottom: 5}}>Any</Chip>
+
+                                <Chip selected={ furnishing === 'Other' ? true : false } 
+                                onPress={()=> setFurnishing('Other')}
+                                style={{marginRight: 5, marginBottom: 5}}>Other</Chip>
                             </View>
                         </Card.Content>
                     </Card>
@@ -285,7 +338,6 @@ export default function NewLead(props) {
                             <Button onPress={() => saveKeyData()}> SAVE </Button>
                         </Card.Actions>
                     </Card>
-
                 </ScrollView>
             </ImageBackground>
         </Provider>
