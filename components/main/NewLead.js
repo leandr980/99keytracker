@@ -28,7 +28,7 @@ const windowHeight = Dimensions.get('window').height;
 
 export default function NewLead(props) {
 
-    const [value, setValue] = useState(null);
+    const [value, setValue] = useState('');
     const [value2, setValue2] = useState('first');
     
     const [name, setName] = useState("")
@@ -37,6 +37,7 @@ export default function NewLead(props) {
 
     const [salerent, setSalerent] = useState("")
     const [propertytype, setPropertytype] = useState('')
+    const [propertystatus, setpropertystatus] = useState('')
     //const [area, setArea] = useState('')
     const [multiplearea, setmultiplearea] = useState([]);
     const [bedroom, setBedroom] = useState("")
@@ -71,10 +72,11 @@ export default function NewLead(props) {
                     email,
 
                     salerent,
+                    propertystatus,
                     propertytype,
                     multiplearea,
                     bedroom,
-                    budget,
+                    budgetrange,
                     furnishing,
 
                     leadsource,
@@ -169,6 +171,20 @@ export default function NewLead(props) {
                                 <Chip selected={ salerent === 'Sale' ? true : false } 
                                 style={{marginRight: 5, marginBottom: 5}} 
                                 onPress={()=> setSalerent('Sale')}>Sale</Chip>
+                            </View>
+                        </Card.Content>
+
+                        <Divider style={{margin: 10}}/>
+                        <Card.Content style={{marginVertical: 15}}>
+                            <Title>Property Status</Title>
+                            <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
+                                <Chip selected={ propertystatus === 'Ready' ? true : false } 
+                                style={{marginRight: 5, marginBottom: 5}} 
+                                onPress={()=> setpropertystatus('Ready')}>Ready</Chip>
+
+                                <Chip selected={ propertystatus === 'Off-Plan' ? true : false } 
+                                style={{marginRight: 5, marginBottom: 5}} 
+                                onPress={()=> setpropertystatus('Off-Plan')}>Off-Plan</Chip>
                             </View>
                         </Card.Content>
 
@@ -320,16 +336,6 @@ export default function NewLead(props) {
                                 setValue(item1.value);
                                 }}
                             />
-                        </Card.Content>
-
-                        <Divider style={{margin: 10}}/>
-                        <Card.Content style={{marginVertical: 15}}>
-                            <Title>Notes</Title>
-                            <TextInput
-                            style={styles.textinputstyle}
-                            type='outlined'
-                            placeholder=". . ."
-                            onChangeText={(notes) => setnotes(notes)}/>
                         </Card.Content>
                     </Card>
 
