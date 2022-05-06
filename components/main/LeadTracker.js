@@ -27,51 +27,7 @@ function LeadTracker(props) {
         return <View/>
     }
 
-    const [ezfilter, setezfilter] = React.useState(keyinfo2)
-    
-    /*
-    <Card style={{flex: 1,borderRadius: 10, margin: 10, elevation: 5}}>
-                        <Card.Title
-                        left={() => <MaterialCommunityIcons name="account" size={40} />}
-                        title={item.name}
-                        />
-                        <Text style={{marginLeft: 20}}>Number: {item.number}</Text>
-                        <Text style={{marginLeft: 20}}>Budget: {item.budget}</Text>
-                        <Divider/>
-                        <Card.Content style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                            <Chip>{item.salerent} </Chip>
-                            <Chip>{item.propertytype} </Chip>
-                            <Chip>{item.bedroom} </Chip>
-                            <Chip>{item.furnishing} </Chip> 
-                        </Card.Content>
-                    </Card>
-    */
-    
-
-                    /*
-                     <DataTable>
-                            <DataTable.Header>
-                            <DataTable.Cell>{item.name}</DataTable.Cell>
-                            <DataTable.Cell numeric>{item.number}</DataTable.Cell>
-                            <DataTable.Cell numeric>status</DataTable.Cell>
-                            </DataTable.Header>
-                        </DataTable>
-                    */
-
-                        /*
-                        <Card style={{flex: 1,borderRadius: 10, margin: 10, elevation: 5}}>
-                        <Card.Title 
-                        title={item.name}
-                        right={()=> <IconButton icon="chevron-right" />}/>
-                            <Card.Content>
-                                <Text>{item.number}</Text>
-                                <Caption>{item.propertytype} • {item.salerent} • {item.bedroom} • {item.furnishing} • Added {datediff(item.creation.toDate())} ago</Caption>
-
-                            </Card.Content>
-                    </Card>
-                        */
-
-
+    const [ezfilter, setezfilter] = useState(keyinfo2)
                     
     return (
 
