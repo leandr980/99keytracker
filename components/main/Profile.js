@@ -1,6 +1,6 @@
 import React, { useEffect, useState, Component } from 'react'
-import { View, FlatList, StyleSheet, ScrollView } from 'react-native'
-import { Card, FAB, Searchbar, IconButton, Paragraph, Divider, Button, Chip, Colors, RadioButton, Text, TextInput, List, Portal, Dialog, Provider, Modal, Caption } from 'react-native-paper'
+import { View, FlatList, StyleSheet, Text, TextComponent} from 'react-native'
+import { Card, FAB, Searchbar, IconButton, Paragraph, Divider, Button, Caption, Title, Subheading} from 'react-native-paper'
 
 import firebase from 'firebase'
 require("firebase/firestore")
@@ -22,14 +22,13 @@ function Profile(props) {
             <Card style={styles.cardstyle}>
                 <Card.Title title='Profile' />
 
-                <Divider/>
-
+                <Divider style={{margin: 10}}/>
                 <Card.Content>
-                    <Caption> Name: { currentUser.name }</Caption>
-                    <Caption> Email: { currentUser.email }</Caption>
-                    <Caption> Company: </Caption>
-                    <Caption> Address: </Caption>
-                    <Caption> Number: </Caption>
+                    <Text style={styles.textinputstyle}> Name: { currentUser.name }</Text>
+                    <Text style={styles.textinputstyle}> Email: { currentUser.email }</Text>
+                    <Text style={styles.textinputstyle}> Company: </Text>
+                    <Text style={styles.textinputstyle}> Address: </Text>
+                    <Text style={styles.textinputstyle}> Number: </Text>
                 </Card.Content>
             </Card>
 
@@ -47,6 +46,9 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         margin: 10,
         elevation: 10
+    },
+    textinputstyle: {
+        marginVertical: 20,
     },
 })
 
