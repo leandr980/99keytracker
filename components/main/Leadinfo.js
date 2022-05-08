@@ -67,6 +67,23 @@ export default function Leadinfo(props) {
                     subscribe2()
                 }
     }, [])
+    
+    const budgetcheck = () =>{
+        if (leadinfo.budget == ''){
+            return true
+        }
+        else{
+            return false
+        }
+    }
+    const issalerentcheck = () =>{
+        if (leadinfo.salerent == 'Sale'){
+            return true
+        }
+        else{
+            return false
+        }
+    }
 
     const addnewnote = () => {
         firebase.firestore()
@@ -126,6 +143,9 @@ export default function Leadinfo(props) {
                         <Card style={styles.cardstyle}>
                             <Card.Content>
                                 <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 20, alignItems: 'center'}}>
+                                    <Text>Set Reminder</Text>
+                                </View>
+                                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 20, alignItems: 'center'}}>
                                     <Text>Status</Text>
                                     <Chip>NOT CONTACTED</Chip>
                                 </View>
@@ -151,7 +171,27 @@ export default function Leadinfo(props) {
                                 </View>
                                 <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 20, alignItems: 'center'}}>
                                     <Text>Budget</Text>
-                                    <Chip>{leadinfo.budgetrange}</Chip>
+                                    {
+                                        budgetcheck() ?
+                                        <View style={{flexDirection: 'row'}}>
+                                            <Chip>Min Budget: {leadinfo.minbudget}</Chip>
+                                            <Chip>Max Budget: {leadinfo.maxbudget}</Chip>
+                                            {
+                                                issalerentcheck() ? 
+                                                <></>:
+                                                <Chip>{leadinfo.peryearmonth}</Chip>
+                                            }
+                                        </View>
+                                            :
+                                        <View style={{flexDirection: 'row'}}>
+                                            <Chip>{leadinfo.budget}</Chip>
+                                            {
+                                                issalerentcheck() ? 
+                                                <></>:
+                                                <Chip>{leadinfo.peryearmonth}</Chip>
+                                            }
+                                        </View>
+                                    }
                                 </View>
                                 <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 20, alignItems: 'center'}}>
                                     <Text>Furnishing</Text>
@@ -173,7 +213,7 @@ export default function Leadinfo(props) {
                 }
                 ListEmptyComponent={<></>}
                 ListFooterComponent={
-                    <View>
+                    <View style={{flex: 1}}>
                         {
                             isSwitchOn ? 
                             <Card style={styles.cardstyle}>
@@ -191,9 +231,14 @@ export default function Leadinfo(props) {
                                 </Card.Actions>
                             </Card>: <></>
                         }
-                        <View style={{justifyContent: 'center', alignContent: 'center', alignItems: 'center', marginVertical: 10}}>
-                            <Chip icon={'plus'} mode='outlined' onPress={()=> setIsSwitchOn(true)}>Add Note</Chip>
-                        </View>
+
+                        {
+                            isSwitchOn ? 
+                            <></> :
+                            <View style={{justifyContent: 'center', alignContent: 'center', alignItems: 'center', marginVertical: 20}}>
+                                <Button style={{borderRadius: 300}} icon="plus" mode="contained" onPress={()=> setIsSwitchOn(true)}> New Note </Button>
+                            </View>
+                        }
                     </View>
                 }
                 data={leadnotes}

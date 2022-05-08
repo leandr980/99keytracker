@@ -19,6 +19,7 @@ function LeadTracker(props) {
     const [refreshing, setRefreshing] = React.useState(false);
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
+        setezfilter(keyinfo2)
         wait(2000).then(() => setRefreshing(false));}, []);
 
     const { currentUser, keyinfo2, leadfiltersale} = props;
