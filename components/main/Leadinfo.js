@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { View, Text, FlatList, StyleSheet, ImageBackground, TextInput, SafeAreaView} from 'react-native'
-import { Card, FAB, IconButton, Divider, Chip, DataTable, Searchbar, Caption, Title, Button} from 'react-native-paper'
+import { Card, FAB, IconButton, Divider, Chip, DataTable, Searchbar, Caption, Title, Button, Switch} from 'react-native-paper'
 import { format } from 'date-fns'
 import formatDistanceToNow from 'date-fns/formatDistanceToNow'
+import DateTimePicker from '@react-native-community/datetimepicker'
 
 
 import firebase from 'firebase'
@@ -19,15 +20,19 @@ export default function Leadinfo(props) {
 
     const [isSwitchOn, setIsSwitchOn] = useState(false)
 
+    const [isSwitchOnreminder, setIsSwitchOnreminder] = React.useState(false);
+    const onToggleSwitchreminder = () => setIsSwitchOnreminder(!isSwitchOnreminder);
+
     const [notes, setnotes] = useState('') 
 
+    
     useEffect(() => {
-
+        
         console.log(props.route.params.LeadId)
-
-            const subscribe = firebase.firestore()
-                .collection("leadscollection")
-                .doc(props.route.params.uid)
+        
+        const subscribe = firebase.firestore()
+        .collection("leadscollection")
+        .doc(props.route.params.uid)
                 .collection("leadslist")
                 .doc(props.route.params.LeadId)
                 .onSnapshot((docSnapshot) => {
@@ -38,7 +43,7 @@ export default function Leadinfo(props) {
                 })
                 
                 const subscribe2 = firebase.firestore()
-                    .collection("leadscollection")
+                .collection("leadscollection")
                     .doc(firebase.auth().currentUser.uid)
                     .collection("leadslist")
                     .doc(props.route.params.LeadId)
@@ -52,7 +57,7 @@ export default function Leadinfo(props) {
                                 const data = doc.data();
                                 const id = doc.id;
                                 return { id, ...data }
-            
+                                
                             })
                             //console.log(keyinfo2, 'fetchkeyinfo2')
                             if (!docSnapshot.metadata.hasPendingWrites) {  // <======
@@ -66,7 +71,7 @@ export default function Leadinfo(props) {
                     subscribe()
                     subscribe2()
                 }
-    }, [])
+            }, [])
     
     const budgetcheck = () =>{
         if (leadinfo.budget == ''){
@@ -76,15 +81,7 @@ export default function Leadinfo(props) {
             return false
         }
     }
-    const issalerentcheck = () =>{
-        if (leadinfo.salerent == 'Sale'){
-            return true
-        }
-        else{
-            return false
-        }
-    }
-
+    
     const addnewnote = () => {
         firebase.firestore()
         .collection('leadscollection')
@@ -97,19 +94,45 @@ export default function Leadinfo(props) {
             creation
         }).then(setIsSwitchOn(false))
     }
-
+    
     const deletesingledoc = (historyid) =>{
         //delete
         firebase.firestore()
-            .collection("leadscollection")
-            .doc(props.route.params.uid)
-            .collection("leadslist")
+        .collection("leadscollection")
+        .doc(props.route.params.uid)
+        .collection("leadslist")
             .doc(props.route.params.LeadId)
             .delete()
             .then((function () {
                 props.navigation.pop()}))
-            console.log('deleted doc')
+                console.log('deleted doc')
     }
+    
+    const [date, setDate] = useState(new Date(1598051730000));
+    const [mode, setMode] = useState('date');
+    const [show, setShow] = useState(false);
+
+    const [showreminder, setShowreminder] = useState(false);
+
+    const onChange = (event, selectedDate) => {
+        const currentDate = selectedDate;
+        setShow(false);
+        setDate(currentDate);
+      };
+    
+      const showMode = (currentMode) => {
+        setShow(true);
+        setMode(currentMode);
+      };
+    
+      const showDatepicker = () => {
+        showMode('date');
+      };
+    
+      const showTimepicker = () => {
+        showMode('time');
+      };
+
 
     return (
         <View style={styles.container}>
@@ -138,13 +161,48 @@ export default function Leadinfo(props) {
                                 <IconButton icon='email'/>
                             </View>
                             </Card.Content>
+
+                            <Divider style={{margin: 10}}/>
+                            <Card.Content style={{justifyContent: 'center', alignItems: 'center'}}>
+                                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                        <Text>Set Reminder</Text>
+                                        <Switch value={isSwitchOnreminder} onValueChange={onToggleSwitchreminder} />
+                                    </View>
+                                    {
+                                       isSwitchOnreminder  && (
+                                       <View>
+                                           <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                               <View style={{margin: 5}}>
+                                                   <Chip icon={'calendar'} onPress={()=>showDatepicker()}>Set Date</Chip>
+                                                </View>
+                                                <View style={{margin: 5}}>
+                                                    <Chip icon={'clock'} onPress={()=>showTimepicker()}>Set Time</Chip>
+                                                </View>
+                                                <View style={{margin: 5}}>
+                                                    <Text>Remind me on: {date.toLocaleString()}</Text>
+                                                </View>
+                                            </View>
+                                            <Button style={{margin: 5}} mode='contained'>Confirm Date</Button>
+                                    </View>
+                                        )
+                                    }
+
+                                {show && (
+                                <View>
+                                <DateTimePicker
+                                    testID="dateTimePicker"
+                                    value={date}
+                                    mode={mode}
+                                    is24Hour={true}
+                                    onChange={onChange}
+                                    />
+                                    </View>
+                                )}
+                            </Card.Content>
                         </Card>
 
                         <Card style={styles.cardstyle}>
                             <Card.Content>
-                                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 20, alignItems: 'center'}}>
-                                    <Text>Set Reminder</Text>
-                                </View>
                                 <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 20, alignItems: 'center'}}>
                                     <Text>Status</Text>
                                     <Chip>NOT CONTACTED</Chip>
@@ -170,26 +228,23 @@ export default function Leadinfo(props) {
                                     <Chip>{leadinfo.bedroom}</Chip>
                                 </View>
                                 <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 20, alignItems: 'center'}}>
+                                    <Text>Build-Up Area</Text>
+                                    <View style={{flexDirection: 'row'}}>
+                                        <Chip>{leadinfo.builduparea}</Chip>
+                                        <Chip>{leadinfo.buildupareatype}</Chip>
+                                    </View>
+                                </View>
+                                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 20, alignItems: 'center'}}>
                                     <Text>Budget</Text>
                                     {
                                         budgetcheck() ?
                                         <View style={{flexDirection: 'row'}}>
                                             <Chip>Min Budget: {leadinfo.minbudget}</Chip>
                                             <Chip>Max Budget: {leadinfo.maxbudget}</Chip>
-                                            {
-                                                issalerentcheck() ? 
-                                                <></>:
-                                                <Chip>{leadinfo.peryearmonth}</Chip>
-                                            }
                                         </View>
                                             :
                                         <View style={{flexDirection: 'row'}}>
                                             <Chip>{leadinfo.budget}</Chip>
-                                            {
-                                                issalerentcheck() ? 
-                                                <></>:
-                                                <Chip>{leadinfo.peryearmonth}</Chip>
-                                            }
                                         </View>
                                     }
                                 </View>
