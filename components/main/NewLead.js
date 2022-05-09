@@ -38,6 +38,8 @@ export default function NewLead(props) {
     //const [area, setArea] = useState('')
     const [multiplearea, setmultiplearea] = useState([]);
     const [bedroom, setBedroom] = useState("")
+    const [builduparea, setbuilduparea] = useState("")
+    const [buildupareatype, setbuildupareatype] = useState("")
     const [budget, setBudget] = useState("")
     const [minbudget, setMinbudget] = useState("")
     const [maxbudget, setMaxbudget] = useState("")
@@ -45,7 +47,6 @@ export default function NewLead(props) {
     
     const [leadsource, setLeadsource] = useState('')
     //const [notes, setnotes] = useState('')
-    const [peryearmonth, setperyearmonth] = useState('Yearly')
     const [isSwitchOn, setIsSwitchOn] = React.useState(false);
     const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
     
@@ -73,11 +74,12 @@ export default function NewLead(props) {
                     propertytype,
                     multiplearea,
                     bedroom,
+                    builduparea,
+                    buildupareatype,
                     //budgetrange,
                     budget,
                     minbudget,
                     maxbudget,
-                    peryearmonth,
                     furnishing,
 
                     leadsource,
@@ -110,15 +112,6 @@ export default function NewLead(props) {
         { label: 'Jumeirah Village Circle', value: 'Jumeirah Village Circle' },
         { label: 'Jumeirah Village Triangle', value: 'Jumeirah Village Triangle' },
     ];
-
-    const issalechecked = () => {
-        if (salerent == 'Sale') {
-            return true
-        }
-        else{
-            return false
-        }
-    }
 
     return (
         <Provider>
@@ -274,9 +267,24 @@ export default function NewLead(props) {
                                 onPress={()=> setBedroom('Other')}>Other</Chip>
 
                             </View>
-                            {
+                        </Card.Content>
 
-                            }
+                        <Divider style={{margin: 10}}/>
+                        <Card.Content>
+                            <Title>Build-Up Area</Title>
+                            <TextInput
+                            style={styles.textinputstyle}
+                            placeholder="Build up area. . ."
+                            onChangeText={(buildup) => setbuilduparea(buildup)}/>
+                            <View style={{flexDirection: 'row'}}>
+                                <Chip selected={ buildupareatype === 'SqFt' ? true : false } 
+                                style={{marginRight: 5, marginBottom: 5}} 
+                                onPress={()=> setbuildupareatype('SqFt')}>SqFt</Chip>
+
+                                <Chip selected={ bedroom === 'SqM' ? true : false } 
+                                style={{marginRight: 5, marginBottom: 5}} 
+                                onPress={()=> setbuildupareatype('SqM')}>SqM</Chip>
+                            </View>
                         </Card.Content>
 
                         <Divider style={{margin: 10}}/>
@@ -309,26 +317,6 @@ export default function NewLead(props) {
                                 </View>
                                 
                             }
-                            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                                <Chip selected={ peryearmonth === 'Yearly' ? true : false } disabled={salerent === 'Sale' ? true : false}
-                                    style={{marginRight: 5, marginBottom: 5}} 
-                                    onPress={()=> setperyearmonth('Yearly')}>Yearly</Chip>
-
-                                <Chip selected={ peryearmonth === 'Monthly' ? true : false } disabled={salerent === 'Sale' ? true : false}
-                                    style={{marginRight: 5, marginBottom: 5}} 
-                                    onPress={()=> setperyearmonth('Monthly')}>Monthly</Chip>
-
-                                    {
-                                        issalechecked() ? 
-                                        <View>
-                                            <Caption>* Option disabled becasue 'Sale' was seleceted</Caption>
-                                        </View>
-                                        :
-                                        <View>
-                                            <Caption>* If no option is selected then the default is 'Yearly'</Caption>
-                                        </View>
-                                    }
-                            </View>
                             
                         </Card.Content>
 

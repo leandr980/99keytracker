@@ -48,7 +48,8 @@
     "redux": "^4.1.1",
     "redux-thunk": "^2.3.0",
     "signature_pad": "^4.0.2",
-    "utf8": "^3.0.0"
+    "utf8": "^3.0.0",
+    "@react-native-community/datetimepicker": "6.1.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"
