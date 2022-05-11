@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react'
-import { View, Text, FlatList, StyleSheet, ImageBackground, TextInput, SafeAreaView} from 'react-native'
-import { Card, FAB, IconButton, Divider, Chip, DataTable, Searchbar, Caption, Title, Button, Switch} from 'react-native-paper'
+import React, { useState, useEffect, cloneElement } from 'react'
+import { View, Text, FlatList, StyleSheet, ImageBackground, TextInput, SafeAreaView, Image} from 'react-native'
+import { Card, FAB, IconButton, Divider, Chip, DataTable, Searchbar, Caption, Title, Button, Switch, Banner} from 'react-native-paper'
 import { format } from 'date-fns'
 import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 import DateTimePicker from '@react-native-community/datetimepicker'
@@ -39,6 +39,9 @@ export default function Leadinfo(props) {
                     if (!docSnapshot.metadata.hasPendingWrites) {  
                         setleadinfo(docSnapshot.data())
                         setleadinfodate(docSnapshot.data().creation.toDate().toString())
+                        if(leadinfo.date != ''){
+                            setreminder(docSnapshot.data().date.toDate().toString())
+                        }
                     }
                 })
                 
@@ -94,6 +97,40 @@ export default function Leadinfo(props) {
             creation
         }).then(setIsSwitchOn(false))
     }
+
+    const addreminder = () => {
+        firebase.firestore()
+        .collection('leadscollection')
+        .doc(firebase.auth().currentUser.uid)
+        .collection("leadslist")
+        .doc(props.route.params.LeadId)
+        .update({
+            date: date,
+            lastupdated: creation
+        }).then(setIsSwitchOnreminder(false))
+    }
+
+    const cancelreminder = () => {
+        firebase.firestore()
+        .collection('leadscollection')
+        .doc(firebase.auth().currentUser.uid)
+        .collection("leadslist")
+        .doc(props.route.params.LeadId)
+        .update({
+            date: '',
+            lastupdated: creation
+        })
+    }
+
+    const [reminder, setreminder] = useState('')
+    const isreminderempty =()=> {
+        if(reminder == ''){
+            false
+        }
+        else {
+            return true
+        }
+    }
     
     const deletesingledoc = (historyid) =>{
         //delete
@@ -108,7 +145,7 @@ export default function Leadinfo(props) {
                 console.log('deleted doc')
     }
     
-    const [date, setDate] = useState(new Date(1598051730000));
+    const [date, setDate] = useState(new Date());
     const [mode, setMode] = useState('date');
     const [show, setShow] = useState(false);
 
@@ -132,6 +169,8 @@ export default function Leadinfo(props) {
       const showTimepicker = () => {
         showMode('time');
       };
+
+      const [visible, setVisible] = React.useState(true);
 
 
     return (
@@ -168,38 +207,51 @@ export default function Leadinfo(props) {
                                         <Text>Set Reminder</Text>
                                         <Switch value={isSwitchOnreminder} onValueChange={onToggleSwitchreminder} />
                                     </View>
+
                                     {
-                                       isSwitchOnreminder  && (
-                                       <View>
-                                           <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                                               <View style={{margin: 5}}>
-                                                   <Chip icon={'calendar'} onPress={()=>showDatepicker()}>Set Date</Chip>
-                                                </View>
-                                                <View style={{margin: 5}}>
-                                                    <Chip icon={'clock'} onPress={()=>showTimepicker()}>Set Time</Chip>
-                                                </View>
-                                                <View style={{margin: 5}}>
-                                                    <Text>Remind me on: {date.toLocaleString()}</Text>
-                                                </View>
+                                        isreminderempty() && (
+                                            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                                <Text>Reminder set on </Text>
+                                                <Chip icon={'bell'}>{reminder}</Chip>
+                                                <IconButton icon={'bell-remove-outline'} onPress={()=>cancelreminder()}/>
                                             </View>
-                                            <Button style={{margin: 5}} mode='contained'>Confirm Date</Button>
-                                    </View>
                                         )
                                     }
-
-                                {show && (
-                                <View>
-                                <DateTimePicker
-                                    testID="dateTimePicker"
-                                    value={date}
-                                    mode={mode}
-                                    is24Hour={true}
-                                    onChange={onChange}
-                                    />
+                                    
+                                    {show && (
+                                    <View>
+                                        <DateTimePicker
+                                        testID="dateTimePicker"
+                                        value={date}
+                                        mode={mode}
+                                        is24Hour={true}
+                                        onChange={onChange}
+                                        />
                                     </View>
-                                )}
+                                    )}
                             </Card.Content>
+                            <Banner visible={isSwitchOnreminder}
+                            actions={[ { 
+                                label: 'CANCEL',
+                                onPress: () => setIsSwitchOnreminder(false),
+                                }]}>
+                                    <View style={{justifyContent: 'center'}}>
+                                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                            <View style={{margin: 5}}>
+                                                <Chip icon={'calendar'} onPress={()=>showDatepicker()}>Set Date</Chip>
+                                            </View>
+                                            <View style={{margin: 5}}>
+                                                <Chip icon={'clock'} onPress={()=>showTimepicker()}>Set Time</Chip>
+                                            </View>
+                                            <View style={{margin: 5}}>
+                                                <Text>Remind me on: {date.toLocaleString()}</Text>
+                                            </View>
+                                        </View>
+                                        <Button style={{margin: 5}} mode='contained' onPress={()=> addreminder()}>Confirm Date</Button>
+                                    </View>
+                            </Banner>
                         </Card>
+
 
                         <Card style={styles.cardstyle}>
                             <Card.Content>
