@@ -49,6 +49,8 @@ export default function NewLead(props) {
     //const [notes, setnotes] = useState('')
     const [isSwitchOn, setIsSwitchOn] = React.useState(false);
     const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
+
+    const date = ''
     
     const status = 'NOT CONTACTED'
 
@@ -85,6 +87,7 @@ export default function NewLead(props) {
                     leadsource,
 
                     status,
+                    date,
                     creation
                 }).then((function () {
                     props.navigation.pop()
@@ -111,6 +114,7 @@ export default function NewLead(props) {
         { label: 'Jebal Ali', value: 'Jebal Ali' },
         { label: 'Jumeirah Village Circle', value: 'Jumeirah Village Circle' },
         { label: 'Jumeirah Village Triangle', value: 'Jumeirah Village Triangle' },
+        { label: 'Dubai Marina', value: 'Dubai Marina' },
     ];
 
     return (
