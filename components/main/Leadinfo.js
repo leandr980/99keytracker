@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { View, Text, FlatList, StyleSheet, ImageBackground, TextInput, SafeAreaView, Image} from 'react-native'
-import { Card, FAB, IconButton, Divider, Chip, DataTable, Searchbar, Caption, Title, Button, Switch, Banner} from 'react-native-paper'
+import { View, Text, FlatList, StyleSheet, ImageBackground, TextInput, SafeAreaView} from 'react-native'
+import { Card, FAB, IconButton, Divider, Chip, Caption, Title, Button, Switch, Banner} from 'react-native-paper'
 import { format } from 'date-fns'
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
@@ -34,6 +34,8 @@ export default function Leadinfo(props) {
     const [isSwitchOn, setIsSwitchOn] = useState(false)
 
     const [notes, setnotes] = useState('') 
+
+    const [notifseconds, setnotifseconds] = useState(0)
 
     
     useEffect(() => {
@@ -117,6 +119,29 @@ export default function Leadinfo(props) {
         }).then(setIsSwitchOn(false))
     }
 
+    const [date, setDate] = useState(new Date());
+    const [mode, setMode] = useState('date');
+    const [show, setShow] = useState(false);
+  
+    const onChange = (event, selectedDate) => {
+      const currentDate = selectedDate;
+      setShow(false);
+      setDate(currentDate);
+    };
+  
+    const showMode = (currentMode) => {
+      setShow(true);
+      setMode(currentMode);
+    };
+  
+    const showDatepicker = () => {
+      showMode('date');
+    };
+  
+    const showTimepicker = () => {
+      showMode('time');
+    };
+
     return (
         <View style={styles.container}>
             <Divider/>
@@ -125,7 +150,15 @@ export default function Leadinfo(props) {
             imageStyle={{resizeMode: 'repeat'}}
             source={require('../../assets/bg-image/99-whatsapp-bg-small.jpg')}>
                 <SafeAreaView>
-
+                    {show && (
+                        <DateTimePicker
+                        testID="dateTimePicker"
+                        value={date}
+                        mode={mode}
+                        is24Hour={true}
+                        onChange={onChange}
+                        />
+                    )}
                 <FlatList
                 numColumns={1}
                 horizontal={false}
@@ -143,6 +176,22 @@ export default function Leadinfo(props) {
                                 <IconButton icon='android-messages'/>
                                 <IconButton icon='email'/>
                             </View>
+                            </Card.Content>
+                        </Card>
+
+                        <Card style={styles.cardstyle}>
+                            <Card.Content>
+                            <Text>expo push token: {expoPushToken}</Text>
+                            <View>
+                                <Button onPress={showDatepicker}>Show date picker!</Button>
+                            </View>
+                            <View>
+                                <Button onPress={showTimepicker}>Show time picker!</Button>
+                            </View>
+                            <Text>selected: {date.toLocaleString()}</Text>
+                            <Button mode='contained' 
+                            onPress={async () => {
+                                await schedulePushNotification({trigger: {seconds: date}});}}>coc</Button>
                             </Card.Content>
                         </Card>
 
@@ -257,7 +306,18 @@ export default function Leadinfo(props) {
             </ImageBackground>
         </View>
         )
+        async function schedulePushNotification({trigger}) {
+            await Notifications.scheduleNotificationAsync({
+              content: {
+                title: "Reminder to Contact " + leadinfo.name,
+                body: 'Phone number: ' + leadinfo.number,
+                data: { data: 'goes here' },
+              },
+              trigger
+            });
+        }
 }
+
 
 async function registerForPushNotificationsAsync() {
     let token;
