@@ -1,7 +1,7 @@
 // JavaScript source code
 import React, { useState } from 'react'
 import { View, Text, FlatList, StyleSheet, RefreshControl, ScrollView} from 'react-native'
-import { Card, FAB, IconButton, Divider, Chip, DataTable, Searchbar, Caption, Button} from 'react-native-paper'
+import { Card, FAB, IconButton, Divider, Chip, DataTable, Searchbar, Caption, Button, Title} from 'react-native-paper'
 import { format } from 'date-fns'
 import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 
@@ -57,6 +57,13 @@ function LeadTracker(props) {
                         </ScrollView>
                         <IconButton icon='cog'/>
                     </View>
+                </Card>
+
+                <Card style={styles.cardstyle}>
+                    <Card.Content>
+                        <Title>Upcoming Reminders</Title>
+                        <Divider/>
+                    </Card.Content>
                 </Card>
                 
                 <DataTable>

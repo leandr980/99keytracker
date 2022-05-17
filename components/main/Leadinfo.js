@@ -191,7 +191,7 @@ export default function Leadinfo(props) {
                             <Text>selected: {date.toLocaleString()}</Text>
                             <Button mode='contained' 
                             onPress={async () => {
-                                await schedulePushNotification({trigger: {seconds: date}});}}>coc</Button>
+                                await schedulePushNotification();}}>coc</Button>
                             </Card.Content>
                         </Card>
 
@@ -306,7 +306,26 @@ export default function Leadinfo(props) {
             </ImageBackground>
         </View>
         )
-        async function schedulePushNotification({trigger}) {
+        async function schedulePushNotification() {
+            const getdate = new Date(date)
+            const year = getdate.getFullYear()
+            const month = getdate.getMonth()
+            const day = getdate.getDay()
+            const minutes = getdate.getMinutes()
+            const seconds = date.getSeconds()
+
+            console.log(
+                day, ' ',
+                month, ' ',
+                year, ' ',
+                minutes, ' ',
+                seconds, ' ',
+            )
+
+            const trigger = date
+            trigger.setMinutes(minutes);
+            trigger.setSeconds(seconds);
+
             await Notifications.scheduleNotificationAsync({
               content: {
                 title: "Reminder to Contact " + leadinfo.name,
