@@ -5,7 +5,9 @@ import {
     USER_KEYINFO_DETAILS_STATE_CHANGE,
     USER_KEYINFO2_STATE_CHANGE,
 
-    USER_LEADFILTER_SALE_CHANGE
+    USER_LEADFILTER_SALE_CHANGE,
+
+    USER_NOTIFICATION_STATE_CHANGE
 } from "../constants"
 
 const initialState = {
@@ -15,7 +17,9 @@ const initialState = {
     keyinfodetails: [],
     keyinfo2: [],
 
-    leadfiltersale: []
+    leadfiltersale: [],
+
+    notificationlist: []
 }
 
 export const user = (state = initialState, action) => {
@@ -55,6 +59,12 @@ export const user = (state = initialState, action) => {
             return {
                 ...state,
                 leadfiltersale: [...action.leadfiltersale]
+            }
+
+        case USER_NOTIFICATION_STATE_CHANGE:
+            return {
+                ...state,
+                notificationlist: [...action.notificationlist]
             }
         default:
             return state;

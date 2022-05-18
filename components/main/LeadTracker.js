@@ -1,9 +1,11 @@
 // JavaScript source code
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { View, Text, FlatList, StyleSheet, RefreshControl, ScrollView} from 'react-native'
 import { Card, FAB, IconButton, Divider, Chip, DataTable, Searchbar, Caption, Button, Title} from 'react-native-paper'
 import { format } from 'date-fns'
-import formatDistanceToNow from 'date-fns/formatDistanceToNow'
+
+import * as Device from 'expo-device';
+import * as Notifications from 'expo-notifications';
 
 import firebase from 'firebase'
 require ("firebase/firestore")
@@ -22,7 +24,7 @@ function LeadTracker(props) {
         setezfilter(keyinfo2)
         wait(2000).then(() => setRefreshing(false));}, []);
 
-    const { currentUser, keyinfo2, leadfiltersale} = props;
+    const { currentUser, keyinfo2, leadfiltersale, notificationlist} = props;
 
     if (currentUser === null) {
         return <View/>
@@ -31,7 +33,6 @@ function LeadTracker(props) {
     const [ezfilter, setezfilter] = useState(keyinfo2)
                     
     return (
-
         <View style={styles.container}>
             <View style={styles.containerGallery}>
                 <Card>
@@ -63,6 +64,22 @@ function LeadTracker(props) {
                     <Card.Content>
                         <Title>Upcoming Reminders</Title>
                         <Divider/>
+                        <FlatList
+                        style={{height: 200}}
+                        horizontal={true}
+                        data={notificationlist}
+                        renderItem={({ item }) => (
+                            <Card style={{elevation: 5, margin: 5}}>
+                                <Card.Content>
+                                    <Text>{item.leadname}</Text>
+                                    <Text>{item.leadnumber}</Text>
+                                    <Text>Scheduled for:</Text>
+                                    <Text>{format(new Date(item.date.toDate().toString()), 'PP')}{format(new Date(item.date.toDate().toString()), 'p')}</Text>
+
+                                </Card.Content>
+                            </Card>
+                            
+                        )}/>     
                     </Card.Content>
                 </Card>
                 
@@ -158,6 +175,7 @@ const mapStateToProps = (store) => ({
     currentUser: store.userState.currentUser,
     keyinfo2: store.userState.keyinfo2,
     leadfiltersale: store.userState.leadfiltersale,
+    notificationlist: store.userState.notificationlist,
 })
 
 export default connect(mapStateToProps, null)(LeadTracker)

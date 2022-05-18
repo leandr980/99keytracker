@@ -191,7 +191,7 @@ export default function Leadinfo(props) {
                             <Text>selected: {date.toLocaleString()}</Text>
                             <Button mode='contained' 
                             onPress={async () => {
-                                await schedulePushNotification();}}>coc</Button>
+                                await schedulePushNotification();}}>set time</Button>
                             </Card.Content>
                         </Card>
 
@@ -306,6 +306,7 @@ export default function Leadinfo(props) {
             </ImageBackground>
         </View>
         )
+
         async function schedulePushNotification() {
             const getdate = new Date(date)
             const year = getdate.getFullYear()
@@ -326,16 +327,31 @@ export default function Leadinfo(props) {
             trigger.setMinutes(minutes);
             trigger.setSeconds(seconds);
 
-            await Notifications.scheduleNotificationAsync({
+            const notifidentifier = await Notifications.scheduleNotificationAsync({
               content: {
                 title: "Reminder to Contact " + leadinfo.name,
                 body: 'Phone number: ' + leadinfo.number,
-                data: { data: 'goes here' },
+                data: { data: leadinfo.name },
               },
               trigger
-            });
+            })
+
+            firebase.firestore()
+            .collection('notification-collection')
+            .doc(firebase.auth().currentUser.uid)
+            .collection("notificationlist")
+            .add({
+                leadname: leadinfo.name,
+                leadnumber: leadinfo.number,
+                date,
+                notifidentifier,
+                creation
+            })
+            
+            return notifidentifier
         }
 }
+
 
 
 async function registerForPushNotificationsAsync() {
