@@ -5,7 +5,9 @@ import {
     USER_KEYINFO_DETAILS_STATE_CHANGE,
     USER_KEYINFO2_STATE_CHANGE,
 
-    USER_LEADFILTER_SALE_CHANGE
+    USER_LEADFILTER_SALE_CHANGE,
+
+    USER_NOTIFICATION_STATE_CHANGE
 } from '../constants/index'
 
 import firebase from 'firebase'
@@ -171,6 +173,26 @@ export function leadfiltersale() {
                 //console.log(keyinfo2, 'fetchkeyinfo2')
                 if (!docSnapshot.metadata.hasPendingWrites) {  // <======
                     dispatch({ type: USER_LEADFILTER_SALE_CHANGE, leadfiltersale })
+                 }
+            })
+    })
+}
+export function notificationlist() {
+    return ((dispatch) => {
+        firebase.firestore()
+            .collection("notification-collection")
+            .doc(firebase.auth().currentUser.uid)
+            .collection("notificationlist")
+            .onSnapshot((docSnapshot) => {
+                let notificationlist = docSnapshot.docs.map(doc => {
+                    const data = doc.data();
+                    const id = doc.id;
+                    return { id, ...data }
+
+                })
+                console.log(notificationlist, 'notificationlist')
+                if (!docSnapshot.metadata.hasPendingWrites) {  // <======
+                    dispatch({ type: USER_NOTIFICATION_STATE_CHANGE, notificationlist })
                  }
             })
     })
