@@ -183,6 +183,7 @@ export function notificationlist() {
             .collection("notification-collection")
             .doc(firebase.auth().currentUser.uid)
             .collection("notificationlist")
+            .orderBy("creation", "desc")
             .onSnapshot((docSnapshot) => {
                 let notificationlist = docSnapshot.docs.map(doc => {
                     const data = doc.data();
@@ -190,7 +191,7 @@ export function notificationlist() {
                     return { id, ...data }
 
                 })
-                console.log(notificationlist, 'notificationlist')
+                //console.log(notificationlist, 'notificationlist')
                 if (!docSnapshot.metadata.hasPendingWrites) {  // <======
                     dispatch({ type: USER_NOTIFICATION_STATE_CHANGE, notificationlist })
                  }

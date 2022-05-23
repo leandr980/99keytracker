@@ -1,8 +1,9 @@
 // JavaScript source code
 import React, { useState, useEffect, useRef } from 'react'
 import { View, Text, FlatList, StyleSheet, RefreshControl, ScrollView} from 'react-native'
-import { Card, FAB, IconButton, Divider, Chip, DataTable, Searchbar, Caption, Button, Title} from 'react-native-paper'
+import { Card, FAB, IconButton, Divider, Chip, DataTable, Searchbar, Caption, Button, Title, Provider, Avatar, } from 'react-native-paper'
 import { format } from 'date-fns'
+import differenceInSeconds from 'date-fns/differenceInSeconds'
 
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
@@ -17,7 +18,7 @@ const wait = (timeout) => {
       }
 
 function LeadTracker(props) {
-
+    
     const [refreshing, setRefreshing] = React.useState(false);
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
@@ -31,8 +32,27 @@ function LeadTracker(props) {
     }
 
     const [ezfilter, setezfilter] = useState(keyinfo2)
+
+    const deletereminder = (doctodelete) => {
+        firebase.firestore()
+        .collection('notification-collection')
+        .doc(firebase.auth().currentUser.uid)
+        .collection("notificationlist")
+        .doc(doctodelete)
+        .delete()    
+    }
+
+    const datetimedifference = (newdate) => {
+        if (differenceInSeconds(new Date(newdate.toDate().toString()), new Date()) < 0) {
+            return "alert-circle-outline"
+        }
+        else {
+            return "clock-outline"
+        }
+    }
                     
     return (
+        <Provider>
         <View style={styles.container}>
             <View style={styles.containerGallery}>
                 <Card>
@@ -65,17 +85,23 @@ function LeadTracker(props) {
                         <Title>Upcoming Reminders</Title>
                         <Divider/>
                         <FlatList
-                        style={{height: 200}}
+                        style={{height: 180}}
                         horizontal={true}
                         data={notificationlist}
                         renderItem={({ item }) => (
-                            <Card style={{elevation: 5, margin: 5}}>
-                                <Card.Content>
+                            <Card style={{elevation: 5, margin: 5, width: 255}}>
+                                    <Card.Title
+                                        title={<Text style={{fontSize: 15}}>{format(new Date(item.date.toDate().toString()), 'PP')}</Text>}
+                                        subtitle={<Text>{format(new Date(item.date.toDate().toString()), 'p')}</Text>}
+                                        left={(props) => <Avatar.Icon {...props} icon={datetimedifference(item.date)} />}
+                                        right={(props) => <IconButton {...props} icon="dots-vertical" onPress={()=> {}} />}
+                                    />
+                                    <Divider/>
+                                <Card.Content style={{marginTop: 2}}>
+                                    <Text>NOT CONTACTED</Text>
                                     <Text>{item.leadname}</Text>
                                     <Text>{item.leadnumber}</Text>
-                                    <Text>Scheduled for:</Text>
-                                    <Text>{format(new Date(item.date.toDate().toString()), 'PP')}{format(new Date(item.date.toDate().toString()), 'p')}</Text>
-
+                                    <Caption>Created on {format(new Date(item.creation.toDate().toString()), 'PP')} {format(new Date(item.creation.toDate().toString()), 'p')}</Caption>
                                 </Card.Content>
                             </Card>
                             
@@ -127,10 +153,9 @@ function LeadTracker(props) {
                 onPress={() => props.navigation.navigate('New Lead')}
             />
             
-        </View>)
+        </View>
+        </Provider>)
         }
-
-
 
 const styles = StyleSheet.create({
     container: {

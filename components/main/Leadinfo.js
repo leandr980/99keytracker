@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { View, Text, FlatList, StyleSheet, ImageBackground, TextInput, SafeAreaView} from 'react-native'
-import { Card, FAB, IconButton, Divider, Chip, Caption, Title, Button, Switch, Banner} from 'react-native-paper'
+import { Card, FAB, IconButton, Divider, Chip, Caption, Title, Button, Switch, Banner, Snackbar} from 'react-native-paper'
 import { format } from 'date-fns'
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
@@ -142,6 +142,12 @@ export default function Leadinfo(props) {
       showMode('time');
     };
 
+    const [visible, setVisible] = React.useState(false);
+
+    const onToggleSnackBar = () => setVisible(!visible);
+  
+    const onDismissSnackBar = () => setVisible(false);
+
     return (
         <View style={styles.container}>
             <Divider/>
@@ -149,7 +155,6 @@ export default function Leadinfo(props) {
             style={{flex: 1}}
             imageStyle={{resizeMode: 'repeat'}}
             source={require('../../assets/bg-image/99-whatsapp-bg-small.jpg')}>
-                <SafeAreaView>
                     {show && (
                         <DateTimePicker
                         testID="dateTimePicker"
@@ -181,7 +186,6 @@ export default function Leadinfo(props) {
 
                         <Card style={styles.cardstyle}>
                             <Card.Content>
-                            <Text>expo push token: {expoPushToken}</Text>
                             <View>
                                 <Button onPress={showDatepicker}>Show date picker!</Button>
                             </View>
@@ -192,9 +196,11 @@ export default function Leadinfo(props) {
                             <Button mode='contained' 
                             onPress={async () => {
                                 await schedulePushNotification();}}>set time</Button>
+                                <View>
+                                    <Button onPress={onToggleSnackBar}>{visible ? 'Hide' : 'Show'} a</Button>
+                                </View>
                             </Card.Content>
                         </Card>
-
 
                         <Card style={styles.cardstyle}>
                             <Card.Content>
@@ -259,7 +265,6 @@ export default function Leadinfo(props) {
 
                             </Card.Content>
                         </Card>
-
                     </View>
                 }
                 ListEmptyComponent={<></>}
@@ -302,7 +307,6 @@ export default function Leadinfo(props) {
                         </Card.Content>
                     </Card>
                 )}/>
-                </SafeAreaView>
             </ImageBackground>
         </View>
         )
