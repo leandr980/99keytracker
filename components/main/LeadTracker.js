@@ -98,6 +98,35 @@ function LeadTracker(props) {
                                                 <IconButton icon="dots-vertical" />
                                             </MenuTrigger>
                                             <MenuOptions>
+
+                                                <MenuOption onSelect={() => 
+                                                Alert.alert(
+                                                    "This will change the lead status to *CONTACTED* and delete this reminder",
+                                                    "Are you sure you want to do this?",
+                                                    [
+                                                        {
+                                                            text: "YES"
+                                                        },
+                                                        { 
+                                                            text: "NO"
+                                                        }
+                                                    ]
+                                                )}>
+                                                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                                        <IconButton icon='check'/>
+                                                        <Text>CONTACTED</Text>
+                                                    </View>
+                                                </MenuOption>
+                                                
+                                                <MenuOption onSelect={() => props.navigation.navigate('Lead Info', { LeadId: item.leadid, uid: firebase.auth().currentUser.uid })}>
+                                                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                                        <IconButton icon='eye'/>
+                                                        <Text>VIEW LEAD</Text>
+                                                    </View>
+                                                </MenuOption>
+
+                                                <Divider/>
+                                                
                                                 <MenuOption onSelect={() => 
                                                 Alert.alert(
                                                     "Are you sure you want to delete this reminder?",
@@ -117,12 +146,6 @@ function LeadTracker(props) {
                                                         <Text>DELETE</Text>
                                                     </View>
                                                    
-                                                </MenuOption>
-                                                <MenuOption onSelect={() => props.navigation.navigate('Lead Info', { LeadId: item.leadid, uid: firebase.auth().currentUser.uid })}>
-                                                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                                                        <IconButton icon='eye'/>
-                                                        <Text>VIEW LEAD</Text>
-                                                    </View>
                                                 </MenuOption>
                                             </MenuOptions>
                                         </Menu>}
