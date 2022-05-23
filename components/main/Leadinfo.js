@@ -20,6 +20,8 @@ Notifications.setNotificationHandler({
 
 export default function Leadinfo(props) {
 
+    console.log(props.route.params.LeadId)
+
     const creation = firebase.firestore.FieldValue.serverTimestamp()
 
     const [expoPushToken, setExpoPushToken] = useState('');
@@ -196,9 +198,6 @@ export default function Leadinfo(props) {
                             <Button mode='contained' 
                             onPress={async () => {
                                 await schedulePushNotification();}}>set time</Button>
-                                <View>
-                                    <Button onPress={onToggleSnackBar}>{visible ? 'Hide' : 'Show'} a</Button>
-                                </View>
                             </Card.Content>
                         </Card>
 
@@ -349,6 +348,7 @@ export default function Leadinfo(props) {
                 leadnumber: leadinfo.number,
                 date,
                 notifidentifier,
+                leadid: props.route.params.LeadId,
                 creation
             })
             

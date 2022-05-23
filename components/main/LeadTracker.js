@@ -1,12 +1,10 @@
 // JavaScript source code
 import React, { useState, useEffect, useRef } from 'react'
-import { View, Text, FlatList, StyleSheet, RefreshControl, ScrollView} from 'react-native'
+import { View, Text, FlatList, StyleSheet, RefreshControl, ScrollView, Alert, TouchableOpacity} from 'react-native'
 import { Card, FAB, IconButton, Divider, Chip, DataTable, Searchbar, Caption, Button, Title, Provider, Avatar, } from 'react-native-paper'
 import { format } from 'date-fns'
 import differenceInSeconds from 'date-fns/differenceInSeconds'
-
-import * as Device from 'expo-device';
-import * as Notifications from 'expo-notifications';
+import { MenuProvider, Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu'
 
 import firebase from 'firebase'
 require ("firebase/firestore")
@@ -52,7 +50,7 @@ function LeadTracker(props) {
     }
                     
     return (
-        <Provider>
+        <MenuProvider>
         <View style={styles.container}>
             <View style={styles.containerGallery}>
                 <Card>
@@ -94,7 +92,40 @@ function LeadTracker(props) {
                                         title={<Text style={{fontSize: 15}}>{format(new Date(item.date.toDate().toString()), 'PP')}</Text>}
                                         subtitle={<Text>{format(new Date(item.date.toDate().toString()), 'p')}</Text>}
                                         left={(props) => <Avatar.Icon {...props} icon={datetimedifference(item.date)} />}
-                                        right={(props) => <IconButton {...props} icon="dots-vertical" onPress={()=> {}} />}
+                                        right={() => 
+                                        <Menu>
+                                            <MenuTrigger>
+                                                <IconButton icon="dots-vertical" />
+                                            </MenuTrigger>
+                                            <MenuOptions>
+                                                <MenuOption onSelect={() => 
+                                                Alert.alert(
+                                                    "Are you sure you want to delete this reminder?",
+                                                    "",
+                                                    [
+                                                        {
+                                                            text: "YES",
+                                                            onPress: () => deletereminder(item.id)
+                                                        },
+                                                        { 
+                                                            text: "NO"
+                                                        }
+                                                    ]
+                                                )}>
+                                                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                                        <IconButton icon='delete-outline'/>
+                                                        <Text>DELETE</Text>
+                                                    </View>
+                                                   
+                                                </MenuOption>
+                                                <MenuOption onSelect={() => props.navigation.navigate('Lead Info', { LeadId: item.leadid, uid: firebase.auth().currentUser.uid })}>
+                                                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                                        <IconButton icon='eye'/>
+                                                        <Text>VIEW LEAD</Text>
+                                                    </View>
+                                                </MenuOption>
+                                            </MenuOptions>
+                                        </Menu>}
                                     />
                                     <Divider/>
                                 <Card.Content style={{marginTop: 2}}>
@@ -139,10 +170,6 @@ function LeadTracker(props) {
                 )}/>                
             </View>
 
-            <View>
-                <Button> notification test</Button>
-            </View>
-
             <FAB
                 style={styles.fab}
                 theme={{ colors: { accent: 'white' } }}
@@ -154,7 +181,7 @@ function LeadTracker(props) {
             />
             
         </View>
-        </Provider>)
+        </MenuProvider>)
         }
 
 const styles = StyleSheet.create({
