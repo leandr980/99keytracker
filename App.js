@@ -29,7 +29,10 @@ import NewHistoryLandlord from './components/main/NewHistoryLandlord'
 import NewHistoryCompany from './components/main/NewHistoryCompany'
 import NewHistoryAgent from './components/main/NewHistoryAgent'
 import NewHistoryOther from './components/main/NewHistoryOther'
+
 import SearchScreen from './components/main/Search'
+import SearchLeadScreen from './components/main/SearchLead'
+
 import EditKeyScreen from './components/main/EditKey'
 import NewLeadScreen from './components/main/NewLead'
 import LeadInfoScreen from './components/main/Leadinfo'
@@ -208,6 +211,14 @@ export class App extends Component {
                             }}/>
 
                         <Stack.Screen name="Lead Info" component={LeadInfoScreen}
+                            options={{
+                                headerStyle: {
+                                    backgroundColor: '#efefef',
+                                    elevation: 0,
+                                }
+                            }}/>
+
+                        <Stack.Screen name="Lead Search" component={SearchLeadScreen}
                             options={{
                                 headerStyle: {
                                     backgroundColor: '#efefef',

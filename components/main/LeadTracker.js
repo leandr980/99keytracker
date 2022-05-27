@@ -16,6 +16,9 @@ const wait = (timeout) => {
       }
 
 function LeadTracker(props) {
+
+    const creation = firebase.firestore.FieldValue.serverTimestamp()
+    const creationupdate = creation
     
     const [refreshing, setRefreshing] = React.useState(false);
     const onRefresh = React.useCallback(() => {
@@ -40,6 +43,21 @@ function LeadTracker(props) {
         .delete()    
     }
 
+    const status = 'CONTACTED'
+
+    const changeleadstatus = (leadid, notificationid) => {
+        firebase.firestore()
+        .collection("leadscollection")
+        .doc(firebase.auth().currentUser.uid)
+        .collection("leadslist")
+        .doc(leadid)
+        .update({
+            status: status,
+            creationupdate: creationupdate
+        }).then(deletereminder(notificationid))
+
+    }
+
     const datetimedifference = (newdate) => {
         if (differenceInSeconds(new Date(newdate.toDate().toString()), new Date()) < 0) {
             return "alert-circle-outline"
@@ -53,6 +71,13 @@ function LeadTracker(props) {
         <MenuProvider>
         <View style={styles.container}>
             <View style={styles.containerGallery}>
+
+            <Card style={styles.maincardstyle}>
+                <View style={styles.containerInfo}>
+                    <Caption style={{ fontSize: 20, margin: 5 }}> Welcome {currentUser.name} </Caption>
+                    <IconButton icon={'magnify'} onPress={() => props.navigation.navigate('Lead Search', {uid: firebase.auth().currentUser.uid})}/>
+                </View>
+            </Card>
                 <Card>
                     <Searchbar placeholder="Search"/>
                     <View style={{flexDirection: 'row', justifyContent: 'center'}}>
@@ -105,7 +130,8 @@ function LeadTracker(props) {
                                                     "Are you sure you want to do this?",
                                                     [
                                                         {
-                                                            text: "YES"
+                                                            text: "YES",
+                                                            onPress: () => changeleadstatus(item.leadid, item.id)
                                                         },
                                                         { 
                                                             text: "NO"
@@ -152,10 +178,10 @@ function LeadTracker(props) {
                                     />
                                     <Divider/>
                                 <Card.Content style={{marginTop: 2}}>
-                                    <Text>NOT CONTACTED</Text>
                                     <Text>{item.leadname}</Text>
                                     <Text>{item.leadnumber}</Text>
-                                    <Caption>Created on {format(new Date(item.creation.toDate().toString()), 'PP')} {format(new Date(item.creation.toDate().toString()), 'p')}</Caption>
+                                    <Text>{item.status}</Text>
+                                    <Caption>Created {format(new Date(item.creation.toDate().toString()), 'PPpp')}</Caption>
                                 </Card.Content>
                             </Card>
                             
