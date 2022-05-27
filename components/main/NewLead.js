@@ -55,6 +55,7 @@ export default function NewLead(props) {
     const status = 'NOT CONTACTED'
 
     const creation = firebase.firestore.FieldValue.serverTimestamp()
+    const creationupdate = creation
 
     const saveKeyData = () => {
 
@@ -88,7 +89,8 @@ export default function NewLead(props) {
 
                     status,
                     date,
-                    creation
+                    creation,
+                    creationupdate
                 }).then((function () {
                     props.navigation.pop()
                 }))

@@ -23,6 +23,7 @@ export default function Leadinfo(props) {
     console.log(props.route.params.LeadId)
 
     const creation = firebase.firestore.FieldValue.serverTimestamp()
+    const creationupdate = creation
 
     const [expoPushToken, setExpoPushToken] = useState('');
     const [notification, setNotification] = useState(false);
@@ -30,7 +31,8 @@ export default function Leadinfo(props) {
     const responseListener = useRef();
 
     const [leadinfo, setleadinfo] = useState([])
-    const [leadinfodate, setleadinfodate] = useState([])
+    const [leadinfodate, setleadinfodate] = useState('')
+    const [leadinfoupdate, setleadinfoupdate] = useState('')
     const [leadnotes, setleadnotes] = useState([])
 
     const [isSwitchOn, setIsSwitchOn] = useState(false)
@@ -52,7 +54,8 @@ export default function Leadinfo(props) {
                 .onSnapshot((docSnapshot) => {
                     if (!docSnapshot.metadata.hasPendingWrites) {  
                         setleadinfo(docSnapshot.data())
-                        setleadinfodate(docSnapshot.data().creation.toDate().toString())
+                        setleadinfodate(format(new Date(docSnapshot.data().creation.toDate().toString()), 'PPpp'))
+                        setleadinfoupdate(format(new Date(docSnapshot.data().creationupdate.toDate().toString()), 'PPpp'))
                     }
                 })
                 
@@ -117,7 +120,8 @@ export default function Leadinfo(props) {
         .collection('leadnotes')
         .add({
             notes,
-            creation
+            creation,
+            creationupdate
         }).then(setIsSwitchOn(false))
     }
 
@@ -203,43 +207,43 @@ export default function Leadinfo(props) {
 
                         <Card style={styles.cardstyle}>
                             <Card.Content>
-                                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 20, alignItems: 'center'}}>
+                                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, alignItems: 'center'}}>
                                     <Text>Status</Text>
-                                    <Chip>NOT CONTACTED</Chip>
+                                    <Chip>{leadinfo.status}</Chip>
                                 </View>
-                                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 20, alignItems: 'center'}}>
+                                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, alignItems: 'center'}}>
                                     <Text>Sale / Rent</Text>
                                     <Chip>{leadinfo.salerent}</Chip>
                                 </View>
-                                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 20, alignItems: 'center'}}>
+                                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, alignItems: 'center'}}>
                                     <Text>Property Status</Text>
                                     <Chip>{leadinfo.propertystatus}</Chip>
                                 </View>
-                                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 20, alignItems: 'center'}}>
+                                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, alignItems: 'center'}}>
                                     <Text>Property Type</Text>
                                     <Chip>{leadinfo.propertytype}</Chip>
                                 </View>
-                                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 20, alignItems: 'center'}}>
+                                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, alignItems: 'center'}}>
                                     <Text>Area</Text>
                                     <Chip>{leadinfo.multiplearea}</Chip>
                                 </View>
-                                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 20, alignItems: 'center'}}>
+                                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, alignItems: 'center'}}>
                                     <Text>Number of Bedrooms</Text>
                                     <Chip>{leadinfo.bedroom}</Chip>
                                 </View>
-                                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 20, alignItems: 'center'}}>
+                                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, alignItems: 'center'}}>
                                     <Text>Build-Up Area</Text>
                                     <View style={{flexDirection: 'row'}}>
-                                        <Chip>{leadinfo.builduparea}</Chip>
+                                        <Chip style={{marginRight: 2}}>{leadinfo.builduparea}</Chip>
                                         <Chip>{leadinfo.buildupareatype}</Chip>
                                     </View>
                                 </View>
-                                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 20, alignItems: 'center'}}>
+                                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, alignItems: 'center'}}>
                                     <Text>Budget</Text>
                                     {
                                         budgetcheck() ?
                                         <View style={{flexDirection: 'row'}}>
-                                            <Chip>Min Budget: {leadinfo.minbudget}</Chip>
+                                            <Chip style={{marginRight: 2}}>Min Budget: {leadinfo.minbudget}</Chip>
                                             <Chip>Max Budget: {leadinfo.maxbudget}</Chip>
                                         </View>
                                             :
@@ -248,21 +252,22 @@ export default function Leadinfo(props) {
                                         </View>
                                     }
                                 </View>
-                                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 20, alignItems: 'center'}}>
+                                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, alignItems: 'center'}}>
                                     <Text>Furnishing</Text>
                                     <Chip>{leadinfo.furnishing}</Chip>
                                 </View>
-                                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 20, alignItems: 'center'}}>
+                                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, alignItems: 'center'}}>
                                     <Text>Lead Source</Text>
                                     <Chip>{leadinfo.leadsource}</Chip>
                                 </View>
-                                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 20, alignItems: 'center'}}>
+                                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, alignItems: 'center'}}>
                                     <Text>Creation</Text>
-                                    <View style={{flexDirection: 'row'}}>
-                                    </View>
+                                    <Chip>{leadinfodate}</Chip>
                                 </View>
+                            <Caption>Last updated on: {leadinfoupdate}</Caption>
 
                             </Card.Content>
+
                         </Card>
                     </View>
                 }
@@ -349,6 +354,7 @@ export default function Leadinfo(props) {
                 date,
                 notifidentifier,
                 leadid: props.route.params.LeadId,
+                status: leadinfo.status,
                 creation
             })
             
