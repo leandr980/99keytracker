@@ -41,6 +41,14 @@ export class Main extends Component {
 		return (
 			<Tab.Navigator initialRouteName="Key List">
 
+				<Tab.Screen name='LeadTracker' component={LeadTrackerScreen}
+					options={{
+						tabBarIcon: ({ color, size }) => (
+							<MaterialCommunityIcons name="clipboard-account-outline" color={color} size={26} />
+						),
+						headerShown: false
+					}} />
+
 				<Tab.Screen name='Key List' component={KeyScreen} navigation={this.props.navigation}
 					listeners={({ navigation }) => ({
 						tabPress: event => {
@@ -53,14 +61,6 @@ export class Main extends Component {
 						tabBarIcon: ({ color, size }) => (
 							<MaterialCommunityIcons name="key-variant" color={color} size={26}
 							/>
-						),
-						headerShown: false
-					}} />
-
-				<Tab.Screen name='LeadTracker' component={LeadTrackerScreen}
-					options={{
-						tabBarIcon: ({ color, size }) => (
-							<MaterialCommunityIcons name="clipboard-account-outline" color={color} size={26} />
 						),
 						headerShown: false
 					}} />

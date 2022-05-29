@@ -95,9 +95,6 @@ function Keylist(props) {
                 </View>
             </Card>
 
-
-            <Text onPress={()=> console.log(keyinfodetails)}> test</Text>
-
             <Divider />
 
             <View style={styles.containerGallery}>
