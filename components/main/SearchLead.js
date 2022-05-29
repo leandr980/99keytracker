@@ -31,12 +31,12 @@ export default function Search(props) {
             })
     }
 
-    const fetchSale = (search) => {
+    const fetchleadlist =(filtervalue, filterfield )=> {
         firebase.firestore()
             .collection("leadscollection")
             .doc(firebase.auth().currentUser.uid)
             .collection("leadslist")
-            .where('name', '>=', search)
+            .where(filterfield, '>=', filtervalue)
             .get()
             .then((snapshot) => {
                 let keydata = snapshot.docs.map(doc => {
@@ -79,29 +79,29 @@ export default function Search(props) {
                     </View>
                     <View style={{alignItems: 'center', marginVertical: 20}}>
                         <View style={{flexDirection: 'row'}}>
-                            <Chip style={{margin: 2}}>Sale</Chip>
-                            <Chip>Rent</Chip>
+                            <Chip style={{margin: 2}} onPress={() => fetchleadlist('Sale', 'salerent')}>Sale</Chip>
+                            <Chip onPress={() => fetchleadlist('Rent', 'salerent')}>Rent</Chip>
                         </View>
                     </View>
                     <View style={{alignItems: 'center', marginVertical: 20}}>
                         <Text>Property Type</Text>
                         <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                            <Chip style={{margin: 2}}>Apartment</Chip>
-                            <Chip style={{margin: 2}}>Villa</Chip>
-                            <Chip style={{margin: 2}}>Plot</Chip>
-                            <Chip style={{margin: 2}}>Retail</Chip>
-                            <Chip>Office</Chip>
+                            <Chip style={{margin: 2}} onPress={()=> fetchleadlist('Apartment', 'propertytype')}>Apartment</Chip>
+                            <Chip style={{margin: 2}} onPress={()=> fetchleadlist('Villa', 'propertytype')}>Villa</Chip>
+                            <Chip style={{margin: 2}} onPress={()=> fetchleadlist('Plot', 'propertytype')}>Plot</Chip>
+                            <Chip style={{margin: 2}} onPress={()=> fetchleadlist('Land', 'propertytype')}>Land</Chip>
+                            <Chip onPress={()=> fetchleadlist('Office', 'propertytype')}>Office</Chip>
                         </View>
                     </View>
                     <View style={{alignItems: 'center', marginVertical: 20}}>
                         <Text>No. of bedrooms</Text>
                         <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                            <Chip style={{margin: 2}}>Studio</Chip>
-                            <Chip style={{margin: 2}}>1 Bedroom</Chip>
-                            <Chip style={{margin: 2}}>2 Bedroom</Chip>
-                            <Chip style={{margin: 2}}>3 Bedroom</Chip>
-                            <Chip style={{margin: 2}}>4 Bedroom</Chip>
-                            <Chip style={{margin: 2}}>5 Bedroom</Chip>
+                            <Chip style={{margin: 2}} onPress={()=> fetchleadlist('Studio', 'bedroom')}>Studio</Chip>
+                            <Chip style={{margin: 2}} onPress={()=> fetchleadlist('1 Bedroom', 'bedroom')}>1 Bedroom</Chip>
+                            <Chip style={{margin: 2}} onPress={()=> fetchleadlist('2 Bedrooms', 'bedroom')}>2 Bedroom</Chip>
+                            <Chip style={{margin: 2}} onPress={()=> fetchleadlist('3 Bedrooms', 'bedroom')}>3 Bedroom</Chip>
+                            <Chip style={{margin: 2}} onPress={()=> fetchleadlist('4 Bedrooms', 'bedroom')}>4 Bedroom</Chip>
+                            <Chip style={{margin: 2}} onPress={()=> fetchleadlist('5 Bedrooms', 'bedroom')}>5 Bedroom</Chip>
                             <Chip>Other</Chip>
                         </View>
                     </View>

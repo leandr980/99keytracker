@@ -23,7 +23,6 @@ function LeadTracker(props) {
     const [refreshing, setRefreshing] = React.useState(false);
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
-        setezfilter(keyinfo2)
         wait(2000).then(() => setRefreshing(false));}, []);
 
     const { currentUser, keyinfo2, leadfiltersale, notificationlist} = props;
@@ -32,19 +31,8 @@ function LeadTracker(props) {
         return <View/>
     }
 
-    const [ezfilter, setezfilter] = useState(keyinfo2)
-
-    const deletereminder = (doctodelete) => {
-        firebase.firestore()
-        .collection('notification-collection')
-        .doc(firebase.auth().currentUser.uid)
-        .collection("notificationlist")
-        .doc(doctodelete)
-        .delete()    
-    }
-
     const status = 'CONTACTED'
-
+    
     const changeleadstatus = (leadid, notificationid) => {
         firebase.firestore()
         .collection("leadscollection")
@@ -54,8 +42,31 @@ function LeadTracker(props) {
         .update({
             status: status,
             creationupdate: creationupdate
-        }).then(deletereminder(notificationid))
+        }).then(deletereminder(notificationid), addnewnote(leadid))
+        
+    }
 
+    const deletereminder = (doctodelete) => {
+        firebase.firestore()
+        .collection('notification-collection')
+        .doc(firebase.auth().currentUser.uid)
+        .collection("notificationlist")
+        .doc(doctodelete)
+        .delete()    
+    }
+    
+    const addnewnote = (leadid) => {
+        firebase.firestore()
+        .collection('leadscollection')
+        .doc(firebase.auth().currentUser.uid)
+        .collection("leadslist")
+        .doc(leadid)
+        .collection('leadnotes')
+        .add({
+            notes: 'This lead was contacted',
+            creation,
+            creationupdate
+        })
     }
 
     const datetimedifference = (newdate) => {
@@ -66,7 +77,16 @@ function LeadTracker(props) {
             return "clock-outline"
         }
     }
-                    
+
+    const remindericonbgcolor =(newdate)=> {
+        if (differenceInSeconds(new Date(newdate.toDate().toString()), new Date()) < 0) {
+            return {backgroundColor: "red", borderRadius: 300}
+        }
+        else {
+            return {backgroundColor: "green", borderRadius: 300}
+        }
+    }
+         
     return (
         <MenuProvider>
         <View style={styles.container}>
@@ -78,30 +98,6 @@ function LeadTracker(props) {
                     <IconButton icon={'magnify'} onPress={() => props.navigation.navigate('Lead Search', {uid: firebase.auth().currentUser.uid})}/>
                 </View>
             </Card>
-                <Card>
-                    <Searchbar placeholder="Search"/>
-                    <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-                        <ScrollView horizontal style={{margin: 5}}>
-                            <Chip style={{margin: 2}} onPress={()=> setezfilter(keyinfo2)}>All</Chip>
-                            <Chip style={{margin: 2}} onPress={()=> setezfilter('Other')}>Rent</Chip>
-                            <Chip style={{margin: 2}} onPress={()=> setezfilter(leadfiltersale)}>Sale</Chip>
-                            <Chip style={{margin: 2}} onPress={()=> setezfilter('Yearly')}>Yearly</Chip>
-                            <Chip style={{margin: 2}} onPress={()=> setezfilter('Monthly')}>Monthly</Chip>
-                            <Chip style={{margin: 2}} onPress={()=> setezfilter('Studio')}>Studio</Chip>
-                            <Chip style={{margin: 2}} onPress={()=> setezfilter('Apartment')}>Apartment</Chip>
-                            <Chip style={{margin: 2}} onPress={()=> setezfilter('Villa')}>Villa</Chip>
-                            <Chip style={{margin: 2}} onPress={()=> setezfilter('Plot')}>Plot</Chip>
-                            <Chip style={{margin: 2}} onPress={()=> setezfilter('Retail')}>Retail</Chip>
-                            <Chip style={{margin: 2}} onPress={()=> setezfilter('1 BR')}>1 BR</Chip>
-                            <Chip style={{margin: 2}} onPress={()=> setezfilter('2 BR')}>2 BR</Chip>
-                            <Chip style={{margin: 2}} onPress={()=> setezfilter('3 BR')}>3 BR</Chip>
-                            <Chip style={{margin: 2}} onPress={()=> setezfilter('4 BR')}>4 BR</Chip>
-                            <Chip style={{margin: 2}} onPress={()=> setezfilter('Furnished')}>Furnished</Chip>
-                            <Chip style={{margin: 2}} onPress={()=> setezfilter('Un-Furnished')}>Un-Furnished</Chip>
-                        </ScrollView>
-                        <IconButton icon='cog'/>
-                    </View>
-                </Card>
 
                 <Card style={styles.cardstyle}>
                     <Card.Content>
@@ -116,7 +112,7 @@ function LeadTracker(props) {
                                     <Card.Title
                                         title={<Text style={{fontSize: 15}}>{format(new Date(item.date.toDate().toString()), 'PP')}</Text>}
                                         subtitle={<Text>{format(new Date(item.date.toDate().toString()), 'p')}</Text>}
-                                        left={(props) => <Avatar.Icon {...props} icon={datetimedifference(item.date)} />}
+                                        left={(props) => <Avatar.Icon {...props} style={remindericonbgcolor(item.date)} icon={datetimedifference(item.date)} />}
                                         right={() => 
                                         <Menu>
                                             <MenuTrigger>
@@ -202,7 +198,7 @@ function LeadTracker(props) {
                 <FlatList
                 numColumns={1}
                 horizontal={false}
-                data={ezfilter}
+                data={keyinfo2}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}
                 renderItem={({ item }) => (
 
