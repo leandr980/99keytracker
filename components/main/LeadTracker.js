@@ -17,6 +17,8 @@ const wait = (timeout) => {
 
 function LeadTracker(props) {
 
+    const [timeseconds, settimeseconds] = useState(0)
+
     const creation = firebase.firestore.FieldValue.serverTimestamp()
     const creationupdate = creation
     
@@ -86,6 +88,7 @@ function LeadTracker(props) {
             return {backgroundColor: "green", borderRadius: 300}
         }
     }
+
          
     return (
         <MenuProvider>
@@ -98,6 +101,8 @@ function LeadTracker(props) {
                     <IconButton icon={'magnify'} onPress={() => props.navigation.navigate('Lead Search', {uid: firebase.auth().currentUser.uid})}/>
                 </View>
             </Card>
+
+            <Text>{timeseconds}</Text>
 
                 <Card style={styles.cardstyle}>
                     <Card.Content>

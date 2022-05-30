@@ -1,14 +1,23 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { View, Text, FlatList, StyleSheet, ImageBackground, TextInput, SafeAreaView} from 'react-native'
-import { Card, FAB, IconButton, Divider, Chip, Caption, Title, Button, Switch, Banner, Snackbar} from 'react-native-paper'
+import { View, Text, FlatList, StyleSheet, ImageBackground, TextInput, SafeAreaView, Alert} from 'react-native'
+import { Card, FAB, IconButton, Divider, Chip, Caption, Title, Button, Switch, Banner, Avatar} from 'react-native-paper'
 import { format } from 'date-fns'
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 import DateTimePicker from '@react-native-community/datetimepicker'
+import differenceInSeconds from 'date-fns/differenceInSeconds'
+
+import { MenuProvider, Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu'
+
+import { Dimensions } from 'react-native';
+
 
 import firebase from 'firebase'
 require("firebase/firestore")
+
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
@@ -35,12 +44,10 @@ export default function Leadinfo(props) {
     const [leadinfoupdate, setleadinfoupdate] = useState('')
     const [leadnotes, setleadnotes] = useState([])
 
-    const [isSwitchOn, setIsSwitchOn] = useState(false)
-
+    
     const [notes, setnotes] = useState('') 
 
-    const [notifseconds, setnotifseconds] = useState(0)
-
+    const [notificationlist, setnotificationlist] = useState([])
     
     useEffect(() => {
         
@@ -49,11 +56,11 @@ export default function Leadinfo(props) {
         const subscribe = firebase.firestore()
         .collection("leadscollection")
         .doc(props.route.params.uid)
-                .collection("leadslist")
-                .doc(props.route.params.LeadId)
-                .onSnapshot((docSnapshot) => {
-                    if (!docSnapshot.metadata.hasPendingWrites) {  
-                        setleadinfo(docSnapshot.data())
+        .collection("leadslist")
+        .doc(props.route.params.LeadId)
+        .onSnapshot((docSnapshot) => {
+            if (!docSnapshot.metadata.hasPendingWrites) {  
+                setleadinfo(docSnapshot.data())
                         setleadinfodate(format(new Date(docSnapshot.data().creation.toDate().toString()), 'PPpp'))
                         setleadinfoupdate(format(new Date(docSnapshot.data().creationupdate.toDate().toString()), 'PPpp'))
                     }
@@ -61,16 +68,16 @@ export default function Leadinfo(props) {
                 
                 const subscribe2 = firebase.firestore()
                 .collection("leadscollection")
-                    .doc(firebase.auth().currentUser.uid)
-                    .collection("leadslist")
-                    .doc(props.route.params.LeadId)
-                    .collection('leadnotes')
-                    .onSnapshot((docSnapshot) => {
-                        if(docSnapshot.docs == undefined){
-                            console.log('notes empty')
-                        }
-                        else{
-                            let leadnotes = docSnapshot.docs.map(doc => {
+                .doc(firebase.auth().currentUser.uid)
+                .collection("leadslist")
+                .doc(props.route.params.LeadId)
+                .collection('leadnotes')
+                .onSnapshot((docSnapshot) => {
+                    if(docSnapshot.docs == undefined){
+                        console.log('notes empty')
+                    }
+                    else{
+                        let leadnotes = docSnapshot.docs.map(doc => {
                                 const data = doc.data();
                                 const id = doc.id;
                                 return { id, ...data }
@@ -83,27 +90,46 @@ export default function Leadinfo(props) {
                         }
                     })
 
+                    const subscribe3 = firebase.firestore()
+                    .collection("notification-collection")
+                    .doc(firebase.auth().currentUser.uid)
+                    .collection("notificationlist")
+                    .orderBy("creation", "desc")
+                    .onSnapshot((docSnapshot) => {
+                        let notificationlist = docSnapshot.docs.map(doc => {
+                            const data = doc.data();
+                            const id = doc.id;
+                            return { id, ...data }
+        
+                        })
+                        //console.log(notificationlist, 'notificationlist')
+                        if (!docSnapshot.metadata.hasPendingWrites) {  // <======
+                            setnotificationlist(notificationlist)
+                         }
+                    })
+                    
                     registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
-
+                    
                     notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-                      setNotification(notification);
-                    });
-                
-                    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-                      console.log(response);
+                        setNotification(notification);
                     });
                     
-
-                return () => {
-                    subscribe()
+                    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+                        console.log(response);
+                    });
+                    
+                    
+                    return () => {
+                        subscribe()
                     subscribe2()
+                    subscribe3()
                     Notifications.removeNotificationSubscription(notificationListener.current);
                     Notifications.removeNotificationSubscription(responseListener.current);
                 }
             }, [])
-    
-    const budgetcheck = () =>{
-        if (leadinfo.budget == ''){
+            
+            const budgetcheck = () =>{
+                if (leadinfo.budget == ''){
             return true
         }
         else{
@@ -124,37 +150,94 @@ export default function Leadinfo(props) {
             creationupdate
         }).then(setIsSwitchOn(false))
     }
-
+    
     const [date, setDate] = useState(new Date());
     const [mode, setMode] = useState('date');
     const [show, setShow] = useState(false);
-  
+    
     const onChange = (event, selectedDate) => {
-      const currentDate = selectedDate;
-      setShow(false);
-      setDate(currentDate);
+        const currentDate = selectedDate;
+        setShow(false);
+        setDate(currentDate);
     };
-  
+    
     const showMode = (currentMode) => {
       setShow(true);
       setMode(currentMode);
     };
-  
+    
     const showDatepicker = () => {
-      showMode('date');
+        showMode('date');
     };
-  
+    
     const showTimepicker = () => {
-      showMode('time');
+        showMode('time');
     };
+    
+    const [visible, setVisible] = React.useState(true)
+    const [isSwitchOn, setIsSwitchOn] = useState(false)
+    const [isSwitchOnbanner, setIsSwitchOnbanner] = useState(false)
+    const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
+    const onToggleSwitchbanner = () => setIsSwitchOnbanner(!isSwitchOnbanner);
 
-    const [visible, setVisible] = React.useState(false);
+    const status = 'CONTACTED'
+    
+    const changeleadstatus = (leadid, notificationid) => {
+        firebase.firestore()
+        .collection("leadscollection")
+        .doc(firebase.auth().currentUser.uid)
+        .collection("leadslist")
+        .doc(leadid)
+        .update({
+            status: status,
+            creationupdate: creationupdate
+        }).then(deletereminder(notificationid), addnewnotecontacted(leadid))
+        
+    }
 
-    const onToggleSnackBar = () => setVisible(!visible);
-  
-    const onDismissSnackBar = () => setVisible(false);
+    const addnewnotecontacted = (leadid) => {
+        firebase.firestore()
+        .collection('leadscollection')
+        .doc(firebase.auth().currentUser.uid)
+        .collection("leadslist")
+        .doc(leadid)
+        .collection('leadnotes')
+        .add({
+            notes: 'This lead was contacted',
+            creation,
+            creationupdate
+        })
+    }
 
+    const deletereminder = (doctodelete) => {
+        firebase.firestore()
+        .collection('notification-collection')
+        .doc(firebase.auth().currentUser.uid)
+        .collection("notificationlist")
+        .doc(doctodelete)
+        .delete()    
+    }
+
+    const datetimedifference = (newdate) => {
+        if (differenceInSeconds(new Date(newdate.toDate().toString()), new Date()) < 0) {
+            return "alert-circle-outline"
+        }
+        else {
+            return "clock-outline"
+        }
+    }
+
+    const remindericonbgcolor =(newdate)=> {
+        if (differenceInSeconds(new Date(newdate.toDate().toString()), new Date()) < 0) {
+            return {backgroundColor: "red", borderRadius: 300}
+        }
+        else {
+            return {backgroundColor: "green", borderRadius: 300}
+        }
+    }
+    
     return (
+        <MenuProvider skipInstanceCheck={true}>
         <View style={styles.container}>
             <Divider/>
             <ImageBackground 
@@ -188,22 +271,129 @@ export default function Leadinfo(props) {
                                 <IconButton icon='email'/>
                             </View>
                             </Card.Content>
+
+                            <Card.Content style={{justifyContent: 'center', flexDirection: 'row', alignItems: 'center'}}>
+                                <Text>Set a Reminder</Text>
+                                <Switch value={isSwitchOnbanner} onValueChange={onToggleSwitchbanner} />
+                            </Card.Content>
+                            <Divider/>
+                            <Banner
+                            visible={isSwitchOnbanner}
+                            actions={[
+                            ]}>
+                                <Card style={{flexDirection: 'row', elevation: 5, margin: 5, width: windowWidth/1.05}}>
+                                    <Card.Content>
+                                        <Title>Upcoming Reminders For {leadinfo.name}</Title>
+                                        <Divider/>
+                                        <FlatList
+                                        style={{height: 200}}
+                                        horizontal={true}
+                                        showsHorizontalScrollIndicator={false}
+                                        ListHeaderComponent={
+                                                <Card style={{elevation: 5, margin: 5, height: 183}}>
+                                                    <Card.Title
+                                                    title={<Text style={{fontSize: 15}}>Set A Reminder</Text>}
+                                                    />
+                                                    <Divider/>
+                                                    <Card.Content>
+                                                    <View style={{justifyContent: 'center', flexDirection: 'row', alignItems: 'center'}}>
+                                                        <Button icon={'calendar'} onPress={() => showDatepicker()}>Change Date</Button>
+                                                        <Text>{format(new Date(date.toLocaleString()), 'PP')}</Text>
+                                                    </View>
+                                                    <View style={{justifyContent: 'center', flexDirection: 'row', alignItems: 'center'}}>
+                                                        <Button icon={'clock'} onPress={() => showTimepicker()}>Change Time</Button>
+                                                        <Text>{format(new Date(date.toLocaleString()), 'pp')}</Text>
+                                                    </View>
+                                                    </Card.Content>
+                                                    <Divider/>
+                                                    <Card.Actions>
+                                                        <Button onPress={async () => {await schedulePushNotification();}}> Set Reminder</Button>
+                                                    </Card.Actions>
+                                                </Card>
+                                        }
+                                        ListFooterComponent={
+                                            <View style={{margin: 10}}>
+                                                <Caption style={{marginTop: 80}}>End of List</Caption>
+                                            </View>
+                                        }
+                                        data={notificationlist}
+                                        renderItem={({ item }) => (
+                                            <View>
+                                                {item.leadid == props.route.params.LeadId && 
+                                                    <Card style={{elevation: 5, margin: 5, width: 255}}>
+                                                        <Card.Title
+                                                            title={<Text style={{fontSize: 15}}>{format(new Date(item.date.toDate().toString()), 'PP')}</Text>}
+                                                            subtitle={<Text>{format(new Date(item.date.toDate().toString()), 'p')}</Text>}
+                                                            left={(props) => <Avatar.Icon {...props} style={remindericonbgcolor(item.date)} icon={datetimedifference(item.date)} />}
+                                                            right={() => 
+                                                            <Menu>
+                                                                <MenuTrigger>
+                                                                    <IconButton icon="dots-vertical" />
+                                                                </MenuTrigger>
+                                                                <MenuOptions>
+    
+                                                                    <MenuOption onSelect={() => 
+                                                                    Alert.alert(
+                                                                        "This will change the lead status to *CONTACTED* and delete this reminder",
+                                                                        "Are you sure you want to do this?",
+                                                                        [
+                                                                            {
+                                                                                text: "YES",
+                                                                                onPress: () => changeleadstatus(item.leadid, item.id)
+                                                                            },
+                                                                            { 
+                                                                                text: "NO"
+                                                                            }
+                                                                        ]
+                                                                    )}>
+                                                                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                                                            <IconButton icon='check'/>
+                                                                            <Text>CONTACTED</Text>
+                                                                        </View>
+                                                                    </MenuOption>
+    
+                                                                    <Divider/>
+                                                                    
+                                                                    <MenuOption onSelect={() => 
+                                                                    Alert.alert(
+                                                                        "Are you sure you want to delete this reminder?",
+                                                                        "",
+                                                                        [
+                                                                            {
+                                                                                text: "YES",
+                                                                                onPress: () => deletereminder(item.id)
+                                                                            },
+                                                                            { 
+                                                                                text: "NO"
+                                                                            }
+                                                                        ]
+                                                                    )}>
+                                                                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                                                            <IconButton icon='delete-outline'/>
+                                                                            <Text>DELETE</Text>
+                                                                        </View>
+                                                                    
+                                                                    </MenuOption>
+                                                                </MenuOptions>
+                                                            </Menu>}
+                                                        />
+                                                        <Divider/>
+                                                    <Card.Content style={{marginTop: 2}}>
+                                                        <Text>{item.leadname}</Text>
+                                                        <Text>{item.leadnumber}</Text>
+                                                        <Text>{item.status}</Text>
+                                                        <Caption>Created {format(new Date(item.creation.toDate().toString()), 'PPpp')}</Caption>
+                                                    </Card.Content>
+                                                </Card>
+                                                }
+                                            </View>
+                                        )}/>
+                                    </Card.Content>
+                                    <Divider/>
+                                </Card>
+                            </Banner>
                         </Card>
 
-                        <Card style={styles.cardstyle}>
-                            <Card.Content>
-                            <View>
-                                <Button onPress={showDatepicker}>Show date picker!</Button>
-                            </View>
-                            <View>
-                                <Button onPress={showTimepicker}>Show time picker!</Button>
-                            </View>
-                            <Text>selected: {date.toLocaleString()}</Text>
-                            <Button mode='contained' 
-                            onPress={async () => {
-                                await schedulePushNotification();}}>set time</Button>
-                            </Card.Content>
-                        </Card>
 
                         <Card style={styles.cardstyle}>
                             <Card.Content>
@@ -305,7 +495,7 @@ export default function Leadinfo(props) {
                 renderItem={({ item }) => (
                     <Card style={styles.cardstyle}>
                         <Card.Content>
-                        <Title>Note added on {format(new Date(item.creation.toDate().toString()), 'PP')}</Title>
+                        <Title>Note added on {format(new Date(item.creation.toDate().toString()), 'PPpp')}</Title>
                         <Divider style={{margin: 10}}/>
                         <Text>{item.notes}</Text>
                         </Card.Content>
@@ -313,6 +503,7 @@ export default function Leadinfo(props) {
                 )}/>
             </ImageBackground>
         </View>
+        </MenuProvider>
         )
 
         async function schedulePushNotification() {
@@ -361,8 +552,6 @@ export default function Leadinfo(props) {
             return notifidentifier
         }
 }
-
-
 
 async function registerForPushNotificationsAsync() {
     let token;
