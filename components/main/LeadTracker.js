@@ -15,9 +15,21 @@ const wait = (timeout) => {
         return new Promise(resolve => setTimeout(resolve, timeout));
       }
 
-function LeadTracker(props) {
+      const useExpired = (time)=>{
+        const [expired, setExpired] = useState(false);
+        const timoutRef = useRef();
+        useEffect(()=>{
+          timoutRef.current = setTimeout(()=>{
+            setExpired(true);
+          }, time);
+          return ()=>{
+            clearTimeout(timoutRef.current);
+          }
+        },[time]);
+        return expired;
+      }
 
-    const [timeseconds, settimeseconds] = useState(0)
+function LeadTracker(props) {
 
     const creation = firebase.firestore.FieldValue.serverTimestamp()
     const creationupdate = creation
@@ -89,6 +101,19 @@ function LeadTracker(props) {
         }
     }
 
+    
+    
+    const isexpired =(enddate)=> {
+      
+
+        const expired = useExpired(enddate - new Date().getTime());
+
+        return expired
+    }
+
+    
+    console.log(isexpired(new Date().getTime() + 5000))
+
          
     return (
         <MenuProvider>
@@ -101,8 +126,6 @@ function LeadTracker(props) {
                     <IconButton icon={'magnify'} onPress={() => props.navigation.navigate('Lead Search', {uid: firebase.auth().currentUser.uid})}/>
                 </View>
             </Card>
-
-            <Text>{timeseconds}</Text>
 
                 <Card style={styles.cardstyle}>
                     <Card.Content>

@@ -218,6 +218,17 @@ export default function Leadinfo(props) {
         .delete()    
     }
 
+    const deletenote = (doctodelete) => {
+        firebase.firestore()
+        .collection('leadscollection')
+        .doc(firebase.auth().currentUser.uid)
+        .collection("leadslist")
+        .doc(props.route.params.LeadId)
+        .collection("leadnotes")
+        .doc(doctodelete)
+        .delete()    
+    }
+
     const datetimedifference = (newdate) => {
         if (differenceInSeconds(new Date(newdate.toDate().toString()), new Date()) < 0) {
             return "alert-circle-outline"
@@ -244,15 +255,15 @@ export default function Leadinfo(props) {
             style={{flex: 1}}
             imageStyle={{resizeMode: 'repeat'}}
             source={require('../../assets/bg-image/99-whatsapp-bg-small.jpg')}>
-                    {show && (
-                        <DateTimePicker
-                        testID="dateTimePicker"
-                        value={date}
-                        mode={mode}
-                        is24Hour={true}
-                        onChange={onChange}
-                        />
-                    )}
+                {show && (
+                    <DateTimePicker
+                    testID="dateTimePicker"
+                    value={date}
+                    mode={mode}
+                    is24Hour={true}
+                    onChange={onChange}
+                    />
+                )}
                 <FlatList
                 numColumns={1}
                 horizontal={false}
@@ -281,10 +292,8 @@ export default function Leadinfo(props) {
                             visible={isSwitchOnbanner}
                             actions={[
                             ]}>
-                                <Card style={{flexDirection: 'row', elevation: 5, margin: 5, width: windowWidth/1.05}}>
-                                    <Card.Content>
+                                <View style={{width: windowWidth/1.05}}>
                                         <Title>Upcoming Reminders For {leadinfo.name}</Title>
-                                        <Divider/>
                                         <FlatList
                                         style={{height: 200}}
                                         horizontal={true}
@@ -388,9 +397,7 @@ export default function Leadinfo(props) {
                                                 }
                                             </View>
                                         )}/>
-                                    </Card.Content>
-                                    <Divider/>
-                                </Card>
+                                    </View>
                             </Banner>
                         </Card>
 
@@ -451,7 +458,7 @@ export default function Leadinfo(props) {
                                     <Chip>{leadinfo.leadsource}</Chip>
                                 </View>
                                 <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, alignItems: 'center'}}>
-                                    <Text>Creation</Text>
+                                    <Text>Created</Text>
                                     <Chip>{leadinfodate}</Chip>
                                 </View>
                             <Caption>Last updated on: {leadinfoupdate}</Caption>
@@ -494,9 +501,26 @@ export default function Leadinfo(props) {
                 data={leadnotes}
                 renderItem={({ item }) => (
                     <Card style={styles.cardstyle}>
+                        <Card.Title
+                            title={<Text style={{fontSize: 15}}>Note added on {format(new Date(item.creation.toDate().toString()), 'PPpp')}</Text>}
+                            right={() => 
+                            <IconButton icon={'delete'}
+                            onPress={()=> Alert.alert(
+                                "Are you sure you want to delete this note?",
+                                "",
+                                [
+                                    {
+                                        text: "YES",
+                                        onPress: () => deletenote(item.id)
+                                    },
+                                    { 
+                                        text: "NO"
+                                    }
+                                ]
+                            )}/>
+                                    }/>
                         <Card.Content>
-                        <Title>Note added on {format(new Date(item.creation.toDate().toString()), 'PPpp')}</Title>
-                        <Divider style={{margin: 10}}/>
+                        <Divider />
                         <Text>{item.notes}</Text>
                         </Card.Content>
                     </Card>

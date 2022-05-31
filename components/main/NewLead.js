@@ -111,12 +111,14 @@ export default function NewLead(props) {
 
     const dubaiareadata = [
         { label: 'Al Barsha', value: 'Al Barsha' },
-        { label: 'Emirates Hills', value: 'Emirates Hills' },
+        { label: 'Dubai Marina', value: 'Dubai Marina' },
         { label: 'Downtown Dubai', value: 'Downtown Dubai' },
+        { label: 'Emirates Hills', value: 'Emirates Hills' },
         { label: 'Jebal Ali', value: 'Jebal Ali' },
+        { label: 'Palm Jumeirah', value: 'Palm Jumeirah' },
         { label: 'Jumeirah Village Circle', value: 'Jumeirah Village Circle' },
         { label: 'Jumeirah Village Triangle', value: 'Jumeirah Village Triangle' },
-        { label: 'Dubai Marina', value: 'Dubai Marina' },
+        { label: 'Nad Al Sheba', value: 'Nad Al Sheba' },
     ];
 
     return (

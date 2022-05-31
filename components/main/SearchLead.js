@@ -29,7 +29,7 @@ export default function Search(props) {
                 });
                 setkeydata(keydata)
             })
-    }
+        }
 
     const fetchleadlist =(filtervalue, filterfield )=> {
         firebase.firestore()
@@ -54,8 +54,9 @@ export default function Search(props) {
             <Card >
                 <View style={{flexDirection: 'row'}}>
                     <IconButton icon={'magnify'} size={30}/>
-                    <View style={{flex:1, justifyContent: 'center'}}>
-                        <TextInput style={{fontSize: 20}} placeholder="Search . . . ." onChangeText={(search) => fetchUsers(search)}/>
+                    <View style={{flex:1, justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', marginHorizontal: 5}}>
+                        <TextInput style={{fontSize: 20, width: windowWidth/1.2}} placeholder="Search . . . ." onChangeText={(search) => fetchUsers(search)}/>
+                        <IconButton icon={'close-circle'} onPress={()=> setkeydata([])}/>
                     </View>
                     
                 </View>
