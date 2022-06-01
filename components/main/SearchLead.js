@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import { View, TextInput, FlatList, Text } from 'react-native'
+import { View, TextInput, FlatList, Text, ScrollView} from 'react-native'
 
 import firebase from 'firebase'
-import { Card, Divider, IconButton, DataTable, Chip, Title } from 'react-native-paper'
+import { Card, Divider, IconButton, DataTable, Chip, Title, Snackbar, Button, Caption} from 'react-native-paper'
 require('firebase/firestore')
 
 import { Dimensions } from 'react-native';
@@ -36,7 +36,7 @@ export default function Search(props) {
             .collection("leadscollection")
             .doc(firebase.auth().currentUser.uid)
             .collection("leadslist")
-            .where(filterfield, '>=', filtervalue)
+            .where(filterfield, '==', filtervalue)
             .get()
             .then((snapshot) => {
                 let keydata = snapshot.docs.map(doc => {
@@ -45,9 +45,34 @@ export default function Search(props) {
                     return { id, ...data }
                     
                 });
-                setkeydata(keydata)
+
+                if (snapshot.empty){
+                    console.log('empty search result')
+                    onToggleSnackBar()
+                    setfilterfield(filtervalue)
+                }
+                else{
+                    setkeydata(keydata)
+                }
             })
     }
+
+    const [visible, setVisible] = React.useState(false);
+    const onToggleSnackBar = () => {
+        setVisible(!visible);
+        setTimeout(() => {
+            setVisible(false)
+        }, 4000);
+    }
+    
+    
+
+
+
+
+
+    const [filterfield, setfilterfield] = useState('')
+    const onDismissSnackBar = () => (setVisible(false), setfilterfield(''));
 
     return (
         <View style={{flex: 1}}>
@@ -60,6 +85,51 @@ export default function Search(props) {
                     </View>
                     
                 </View>
+
+                <Divider/>
+
+                <View style={{flexDirection: 'row', alignItems: 'center', margin: 5}}>
+                <Title style={{marginLeft: 5}}>Filters</Title>
+
+                    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                            
+                            <Card style={{elevation: 5, margin: 5}}>
+                                <View style={{flexDirection: 'row', alignItems: 'center', margin: 10}}>
+                                    <Caption style={{marginRight: 2}}> Lead Details: </Caption>
+                                    <Chip style={{marginRight: 2}}>Name</Chip>
+                                    <Chip style={{marginRight: 2}}>Email</Chip>
+                                    <Chip style={{marginRight: 2}}>Mobile Number</Chip>
+                                    <Chip style={{marginRight: 2}}>Lead Status</Chip>
+                                </View>
+                            </Card>
+
+                            <Card style={{elevation: 5, margin: 5}}>
+                                <View style={{flexDirection: 'row', alignItems: 'center', margin: 10}}>
+                                    <Caption style={{marginRight: 2}}> Property Details: </Caption>
+                                    <Chip style={{marginRight: 2}}>Sale/Rent</Chip>
+                                    <Chip style={{marginRight: 2}}>Property Status</Chip>
+                                    <Chip style={{marginRight: 2}}>Property Type</Chip>
+                                    <Chip style={{marginRight: 2}}>location</Chip>
+                                    <Chip style={{marginRight: 2}}>Bedroom</Chip>
+                                    <Chip style={{marginRight: 2}}>Build-Up</Chip>
+                                    <Chip style={{marginRight: 2}}>Budget</Chip>
+                                    <Chip style={{marginRight: 2}}>Furnishing</Chip>
+                                </View>
+                            </Card>
+
+                            <Card style={{elevation: 5, margin: 5}}>
+                                <View style={{flexDirection: 'row', alignItems: 'center', margin: 10}}>
+                                    <Caption style={{marginRight: 2}}> Other Details: </Caption>
+                                    <Chip style={{marginRight: 2}}>Lead Source</Chip>
+                                    <Chip style={{marginRight: 2}}>Date</Chip>
+                                </View>
+                            </Card>
+                        </View>
+                    </ScrollView>
+                </View>
+
+   
             </Card>
             <DataTable>
                     <DataTable.Header>
@@ -75,7 +145,7 @@ export default function Search(props) {
                 ListEmptyComponent={
                 <View style={{flex: 1, alignContent: 'center', justifyContent: 'center', alignItems: 'center', marginTop: windowHeight/4}}>
                     <View>
-                        <Title>Filters</Title>
+                        <Title>Quick Search</Title>
                         <Divider/>
                     </View>
                     <View style={{alignItems: 'center', marginVertical: 20}}>
@@ -123,6 +193,11 @@ export default function Search(props) {
                 </DataTable>
                     
                 )}/>
+                <Snackbar
+                    visible={visible}
+                    onDismiss={onDismissSnackBar}>
+                    Quick Search: No leads found for *{filterfield}*
+                </Snackbar>
             </View>
         )
 }
