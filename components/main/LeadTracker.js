@@ -100,20 +100,13 @@ function LeadTracker(props) {
             return {backgroundColor: "green", borderRadius: 300}
         }
     }
-
-    
     
     const isexpired =(enddate)=> {
-      
-
         const expired = useExpired(enddate - new Date().getTime());
-
         return expired
     }
 
-    
     console.log(isexpired(new Date().getTime() + 5000))
-
          
     return (
         <MenuProvider>
@@ -134,6 +127,7 @@ function LeadTracker(props) {
                         <FlatList
                         style={{height: 180}}
                         horizontal={true}
+                        showsHorizontalScrollIndicator={false}
                         data={notificationlist}
                         renderItem={({ item }) => (
                             <Card style={{elevation: 5, margin: 5, width: 255}}>
