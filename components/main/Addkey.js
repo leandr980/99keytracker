@@ -50,15 +50,15 @@ export default function Addkey(props) {
                 })
                 .then(function (docRef) {
                     console.log("Document written with ID: ", docRef.id);
+                    let keyid = docRef.id
 
                     firebase.firestore()
                         .collection('keycollection')
                         .doc(firebase.auth().currentUser.uid)
-                        .collection("keylist")
-                        .doc(docRef.id)
-                        .collection("keyhistory")
+                        .collection("keylistentry")
                         .add({
                             entrytype,
+                            keyid,
                             creation: firebase.firestore.FieldValue.serverTimestamp()
                         },
                             function (error) {

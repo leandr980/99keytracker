@@ -1,5 +1,5 @@
 // JavaScript source code
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { View, Text, FlatList, StyleSheet, ImageBackground, RefreshControl} from 'react-native'
 import { Card, FAB, IconButton, Divider, Chip, Caption, Button } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -17,6 +17,31 @@ const wait = (timeout) => {
       }
 
 function Keylist(props) {
+
+    useEffect(() => {
+
+            const subscribe2 = firebase.firestore()
+                .collection('keycollection')
+                .doc(firebase.auth().currentUser.uid)
+                .collection('keylistentry')
+                .orderBy('creation', 'desc')
+                .onSnapshot((docSnapshot) => {
+                    let keyHistory = docSnapshot.docs.map(doc => {
+                        const data = doc.data();
+                        const id = doc.id;
+                        return { id, ...data }
+                    })
+                    if (!docSnapshot.metadata.hasPendingWrites) {  
+                        setkeylistentry(keyHistory)
+                    }  
+                })
+
+                return () => {
+                    subscribe2()
+                }
+    }, [])
+
+    const [keylistentry, setkeylistentry] = useState([])
 
     const [refreshing, setRefreshing] = React.useState(false);
     const onRefresh = React.useCallback(() => {
@@ -151,6 +176,15 @@ function Keylist(props) {
                             icon={changechipicon(item.entrytype)}
                             >{item.entrytype}</Chip>
                         </View>
+                        <FlatList
+                        numColumns={1}
+                        horizontal={false}
+                        data={keylistentry}
+                        renderItem={({ item, index }) => (
+                            <View>
+                                <Text>{item.id}</Text>
+                            </View>
+                        )}/>
 
 
                     </Card>
