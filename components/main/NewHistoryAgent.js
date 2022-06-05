@@ -139,9 +139,7 @@ export default function NewHistroyAgent(props) {
         firebase.firestore()
             .collection('keycollection')
             .doc(firebase.auth().currentUser.uid)
-            .collection("keylist")
-            .doc(props.route.params.keyId)
-            .collection("keyhistory")
+            .collection("keylistentry")
             .add({
                 name,
                 agency,
@@ -152,6 +150,7 @@ export default function NewHistroyAgent(props) {
                 imageIDbackURL,
                 imageIDfrontURL,
                 signatureURL: text,
+                keyid: props.route.params.keyId,
                 returnedstatus
 
             },

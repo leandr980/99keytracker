@@ -34,10 +34,8 @@ export default function Keyinfo(props) {
             const subscribe2 = firebase.firestore()
                 .collection('keycollection')
                 .doc(props.route.params.uid)
-                .collection('keylist')
-                .doc(props.route.params.keyId)
-                .collection('keyhistory')
-                .orderBy("creation", "desc")
+                .collection('keylistentry')
+                .where('keyid', '==', props.route.params.keyId)
                 .onSnapshot((docSnapshot) => {
                     let keyHistory = docSnapshot.docs.map(doc => {
                         const data = doc.data();
@@ -237,8 +235,6 @@ export default function Keyinfo(props) {
 
     const deletecollection = async()=>{
 
-        
-
         for (let i = 0; i < keyHistory.length; i++) {
             if(keyHistory[i].entrytype != 'NEW ENTRY'){
                 firebase.firestore()
@@ -254,19 +250,6 @@ export default function Keyinfo(props) {
         }
 
     }
-
-    /*
-                                            {
-                                            visiblesettings == 'edit' &&
-                                            <IconButton style={{marginTop: 20}} icon={'pencil-outline'}/>
-                                        }
-                                         {
-                                            visiblesettings == 'delete' &&
-                                                <IconButton style={{marginTop: 20}} icon={'delete-outline'} onPress={() => deletesingledoc(item.id)}/>
-                                        }
-
-                                        
-    */
 
     return (
         <Provider>
