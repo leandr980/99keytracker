@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { View, Text, FlatList, StyleSheet, ImageBackground, TextInput, SafeAreaView, Alert} from 'react-native'
-import { Card, FAB, IconButton, Divider, Chip, Caption, Title, Button, Switch, Banner, Avatar} from 'react-native-paper'
+import { View, Text, FlatList, StyleSheet, ImageBackground, TextInput, SafeAreaView, Alert, ScrollView} from 'react-native'
+import { Card, FAB, IconButton, Divider, Chip, Caption, Title, Button, Avatar} from 'react-native-paper'
 import { format } from 'date-fns'
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
@@ -66,75 +66,64 @@ export default function Leadinfo(props) {
                     }
                 })
                 
-                const subscribe2 = firebase.firestore()
-                .collection("leadscollection")
-                .doc(firebase.auth().currentUser.uid)
-                .collection("leadslist")
-                .doc(props.route.params.LeadId)
-                .collection('leadnotes')
-                .onSnapshot((docSnapshot) => {
-                    if(docSnapshot.docs == undefined){
-                        console.log('notes empty')
-                    }
-                    else{
-                        let leadnotes = docSnapshot.docs.map(doc => {
-                                const data = doc.data();
-                                const id = doc.id;
-                                return { id, ...data }
-                                
-                            })
-                            //console.log(keyinfo2, 'fetchkeyinfo2')
-                            if (!docSnapshot.metadata.hasPendingWrites) {  // <======
-                                setleadnotes(leadnotes)
-                            }
-                        }
-                    })
-
-                    const subscribe3 = firebase.firestore()
-                    .collection("notification-collection")
-                    .doc(firebase.auth().currentUser.uid)
-                    .collection("notificationlist")
-                    .orderBy("creation", "desc")
-                    .onSnapshot((docSnapshot) => {
-                        let notificationlist = docSnapshot.docs.map(doc => {
-                            const data = doc.data();
-                            const id = doc.id;
-                            return { id, ...data }
-        
-                        })
-                        //console.log(notificationlist, 'notificationlist')
-                        if (!docSnapshot.metadata.hasPendingWrites) {  // <======
-                            setnotificationlist(notificationlist)
-                         }
-                    })
-                    
-                    registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
-                    
-                    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-                        setNotification(notification);
-                    });
-                    
-                    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-                        console.log(response);
-                    });
-                    
-                    
-                    return () => {
-                        subscribe()
-                    subscribe2()
-                    subscribe3()
-                    Notifications.removeNotificationSubscription(notificationListener.current);
-                    Notifications.removeNotificationSubscription(responseListener.current);
+        const subscribe2 = firebase.firestore()
+        .collection("leadscollection")
+        .doc(firebase.auth().currentUser.uid)
+        .collection("leadslist")
+        .doc(props.route.params.LeadId)
+        .collection('leadnotes')
+        .onSnapshot((docSnapshot) => {
+            if(docSnapshot.docs == undefined){
+                console.log('notes empty')
+            }
+            else{
+                let leadnotes = docSnapshot.docs.map(doc => {
+                    const data = doc.data();
+                    const id = doc.id;
+                    return { id, ...data }
+                })
+                if (!docSnapshot.metadata.hasPendingWrites) {  // <======
+                    setleadnotes(leadnotes)
                 }
-            }, [])
+            }})
             
-            const budgetcheck = () =>{
-                if (leadinfo.budget == ''){
-            return true
+        const subscribe3 = firebase.firestore()
+        .collection("notification-collection")
+        .doc(firebase.auth().currentUser.uid)
+        .collection("notificationlist")
+        .where("leadid", "==", props.route.params.LeadId)
+        .onSnapshot((docSnapshot) => {
+            let notificationlist = docSnapshot.docs.map(doc => {
+                const data = doc.data();
+                const id = doc.id;
+                return { id, ...data }
+            })
+            if (!docSnapshot.metadata.hasPendingWrites) {  // <======
+                setnotificationlist(notificationlist)
+             }})
+             
+        registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+        notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+            setNotification(notification);
+        });
+        
+        responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+            console.log(response);
+        });
+        
+        return () => {
+            subscribe()
+        subscribe2()
+        subscribe3()
+        Notifications.removeNotificationSubscription(notificationListener.current);
+        Notifications.removeNotificationSubscription(responseListener.current);
         }
-        else{
-            return false
-        }
+
+    }, [])
+    
+    const budgetcheck = () =>{
+        if (leadinfo.budget == ''){return true}
+    else{return false}
     }
     
     const addnewnote = () => {
@@ -148,7 +137,7 @@ export default function Leadinfo(props) {
             notes,
             creation,
             creationupdate
-        }).then(setIsSwitchOn(false))
+        }).then(setnotes(''))
     }
     
     const [date, setDate] = useState(new Date());
@@ -174,12 +163,6 @@ export default function Leadinfo(props) {
         showMode('time');
     };
     
-    const [visible, setVisible] = React.useState(true)
-    const [isSwitchOn, setIsSwitchOn] = useState(false)
-    const [isSwitchOnbanner, setIsSwitchOnbanner] = useState(false)
-    const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
-    const onToggleSwitchbanner = () => setIsSwitchOnbanner(!isSwitchOnbanner);
-
     const status = 'CONTACTED'
     
     const changeleadstatus = (leadid, notificationid) => {
@@ -259,7 +242,6 @@ export default function Leadinfo(props) {
     return (
         <MenuProvider skipInstanceCheck={true}>
         <View style={styles.container}>
-            <Divider/>
             <ImageBackground 
             style={{flex: 1}}
             imageStyle={{resizeMode: 'repeat'}}
@@ -273,270 +255,246 @@ export default function Leadinfo(props) {
                     onChange={onChange}
                     />
                 )}
-                <FlatList
-                numColumns={1}
-                horizontal={false}
-                removeClippedSubviews={false}
-                ListHeaderComponent={
-                    <View>
-                        <Card style={styles.cardstyle}>
-                            <Card.Content style={{alignItems: 'center', justifyContent: 'center'}}>
-                            <Text style={{fontSize: 30}}>{leadinfo.name}</Text>
-                            <IconButton icon={'delete'} onPress={()=> deletelead()}/>
-                            <Caption>{leadinfo.number}</Caption>
-                            <Caption>{leadinfo.email}</Caption>
-                            <View style={{flexDirection: 'row', size: 30}}>
-                                <IconButton icon='whatsapp'/>
-                                <IconButton icon='phone-outline'/>
-                                <IconButton icon='android-messages'/>
-                                <IconButton icon='email'/>
-                            </View>
-                            </Card.Content>
-
-                            <Card.Content style={{justifyContent: 'center', flexDirection: 'row', alignItems: 'center'}}>
-                                <Text>More Options</Text>
-                                <Switch value={isSwitchOnbanner} onValueChange={onToggleSwitchbanner} />
-                            </Card.Content>
-                            <Divider/>
-                            <Banner
-                            visible={isSwitchOnbanner}
-                            actions={[
-                            ]}>
-                                <View style={{width: windowWidth/1.05}}>
-                                    <Title>Upcoming Reminders For {leadinfo.name}</Title>
-                                    <FlatList
-                                    style={{height: 200}}
-                                    horizontal={true}
-                                    showsHorizontalScrollIndicator={false}
-                                    ListHeaderComponent={
-                                        <Card style={{elevation: 5, margin: 5, height: 183, width: 310}}>
-                                            <Card.Title
-                                                title={<Text style={{fontSize: 15}}>Set A Reminder</Text>}/>
-                                                <Divider/>
-                                                <Card.Content>
-                                                    <View style={{justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center'}}>
-                                                        <Button icon={'calendar'} onPress={() => showDatepicker()}>Change Date</Button>
-                                                        <Text>{format(new Date(date.toLocaleString()), 'PP')}</Text>
-                                                    </View>
-                                                    <View style={{justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center'}}>
-                                                        <Button icon={'clock'} onPress={() => showTimepicker()}>Change Time</Button>
-                                                        <Text>{format(new Date(date.toLocaleString()), 'pp')}</Text>
-                                                    </View>
-                                                 </Card.Content>
-                                                    <Divider/>
-                                                <Card.Actions>
-                                                    <Button onPress={async () => {await schedulePushNotification();}}> Set Reminder</Button>
-                                                </Card.Actions>
-                                            </Card>}
-                                    ListFooterComponent={
-                                        <View style={{margin: 10}}>
-                                            <Caption style={{marginTop: 80}}>End of List</Caption>
-                                        </View>}
-                                    data={notificationlist}
-                                    renderItem={({ item }) => (
-                                        <View>
-                                            {item.leadid == props.route.params.LeadId && 
-                                                <Card style={{elevation: 5, margin: 5, width: 255}}>
-                                                    <Card.Title
-                                                    title={<Text style={{fontSize: 15}}>{format(new Date(item.date.toDate().toString()), 'PP')}</Text>}
-                                                    subtitle={<Text>{format(new Date(item.date.toDate().toString()), 'p')}</Text>}
-                                                    left={(props) => <Avatar.Icon {...props} style={remindericonbgcolor(item.date)} icon={datetimedifference(item.date)} />}
-                                                    right={() =>
-                                                        <Menu>
-                                                        <MenuTrigger>
-                                                            <IconButton icon="dots-vertical" />
-                                                        </MenuTrigger>
-                                                        <MenuOptions>
-                                                            <MenuOption onSelect={() => 
-                                                                Alert.alert(
-                                                                    "This will change the lead status to *CONTACTED* and delete this reminder",
-                                                                    "Are you sure you want to do this?",
-                                                                        [
-                                                                            {
-                                                                                text: "YES",
-                                                                                onPress: () => changeleadstatus(item.leadid, item.id)
-                                                                            },
-                                                                            { 
-                                                                                text: "NO"
-                                                                            }
-                                                                        ]
-                                                                    )}>
-                                                                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                                                                            <IconButton icon='check'/>
-                                                                            <Text>CONTACTED</Text>
-                                                                        </View>
-                                                            </MenuOption>
-                                                            <Divider/>
-                                                            <MenuOption onSelect={() => 
-                                                                Alert.alert(
-                                                                    "Are you sure you want to delete this reminder?",
-                                                                    "",
-                                                                        [
-                                                                            {
-                                                                                text: "YES",
-                                                                                onPress: () => deletereminder(item.id)
-                                                                            },
-                                                                            { 
-                                                                                text: "NO"
-                                                                            }
-                                                                        ]
-                                                                    )}>
-                                                                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                                                                            <IconButton icon='delete-outline'/>
-                                                                            <Text>DELETE</Text>
-                                                                        </View>
-                                                                </MenuOption>
-                                                        </MenuOptions>
-                                                        </Menu>}
-                                                        />
-                                                        <Divider/>
-                                                        <Card.Content style={{marginTop: 2}}>
-                                                            <Text>{item.leadname}</Text>
-                                                            <Text>{item.leadnumber}</Text>
-                                                            <Text>{item.status}</Text>
-                                                            <Caption>Created {format(new Date(item.creation.toDate().toString()), 'PPpp')}</Caption>
-                                                        </Card.Content>
-                                                </Card>
-                                                }
-                                        </View>
-                                        )}/>
+                <ScrollView>
+                    <Card style={styles.cardstyle}>
+                                <Card.Content style={{alignItems: 'center', justifyContent: 'center'}}>
+                                <Text style={{fontSize: 30}}>{leadinfo.name}</Text>
+                                <IconButton icon={'delete'} onPress={()=> deletelead()}/>
+                                <Caption>{leadinfo.number}</Caption>
+                                <Caption>{leadinfo.email}</Caption>
+                                <View style={{flexDirection: 'row', size: 30}}>
+                                    <IconButton icon='whatsapp'/>
+                                    <IconButton icon='phone-outline'/>
+                                    <IconButton icon='android-messages'/>
+                                    <IconButton icon='email'/>
                                 </View>
-                                <View style={{width: windowWidth/1.05}}>
-                                    <Divider/>
-                                    <Title>Upcoming Reminders For {leadinfo.name}</Title>
-                                    <FlatList
-                                    horizontal={true}
-                                    data={leadnotes}
-                                    renderItem={({ item }) => (
-                                        <Card style={styles.cardstyle}>
-                                            <Card.Title
-                                            title={<Text style={{fontSize: 15}}>Note added on {format(new Date(item.creation.toDate().toString()), 'PPpp')}</Text>}
+                                </Card.Content>
+                            </Card>
+
+                            <Card style={styles.cardstyle}>
+                        <Card.Content>
+                            <Title>Upcoming Reminders for {leadinfo.name}</Title>
+                            <Divider/>
+                            <FlatList
+                            style={{height: 180}}
+                            horizontal={true}
+                            showsHorizontalScrollIndicator={false}
+                            data={notificationlist}
+                            ListEmptyComponent={<View><Caption>There are no reminders</Caption></View>}
+                            ListHeaderComponent={
+                                <Card style={{elevation: 5, margin: 5, height: 170, width: 310}}>
+                                    <Card.Title
+                                        title={<Text style={{fontSize: 15}}>Set A Reminder</Text>}/>
+                                        <Divider/>
+                                        <Card.Content>
+                                            <View style={{justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center'}}>
+                                                <Button icon={'calendar'} onPress={() => showDatepicker()}>Change Date</Button>
+                                                <Text>{format(new Date(date.toLocaleString()), 'PP')}</Text>
+                                            </View>
+                                            <View style={{justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center'}}>
+                                                <Button icon={'clock'} onPress={() => showTimepicker()}>Change Time</Button>
+                                                <Text>{format(new Date(date.toLocaleString()), 'pp')}</Text>
+                                            </View>
+                                         </Card.Content>
+                                        <Divider/>
+                                        <Button onPress={async () => {await schedulePushNotification();}} > Set Reminder</Button>
+                                    </Card>}
+                            renderItem={({ item }) => (
+                                <Card style={{elevation: 5, margin: 5, width: 255}}>
+                                        <Card.Title
+                                            title={<Text style={{fontSize: 15}}>{format(new Date(item.date.toDate().toString()), 'PP')}</Text>}
+                                            subtitle={<Text>{format(new Date(item.date.toDate().toString()), 'p')}</Text>}
+                                            left={(props) => <Avatar.Icon {...props} style={remindericonbgcolor(item.date)} icon={datetimedifference(item.date)} />}
                                             right={() => 
-                                                <IconButton icon={'delete'}
-                                                    onPress={()=> Alert.alert(
-                                                        "Are you sure you want to delete this note?",
-                                                        "",
+                                            <Menu>
+                                                <MenuTrigger>
+                                                    <IconButton icon="dots-vertical" />
+                                                </MenuTrigger>
+                                                <MenuOptions>
+
+                                                    <MenuOption onSelect={() => 
+                                                    Alert.alert(
+                                                        "This will change the lead status to *CONTACTED* and delete this reminder",
+                                                        "Are you sure you want to do this?",
                                                         [
                                                             {
                                                                 text: "YES",
-                                                                onPress: () => deletenote(item.id)
+                                                                onPress: () => changeleadstatus(item.leadid, item.id)
                                                             },
                                                             { 
                                                                 text: "NO"
                                                             }
                                                         ]
-                                                    )}/>
-                                                            }/>
-                                                <Card.Content>
-                                                <Divider />
-                                                <Text>{item.notes}</Text>
-                                                </Card.Content>
-                                            </Card>
-                                        )}
+                                                    )}>
+                                                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                                            <IconButton icon='check'/>
+                                                            <Text>CONTACTED</Text>
+                                                        </View>
+                                                    </MenuOption>
+                                                    
+                                                    <MenuOption onSelect={() => props.navigation.navigate('Lead Info', { LeadId: item.leadid, uid: firebase.auth().currentUser.uid })}>
+                                                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                                            <IconButton icon='eye'/>
+                                                            <Text>VIEW LEAD</Text>
+                                                        </View>
+                                                    </MenuOption>
+
+                                                    <Divider/>
+                                                    
+                                                    <MenuOption onSelect={() => 
+                                                    Alert.alert(
+                                                        "Are you sure you want to delete this reminder?",
+                                                        "",
+                                                        [
+                                                            {
+                                                                text: "YES",
+                                                                onPress: () => deletereminder(item.id)
+                                                            },
+                                                            { 
+                                                                text: "NO"
+                                                            }
+                                                        ]
+                                                    )}>
+                                                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                                            <IconButton icon='delete-outline'/>
+                                                            <Text>DELETE</Text>
+                                                        </View>
+                                                    
+                                                    </MenuOption>
+                                                </MenuOptions>
+                                            </Menu>}
                                         />
-                                        
-                                    </View>
-                            </Banner>
-                        </Card>
+                                        <Divider/>
+                                    <Card.Content style={{marginTop: 2}}>
+                                        <Text>{item.leadname}</Text>
+                                        <Text>{item.leadnumber}</Text>
+                                        <Text>{item.status}</Text>
+                                        <Caption>Created {format(new Date(item.creation.toDate().toString()), 'PPpp')}</Caption>
+                                    </Card.Content>
+                                </Card>
+                                
+                            )}/>     
+                        </Card.Content>
 
+                        
+                        <Card.Content>
+                            <Title>Notes</Title>
+                            <Divider/>
+                            <FlatList
+                            style={{height: 180}}
+                            horizontal={true}
+                            data={leadnotes}
+                            showsHorizontalScrollIndicator={false}
+                            ListHeaderComponent={
+                                <Card style={{elevation: 5, margin: 5, width: 310, height: 170}}>
+                                    <Card.Content>
+                                        <Title>Add New Note</Title>
+                                        <TextInput
+                                        style={styles.textinputstyle}
+                                        type='outlined'
+                                        placeholder=". . . ."
+                                        onChangeText={(item) => setnotes(item)}/>
+                                    </Card.Content>
+                                    <Card.Actions style={{justifyContent: 'space-between'}}>
+                                        <Button onPress={()=> addnewnote()}>Ok</Button>
+                                    </Card.Actions>
+                                </Card>
+                            }
+                            renderItem={({ item }) => (
+                                <Card style={{elevation: 5, margin: 5, width: 255}}>
+                                    <Card.Title
+                                    title={<Text style={{fontSize: 15}}>Note added on </Text>}
+                                    subtitle={<Caption>{format(new Date(item.creation.toDate().toString()), 'PPpp')}</Caption>}
+                                    right={() => 
+                                        <IconButton icon={'delete'}
+                                            onPress={()=> Alert.alert(
+                                                "Are you sure you want to delete this note?",
+                                                "",
+                                                [
+                                                    {
+                                                        text: "YES",
+                                                        onPress: () => deletenote(item.id)
+                                                    },
+                                                    { 
+                                                        text: "NO"
+                                                    }
+                                                ]
+                                            )}/>
+                                                    }/>
+                                        <Card.Content>
+                                        <Divider />
+                                        <Text style={{flexWrap: 'wrap'}}>{item.notes}</Text>
+                                        </Card.Content>
+                                    </Card>
+                                )}
+                                />
+                        </Card.Content>
+                    </Card>
 
-                        <Card style={styles.cardstyle}>
-                            <Card.Content>
-                                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, alignItems: 'center'}}>
-                                    <Text>Status</Text>
-                                    <Chip>{leadinfo.status}</Chip>
-                                </View>
-                                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, alignItems: 'center'}}>
-                                    <Text>Sale / Rent</Text>
-                                    <Chip>{leadinfo.salerent}</Chip>
-                                </View>
-                                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, alignItems: 'center'}}>
-                                    <Text>Property Status</Text>
-                                    <Chip>{leadinfo.propertystatus}</Chip>
-                                </View>
-                                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, alignItems: 'center'}}>
-                                    <Text>Property Type</Text>
-                                    <Chip>{leadinfo.propertytype}</Chip>
-                                </View>
-                                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, alignItems: 'center'}}>
-                                    <Text>Area</Text>
-                                    <Chip>{leadinfo.multiplearea}</Chip>
-                                </View>
-                                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, alignItems: 'center'}}>
-                                    <Text>Number of Bedrooms</Text>
-                                    <Chip>{leadinfo.bedroom}</Chip>
-                                </View>
-                                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, alignItems: 'center'}}>
-                                    <Text>Build-Up Area</Text>
-                                    <View style={{flexDirection: 'row'}}>
-                                        <Chip style={{marginRight: 2}}>{leadinfo.builduparea}</Chip>
-                                        <Chip>{leadinfo.buildupareatype}</Chip>
-                                    </View>
-                                </View>
-                                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, alignItems: 'center'}}>
-                                    <Text>Budget</Text>
-                                    {
-                                        budgetcheck() ?
-                                        <View style={{flexDirection: 'row'}}>
-                                            <Chip style={{marginRight: 2}}>Min Budget: {leadinfo.minbudget}</Chip>
-                                            <Chip>Max Budget: {leadinfo.maxbudget}</Chip>
-                                        </View>
-                                            :
-                                        <View style={{flexDirection: 'row'}}>
-                                            <Chip>{leadinfo.budget}</Chip>
-                                        </View>
-                                    }
-                                </View>
-                                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, alignItems: 'center'}}>
-                                    <Text>Furnishing</Text>
-                                    <Chip>{leadinfo.furnishing}</Chip>
-                                </View>
-                                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, alignItems: 'center'}}>
-                                    <Text>Lead Source</Text>
-                                    <Chip>{leadinfo.leadsource}</Chip>
-                                </View>
-                                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, alignItems: 'center'}}>
-                                    <Text>Created</Text>
-                                    <Chip>{leadinfodate}</Chip>
-                                </View>
-                            <Caption>Last updated on: {leadinfoupdate}</Caption>
-
-                            </Card.Content>
-
-                        </Card>
-                    </View>
-                }
-                ListEmptyComponent={<></>}
-                ListFooterComponent={
-                    <View style={{flex: 1}}>
-                        {
-                            isSwitchOn ? 
-                            <Card style={styles.cardstyle}>
-                                <Card.Content>
-                                    <Title>Add New Note</Title>
-                                    <TextInput
-                                    style={styles.textinputstyle}
-                                    type='outlined'
-                                    placeholder=". . . ."
-                                    onChangeText={(item) => setnotes(item)}/>
-                                </Card.Content>
-                                <Card.Actions style={{justifyContent: 'space-between'}}>
-                                    <Button onPress={()=> setIsSwitchOn(false)}>Cancel</Button>
-                                    <Button onPress={()=> addnewnote()}>Ok</Button>
-                                </Card.Actions>
-                            </Card>: <></>
-                        }
-
-                        {
-                            isSwitchOn ? 
-                            <></> :
-                            <View style={{justifyContent: 'center', alignContent: 'center', alignItems: 'center', marginVertical: 20}}>
-                                <Button style={{borderRadius: 300}} icon="plus" mode="contained" onPress={()=> setIsSwitchOn(true)}> New Note </Button>
+                    <Card style={styles.cardstyle}>
+                        <Card.Content>
+                            <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, alignItems: 'center'}}>
+                                <Text>Status</Text>
+                                <Chip>{leadinfo.status}</Chip>
                             </View>
-                        }
-                    </View>
-                }
-                />
+                            <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, alignItems: 'center'}}>
+                                <Text>Sale / Rent</Text>
+                                <Chip>{leadinfo.salerent}</Chip>
+                            </View>
+                            <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, alignItems: 'center'}}>
+                                <Text>Property Status</Text>
+                                <Chip>{leadinfo.propertystatus}</Chip>
+                            </View>
+                            <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, alignItems: 'center'}}>
+                                <Text>Property Type</Text>
+                                <Chip>{leadinfo.propertytype}</Chip>
+                            </View>
+                            <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, alignItems: 'center'}}>
+                                <Text>Area</Text>
+                                <Chip>{leadinfo.multiplearea}</Chip>
+                            </View>
+                            <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, alignItems: 'center'}}>
+                                <Text>Number of Bedrooms</Text>
+                                <Chip>{leadinfo.bedroom}</Chip>
+                            </View>
+                            <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, alignItems: 'center'}}>
+                                <Text>Build-Up Area</Text>
+                                <View style={{flexDirection: 'row'}}>
+                                    <Chip style={{marginRight: 2}}>{leadinfo.builduparea}</Chip>
+                                    <Chip>{leadinfo.buildupareatype}</Chip>
+                                </View>
+                            </View>
+                            <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, alignItems: 'center'}}>
+                                <Text>Budget</Text>
+                                {
+                                    budgetcheck() ?
+                                    <View style={{flexDirection: 'row'}}>
+                                        <Chip style={{marginRight: 2}}>Min Budget: {leadinfo.minbudget}</Chip>
+                                        <Chip>Max Budget: {leadinfo.maxbudget}</Chip>
+                                    </View>
+                                        :
+                                    <View style={{flexDirection: 'row'}}>
+                                        <Chip>{leadinfo.budget}</Chip>
+                                    </View>
+                                }
+                            </View>
+                            <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, alignItems: 'center'}}>
+                                <Text>Furnishing</Text>
+                                <Chip>{leadinfo.furnishing}</Chip>
+                            </View>
+                            <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, alignItems: 'center'}}>
+                                <Text>Lead Source</Text>
+                                <Chip>{leadinfo.leadsource}</Chip>
+                            </View>
+                            <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, alignItems: 'center'}}>
+                                <Text>Created</Text>
+                                <Chip>{leadinfodate}</Chip>
+                            </View>
+                        <Caption>Last updated on: {leadinfoupdate}</Caption>
+                        </Card.Content>
+                    </Card>
+                </ScrollView>
+
             </ImageBackground>
         </View>
         </MenuProvider>
@@ -646,7 +604,7 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
     textinputstyle: {
-        marginVertical: 20,
+        flexWrap: 'wrap',
         borderBottomWidth: 0.5,
         borderBottomColor: 'grey',
     },
