@@ -93,17 +93,6 @@ function Keylist(props) {
                 return "folder-plus"
         }
     }
-    const testredux =(id)=> {
-        const arrayid = []
-        for (let i = 0; i < keyinfodetails.length; i++) {
-            if (id == keyinfodetails[i].id){
-                return keyinfodetails[i].id
-            }
-            //arrayid.push(keyinfodetails[i].id)
-        }
-        //return arrayid
-    }
-    
 
     return (
 
@@ -176,19 +165,15 @@ function Keylist(props) {
                             icon={changechipicon(item.entrytype)}
                             >{item.entrytype}</Chip>
                         </View>
+
                         <FlatList
-                        numColumns={1}
-                        horizontal={false}
                         data={keylistentry}
-                        renderItem={({ item, index }) => (
-                            <View>
-                                <Text>{item.id}</Text>
-                            </View>
-                        )}/>
-
-
+                        initialNumToRender={1}
+                        renderItem={({item}) => {
+                        return (
+                            <Text >{item.id}</Text>)}} />
                     </Card>
-                )}/>                
+                )}/>
             </View>
 
             <FAB
