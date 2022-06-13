@@ -29,7 +29,7 @@ Notifications.setNotificationHandler({
 
 export default function Leadinfo(props) {
 
-    console.log(props.route.params.LeadId)
+    //console.log(props.route.params.LeadId)
 
     const creation = firebase.firestore.FieldValue.serverTimestamp()
     const creationupdate = creation
@@ -51,7 +51,7 @@ export default function Leadinfo(props) {
     
     useEffect(() => {
         
-        console.log(props.route.params.LeadId)
+        //console.log(props.route.params.LeadId)
         
         const subscribe = firebase.firestore()
         .collection("leadscollection")
@@ -83,7 +83,7 @@ export default function Leadinfo(props) {
                     return { id, ...data }
                 })
                 if (!docSnapshot.metadata.hasPendingWrites) {  // <======
-                    setleadnotes(leadnotes)
+                    setleadnotes(leadnotes.sort())
                 }
             }})
             
@@ -113,10 +113,11 @@ export default function Leadinfo(props) {
         
         return () => {
             subscribe()
-        subscribe2()
-        subscribe3()
-        Notifications.removeNotificationSubscription(notificationListener.current);
-        Notifications.removeNotificationSubscription(responseListener.current);
+            subscribe2()
+            subscribe3()
+            registerForPushNotificationsAsync()
+            Notifications.removeNotificationSubscription(notificationListener.current);
+            Notifications.removeNotificationSubscription(responseListener.current);
         }
 
     }, [])
@@ -271,7 +272,7 @@ export default function Leadinfo(props) {
                                 </Card.Content>
                             </Card>
 
-                            <Card style={styles.cardstyle}>
+                    <Card style={styles.cardstyle}>
                         <Card.Content>
                             <Title>Upcoming Reminders for {leadinfo.name}</Title>
                             <Divider/>
@@ -375,60 +376,6 @@ export default function Leadinfo(props) {
                                 
                             )}/>     
                         </Card.Content>
-
-                        
-                        <Card.Content>
-                            <Title>Notes</Title>
-                            <Divider/>
-                            <FlatList
-                            style={{height: 180}}
-                            horizontal={true}
-                            data={leadnotes}
-                            showsHorizontalScrollIndicator={false}
-                            ListHeaderComponent={
-                                <Card style={{elevation: 5, margin: 5, width: 310, height: 170}}>
-                                    <Card.Content>
-                                        <Title>Add New Note</Title>
-                                        <TextInput
-                                        style={styles.textinputstyle}
-                                        type='outlined'
-                                        placeholder=". . . ."
-                                        onChangeText={(item) => setnotes(item)}/>
-                                    </Card.Content>
-                                    <Card.Actions style={{justifyContent: 'space-between'}}>
-                                        <Button onPress={()=> addnewnote()}>Ok</Button>
-                                    </Card.Actions>
-                                </Card>
-                            }
-                            renderItem={({ item }) => (
-                                <Card style={{elevation: 5, margin: 5, width: 255}}>
-                                    <Card.Title
-                                    title={<Text style={{fontSize: 15}}>Note added on </Text>}
-                                    subtitle={<Caption>{format(new Date(item.creation.toDate().toString()), 'PPpp')}</Caption>}
-                                    right={() => 
-                                        <IconButton icon={'delete'}
-                                            onPress={()=> Alert.alert(
-                                                "Are you sure you want to delete this note?",
-                                                "",
-                                                [
-                                                    {
-                                                        text: "YES",
-                                                        onPress: () => deletenote(item.id)
-                                                    },
-                                                    { 
-                                                        text: "NO"
-                                                    }
-                                                ]
-                                            )}/>
-                                                    }/>
-                                        <Card.Content>
-                                        <Divider />
-                                        <Text style={{flexWrap: 'wrap'}}>{item.notes}</Text>
-                                        </Card.Content>
-                                    </Card>
-                                )}
-                                />
-                        </Card.Content>
                     </Card>
 
                     <Card style={styles.cardstyle}>
@@ -491,6 +438,61 @@ export default function Leadinfo(props) {
                                 <Chip>{leadinfodate}</Chip>
                             </View>
                         <Caption>Last updated on: {leadinfoupdate}</Caption>
+                        </Card.Content>
+                    </Card> 
+
+                    <Card style={styles.cardstyle}>
+                        <Card.Content>
+                            <Title>Notes</Title>
+                            <Divider/>
+                            <FlatList
+                            style={{height: 180}}
+                            horizontal={true}
+                            data={leadnotes}
+                            showsHorizontalScrollIndicator={false}
+                            ListHeaderComponent={
+                                <Card style={{elevation: 5, margin: 5, width: 310, height: 170}}>
+                                    <Card.Content>
+                                        <Title>Add New Note</Title>
+                                        <TextInput
+                                        style={styles.textinputstyle}
+                                        type='outlined'
+                                        placeholder=". . . ."
+                                        onChangeText={(item) => setnotes(item)}/>
+                                    </Card.Content>
+                                    <Card.Actions style={{justifyContent: 'space-between'}}>
+                                        <Button onPress={()=> addnewnote()}>Ok</Button>
+                                    </Card.Actions>
+                                </Card>
+                            }
+                            renderItem={({ item }) => (
+                                <Card style={{elevation: 5, margin: 5, width: 255}}>
+                                    <Card.Title
+                                    title={<Text style={{fontSize: 15}}>Note added on </Text>}
+                                    subtitle={<Caption>{format(new Date(item.creation.toDate().toString()), 'PPpp')}</Caption>}
+                                    right={() => 
+                                        <IconButton icon={'delete'}
+                                            onPress={()=> Alert.alert(
+                                                "Are you sure you want to delete this note?",
+                                                "",
+                                                [
+                                                    {
+                                                        text: "YES",
+                                                        onPress: () => deletenote(item.id)
+                                                    },
+                                                    { 
+                                                        text: "NO"
+                                                    }
+                                                ]
+                                            )}/>
+                                                    }/>
+                                        <Card.Content>
+                                        <Divider />
+                                        <Text style={{flexWrap: 'wrap'}}>{item.notes}</Text>
+                                        </Card.Content>
+                                    </Card>
+                                )}
+                                />
                         </Card.Content>
                     </Card>
                 </ScrollView>

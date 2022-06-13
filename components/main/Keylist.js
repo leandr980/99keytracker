@@ -145,33 +145,7 @@ function Keylist(props) {
                             </Caption>
                         </Card.Content>
 
-                        <Divider/>  
-                        <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap', marginTop: 10, marginBottom: 10, marginLeft: 10, marginRight: 10, alignItems: 'center'}}>
-                            <Chip style={{margin: 2}}>Most Recent Log:</Chip>
-                            <Chip style={{margin: 2}}>{format(new Date(item.keyhistorycreation.toDate().toString()), 'PP')}</Chip>
-                            <Chip style={{margin: 2}}>{format(new Date(item.keyhistorycreation.toDate().toString()), 'p')}</Chip>
-                            {
-                                item.entrytype == 'NEW ENTRY' ? 
-                                <></>
-                                : 
-                                <>
-                                <Chip style={{margin: 2}}>{item.number}</Chip>
-                                <Chip style={{margin: 2}}>{item.name}</Chip>
-                                </>
-                            }
-                                    
-                            <Chip 
-                            style={changechipcolor(item.entrytype)} 
-                            icon={changechipicon(item.entrytype)}
-                            >{item.entrytype}</Chip>
-                        </View>
-
-                        <FlatList
-                        data={keylistentry}
-                        initialNumToRender={1}
-                        renderItem={({item}) => {
-                        return (
-                            <Text >{item.id}</Text>)}} />
+                       
                     </Card>
                 )}/>
             </View>
