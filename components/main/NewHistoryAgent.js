@@ -139,7 +139,9 @@ export default function NewHistroyAgent(props) {
         firebase.firestore()
             .collection('keycollection')
             .doc(firebase.auth().currentUser.uid)
-            .collection("keylistentry")
+            .collection("keylist")
+            .doc(props.route.params.keyId)
+            .collection("keyhistory")
             .add({
                 name,
                 agency,

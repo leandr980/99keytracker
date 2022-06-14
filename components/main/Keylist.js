@@ -94,6 +94,19 @@ function Keylist(props) {
         }
     }
 
+    const checkdate = (itemdate) => {
+        const difindays = Math.abs(differenceInDays(new Date(itemdate.toDate().toString()), startOfDay()))
+
+        switch(difindays){
+            case 0:
+                return 'Added today'
+            case 1:
+                return 'Added yesterday'
+            default:
+                return difindays, 'days ago'
+        }
+    }
+
     return (
 
         <View style={styles.container}>
@@ -141,7 +154,7 @@ function Keylist(props) {
 
                         <Card.Content>
                             <Caption style={{marginLeft: 55}}>
-                            {Math.abs(differenceInDays(new Date(item.creation.toDate().toString()), startOfDay()))} days ago 
+                            {checkdate(item.creation)}
                             </Caption>
                         </Card.Content>
 
