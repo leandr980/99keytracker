@@ -1,7 +1,7 @@
 // JavaScript source code
 import React, { useState, useEffect, useRef } from 'react'
-import { View, Text, FlatList, StyleSheet, RefreshControl, ScrollView, Alert, TouchableOpacity} from 'react-native'
-import { Card, FAB, IconButton, Divider, Chip, DataTable, Searchbar, Caption, Button, Title, Provider, Avatar, } from 'react-native-paper'
+import { View, Text, FlatList, StyleSheet, RefreshControl, Alert} from 'react-native'
+import { Card, FAB, IconButton, Divider, Chip, DataTable, Caption, Button, Title, Avatar, } from 'react-native-paper'
 import { format } from 'date-fns'
 import differenceInSeconds from 'date-fns/differenceInSeconds'
 import { MenuProvider, Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu'
@@ -129,6 +129,9 @@ function LeadTracker(props) {
                         horizontal={true}
                         showsHorizontalScrollIndicator={false}
                         data={notificationlist}
+                        ListEmptyComponent={<View> 
+                            <Caption style={{marginTop: 80, marginLeft: 10}}>List is empty</Caption> 
+                            </View>}
                         renderItem={({ item }) => (
                             <Card style={{elevation: 5, margin: 5, width: 255}}>
                                     <Card.Title

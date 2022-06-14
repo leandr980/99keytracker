@@ -117,7 +117,9 @@ export default function NewHistoryLandlord(props, { navigation }) {
         firebase.firestore()
             .collection('keycollection')
             .doc(firebase.auth().currentUser.uid)
-            .collection("keylistentry")
+            .collection("keylist")
+            .doc(props.route.params.keyId)
+            .collection("keyhistory")
             .add({
                 name,
                 entrytype,

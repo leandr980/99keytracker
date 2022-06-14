@@ -7,6 +7,8 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import { Dropdown, MultiSelect} from 'react-native-element-dropdown';
 import Slider from '@react-native-community/slider';
 
+import {dubaiareadata, leadsourcedata} from './listofareas.js'
+
 import firebase from 'firebase'
 require("firebase/firestore")
 require("firebase/firebase-storage")
@@ -32,20 +34,20 @@ export default function NewLead(props) {
     const [number, setNumber] = useState("")
     const [email, setEmail] = useState("")
 
-    const [salerent, setSalerent] = useState("")
-    const [propertytype, setPropertytype] = useState('')
-    const [propertystatus, setpropertystatus] = useState('')
+    const [salerent, setSalerent] = useState("Rent")
+    const [propertystatus, setpropertystatus] = useState('Ready')
+    const [propertytype, setPropertytype] = useState('Apartment')
     //const [area, setArea] = useState('')
     const [multiplearea, setmultiplearea] = useState([]);
-    const [bedroom, setBedroom] = useState("")
+    const [bedroom, setBedroom] = useState("Studio")
     const [builduparea, setbuilduparea] = useState("")
-    const [buildupareatype, setbuildupareatype] = useState("")
+    const [buildupareatype, setbuildupareatype] = useState("SqFt")
     const [budget, setBudget] = useState("")
     const [minbudget, setMinbudget] = useState("")
     const [maxbudget, setMaxbudget] = useState("")
-    const [furnishing, setFurnishing] = useState("")
+    const [furnishing, setFurnishing] = useState("Un-Furnished")
     
-    const [leadsource, setLeadsource] = useState('')
+    const [leadsource, setLeadsource] = useState('Walk-In')
     //const [notes, setnotes] = useState('')
     const [isSwitchOn, setIsSwitchOn] = React.useState(false);
     const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
@@ -97,29 +99,6 @@ export default function NewLead(props) {
         }
     }
 
-    const leadsourcedata = [
-        { label: 'Property Finder', value: 'Property Finder' },
-        { label: 'Bayut', value: 'Bayut' },
-        { label: 'Dubizzle', value: 'Dubizzle' },
-        { label: 'Walk-In', value: 'Walk-In' },
-        { label: 'Cold Calling', value: 'Cold Calling' },
-        { label: 'Facebook / Instagram', value: 'Facebook / Instagram' },
-        { label: 'Google', value: 'Google' },
-        { label: 'Website', value: 'Website' },
-        { label: 'Referral', value: 'Referral' },
-    ];
-
-    const dubaiareadata = [
-        { label: 'Al Barsha', value: 'Al Barsha' },
-        { label: 'Dubai Marina', value: 'Dubai Marina' },
-        { label: 'Downtown Dubai', value: 'Downtown Dubai' },
-        { label: 'Emirates Hills', value: 'Emirates Hills' },
-        { label: 'Jebal Ali', value: 'Jebal Ali' },
-        { label: 'Palm Jumeirah', value: 'Palm Jumeirah' },
-        { label: 'Jumeirah Village Circle', value: 'Jumeirah Village Circle' },
-        { label: 'Jumeirah Village Triangle', value: 'Jumeirah Village Triangle' },
-        { label: 'Nad Al Sheba', value: 'Nad Al Sheba' },
-    ];
 
     return (
         <Provider>
@@ -151,6 +130,7 @@ export default function NewLead(props) {
                             style={styles.textinputstyle}
                             type='outlined'
                             placeholder="Phone Number . . ."
+                            keyboardType='numeric'
                             onChangeText={(name) => setNumber(name)}/>
 
                             <TextInput
@@ -164,6 +144,9 @@ export default function NewLead(props) {
                     <Card style={styles.cardstyle}>
 
                         <Card.Title title='Property Details'/>
+                        <Card.Content>
+                            <Caption style={{flexWrap: 'wrap'}}>*Rent, Ready, Apartment, Studio, SqFt, Unfurnished and Walk-In are set as default selections, please change them accordingly</Caption>
+                        </Card.Content>
 
                         <Divider style={{margin: 10}}/>
                         <Card.Content style={{marginVertical: 15}}>
@@ -332,13 +315,13 @@ export default function NewLead(props) {
                         <Card.Content style={{marginVertical: 15}}>
                             <Title>Furnishing</Title>
                             <View style={{flexDirection: 'row'}}>
-                                <Chip selected={ furnishing === 'Furnished' ? true : false } 
-                                style={{marginRight: 5, marginBottom: 5}} 
-                                onPress={()=> setFurnishing('Furnished')}>Furnished</Chip>
-
                                 <Chip selected={ furnishing === 'Un-Furnished' ? true : false } 
                                 onPress={()=> setFurnishing('Un-Furnished')}
                                 style={{marginRight: 5, marginBottom: 5}}>Un-Furnished</Chip>
+
+                                <Chip selected={ furnishing === 'Furnished' ? true : false } 
+                                style={{marginRight: 5, marginBottom: 5}} 
+                                onPress={()=> setFurnishing('Furnished')}>Furnished</Chip>
 
                                 <Chip selected={ furnishing === 'Any' ? true : false } 
                                 onPress={()=> setFurnishing('Any')}
@@ -437,30 +420,34 @@ const styles = StyleSheet.create({
     cardcontentstyle: {
         margin: 10
     },
+
+    
     dropdown: {
         margin: 16,
         height: 50,
         borderBottomColor: 'gray',
         borderBottomWidth: 0.5,
-      },
-      icon: {
+    },
+    icon: {
         marginRight: 5,
-      },
-      placeholderStyle: {
+    },
+    iconStyle: {
+      width: 20,
+      height: 20,
+    },
+
+
+    placeholderStyle: {
         fontSize: 16,
-      },
-      selectedTextStyle: {
+    },
+    selectedTextStyle: {
         fontSize: 16,
-      },
-      iconStyle: {
-        width: 20,
-        height: 20,
-      },
-      inputSearchStyle: {
+    },
+    inputSearchStyle: {
         height: 40,
         fontSize: 16,
-      },
-      selectedStyle: {
+    },
+    selectedStyle: {
         borderRadius: 12,
-      },
+    },
 })

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { View, Text, FlatList, StyleSheet, ImageBackground, TextInput, SafeAreaView, Alert, ScrollView} from 'react-native'
-import { Card, FAB, IconButton, Divider, Chip, Caption, Title, Button, Avatar} from 'react-native-paper'
+import { Card, FAB, IconButton, Divider, Chip, Caption, Title, Button, Avatar, ActivityIndicator, Colors} from 'react-native-paper'
 import { format } from 'date-fns'
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
@@ -31,6 +31,8 @@ export default function Leadinfo(props) {
 
     //console.log(props.route.params.LeadId)
 
+    const [loading, setLoading] = useState(true)
+
     const creation = firebase.firestore.FieldValue.serverTimestamp()
     const creationupdate = creation
 
@@ -53,6 +55,10 @@ export default function Leadinfo(props) {
         
         //console.log(props.route.params.LeadId)
         
+        setTimeout(() => {
+            setLoading(false);
+          }, 2000);
+
         const subscribe = firebase.firestore()
         .collection("leadscollection")
         .doc(props.route.params.uid)
@@ -239,10 +245,23 @@ export default function Leadinfo(props) {
         .doc(props.route.params.LeadId)
         .delete()    
     }
+
+    const arealist = (list) => {
+        const renderList = list.map((item, index) => <Chip style={{marginRight: 2}} key={index}>{item}</Chip>);
+        return renderList
+    }
     
     return (
         <MenuProvider skipInstanceCheck={true}>
         <View style={styles.container}>
+            {loading ? 
+            <ImageBackground 
+            style={{flex: 1, justifyContent: 'center'}}
+            imageStyle={{resizeMode: 'repeat'}}
+            source={require('../../assets/bg-image/99-whatsapp-bg-small.jpg')}>
+                <ActivityIndicator animating={true} color={Colors.red800} />
+            </ImageBackground>
+            : 
             <ImageBackground 
             style={{flex: 1}}
             imageStyle={{resizeMode: 'repeat'}}
@@ -281,25 +300,30 @@ export default function Leadinfo(props) {
                             horizontal={true}
                             showsHorizontalScrollIndicator={false}
                             data={notificationlist}
-                            ListEmptyComponent={<View><Caption>There are no reminders</Caption></View>}
+                            ListEmptyComponent={<View> 
+                                <Caption style={{marginTop: 80, marginLeft: 10}}>List is empty</Caption> 
+                                </View>}
                             ListHeaderComponent={
-                                <Card style={{elevation: 5, margin: 5, height: 170, width: 310}}>
-                                    <Card.Title
-                                        title={<Text style={{fontSize: 15}}>Set A Reminder</Text>}/>
-                                        <Divider/>
-                                        <Card.Content>
-                                            <View style={{justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center'}}>
-                                                <Button icon={'calendar'} onPress={() => showDatepicker()}>Change Date</Button>
-                                                <Text>{format(new Date(date.toLocaleString()), 'PP')}</Text>
-                                            </View>
-                                            <View style={{justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center'}}>
-                                                <Button icon={'clock'} onPress={() => showTimepicker()}>Change Time</Button>
-                                                <Text>{format(new Date(date.toLocaleString()), 'pp')}</Text>
-                                            </View>
-                                         </Card.Content>
-                                        <Divider/>
-                                        <Button onPress={async () => {await schedulePushNotification();}} > Set Reminder</Button>
-                                    </Card>}
+                                <View style={{borderRightWidth: 0.5, borderRightColor: '#dbdbdb'}}>
+                                    <Card style={{elevation: 5, margin: 5, height: 170, width: 310}}>
+                                        <Card.Title
+                                            title={<Text style={{fontSize: 15}}>Set A Reminder</Text>}/>
+                                            <Divider/>
+                                            <Card.Content>
+                                                <View style={{justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center'}}>
+                                                    <Button icon={'calendar'} onPress={() => showDatepicker()}>Change Date</Button>
+                                                    <Text>{format(new Date(date.toLocaleString()), 'PP')}</Text>
+                                                </View>
+                                                <View style={{justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center'}}>
+                                                    <Button icon={'clock'} onPress={() => showTimepicker()}>Change Time</Button>
+                                                    <Text>{format(new Date(date.toLocaleString()), 'pp')}</Text>
+                                                </View>
+                                            </Card.Content>
+                                            <Divider/>
+                                            <Button onPress={async () => {await schedulePushNotification();}} > Set Reminder</Button>
+                                    </Card>
+                                </View>
+                                    }
                             renderItem={({ item }) => (
                                 <Card style={{elevation: 5, margin: 5, width: 255}}>
                                         <Card.Title
@@ -398,7 +422,9 @@ export default function Leadinfo(props) {
                             </View>
                             <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, alignItems: 'center'}}>
                                 <Text>Area</Text>
-                                <Chip>{leadinfo.multiplearea}</Chip>
+                                <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
+                                {arealist(leadinfo.multiplearea)}
+                                </View>
                             </View>
                             <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, alignItems: 'center'}}>
                                 <Text>Number of Bedrooms</Text>
@@ -450,20 +476,25 @@ export default function Leadinfo(props) {
                             horizontal={true}
                             data={leadnotes}
                             showsHorizontalScrollIndicator={false}
+                            ListEmptyComponent={<View>
+                                <Caption style={{marginTop: 80, marginLeft: 10}}>List is empty</Caption>
+                            </View>}
                             ListHeaderComponent={
-                                <Card style={{elevation: 5, margin: 5, width: 310, height: 170}}>
-                                    <Card.Content>
-                                        <Title>Add New Note</Title>
-                                        <TextInput
-                                        style={styles.textinputstyle}
-                                        type='outlined'
-                                        placeholder=". . . ."
-                                        onChangeText={(item) => setnotes(item)}/>
-                                    </Card.Content>
-                                    <Card.Actions style={{justifyContent: 'space-between'}}>
-                                        <Button onPress={()=> addnewnote()}>Ok</Button>
-                                    </Card.Actions>
-                                </Card>
+                                <View style={{borderRightWidth: 0.5, borderRightColor: '#dbdbdb'}}>
+                                    <Card style={{elevation: 5, margin: 5, width: 310, height: 170}}>
+                                        <Card.Content>
+                                            <Title>Add New Note</Title>
+                                            <TextInput
+                                            style={styles.textinputstyle}
+                                            type='outlined'
+                                            placeholder=". . . ."
+                                            onChangeText={(item) => setnotes(item)}/>
+                                        </Card.Content>
+                                        <Card.Actions style={{justifyContent: 'space-between'}}>
+                                            <Button onPress={()=> addnewnote()}>Ok</Button>
+                                        </Card.Actions>
+                                    </Card>
+                                </View>
                             }
                             renderItem={({ item }) => (
                                 <Card style={{elevation: 5, margin: 5, width: 255}}>
@@ -498,6 +529,8 @@ export default function Leadinfo(props) {
                 </ScrollView>
 
             </ImageBackground>
+            
+            }
         </View>
         </MenuProvider>
         )

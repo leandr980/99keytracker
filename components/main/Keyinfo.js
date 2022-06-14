@@ -34,8 +34,10 @@ export default function Keyinfo(props) {
             const subscribe2 = firebase.firestore()
                 .collection('keycollection')
                 .doc(props.route.params.uid)
-                .collection('keylistentry')
-                .where('keyid', '==', props.route.params.keyId)
+                .collection('keylist')
+                .doc(props.route.params.keyId)
+                .collection('keyhistory')
+                .orderBy("creation", "desc")    
                 .onSnapshot((docSnapshot) => {
                     let keyHistory = docSnapshot.docs.map(doc => {
                         const data = doc.data();
@@ -118,8 +120,6 @@ export default function Keyinfo(props) {
 
     const [visiblesettings, setVisiblesettings ] = React.useState('');
 
-    //<IconButton icon={'pencil-outline'} onPress={()=> props.navigation.navigate( 'Edit Key', { keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid })}/>
-
     const [updatedata, setupdatedata] = useState([])
 
     const deletesingledoc = (historyid) =>{
@@ -133,83 +133,6 @@ export default function Keyinfo(props) {
             .doc(historyid)
             .delete()
             console.log('deleted doc')
-
-            //set array with new data after
-            /*
-            const task = firebase.firestore()
-                .collection('keycollection')
-                .doc(props.route.params.uid)
-                .collection('keylist')
-                .doc(props.route.params.keyId)
-                .collection('keyhistory')
-                .orderBy("creation", "desc")
-                .onSnapshot((docSnapshot) => {
-                    let keyHistory = docSnapshot.docs.map(doc => {
-                        const data = doc.data();
-                        const id = doc.id;
-                        return { id, ...data }
-                    })
-                    if (!docSnapshot.metadata.hasPendingWrites) {  
-                        setupdatedata(keyHistory)
-                        console.log(keyHistory)
-                    }  
-                })
-                
-                //update db
-               const taskCompleted = firebase.firestore()
-                    .collection('keycollection')
-                    .doc(firebase.auth().currentUser.uid)
-                    .collection("keylist")
-                    .doc(props.route.params.keyId)
-                    .update({
-                        name: updatedata.name,
-                        entrytype: updatedata.entrytype,
-                        number: updatedata.number,
-                        keyhistorycreation: updatedata.keyhistorycreation
-                    },
-                        function (error) {
-                            if (error) {
-                                console.log("Data could not be saved." + error);
-                            } else {
-                                console.log("Data saved successfully.");
-                            }
-                        }
-                    )
-
-                    task.on("state_changed", taskCompleted)
-                    */
-    }
-
-    const returnedstatus =(status,historyid)=>{
-        console.log(historyid)
-        if(status == 'RETURNED'){
-            const finstatus = 'NOT RETURNED'
-            firebase.firestore()
-            .collection('keycollection')
-            .doc(props.route.params.uid)
-            .collection('keylist')
-            .doc(props.route.params.keyId)
-            .collection('keyhistory')
-            .doc(historyid)
-            .update({
-                returnedstatus: finstatus,
-                creation: creation
-            })
-        }
-        else if (status == 'NOT RETURNED'){
-            const finstatus = 'RETURNED'
-            firebase.firestore()
-            .collection('keycollection')
-            .doc(props.route.params.uid)
-            .collection('keylist')
-            .doc(props.route.params.keyId)
-            .collection('keyhistory')
-            .doc(historyid)
-            .update({
-                returnedstatus: finstatus,
-                creation: creation
-            })
-        }
 
     }
 
@@ -234,7 +157,6 @@ export default function Keyinfo(props) {
     }
 
     const deletecollection = async()=>{
-
         for (let i = 0; i < keyHistory.length; i++) {
             if(keyHistory[i].entrytype != 'NEW ENTRY'){
                 firebase.firestore()
@@ -245,10 +167,8 @@ export default function Keyinfo(props) {
                 .collection('keyhistory')
                 .doc(keyHistory[i].id)
                 .delete()
-            }
-            
+            }   
         }
-
     }
 
     return (
@@ -365,7 +285,6 @@ export default function Keyinfo(props) {
                                             <Chip 
                                             icon={changechipicon(item.returnedstatus)} 
                                             style={changechipcolor(item.returnedstatus)} 
-                                            onPress={()=>returnedstatus(item.returnedstatus, item.id)}
                                             disabled={setdisablechip(index, item.id, item.returnedstatus)}
                                             >{item.returnedstatus}</Chip>
                                             

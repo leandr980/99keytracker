@@ -55,7 +55,9 @@ export default function Addkey(props) {
                     firebase.firestore()
                         .collection('keycollection')
                         .doc(firebase.auth().currentUser.uid)
-                        .collection("keylistentry")
+                        .collection("keylist")
+                        .doc(docRef.id)
+                        .collection("keyhistory")
                         .add({
                             entrytype,
                             keyid,
