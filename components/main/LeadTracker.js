@@ -106,7 +106,9 @@ function LeadTracker(props) {
         return expired
     }
 
-    console.log(isexpired(new Date().getTime() + 5000))
+    //console.log(isexpired(new Date().getTime() + 5000))
+    const [initiallist, setintiallist] = useState(keyinfo2.slice(0,5))
+    console.log(initiallist)
          
     return (
         <MenuProvider>
@@ -224,7 +226,6 @@ function LeadTracker(props) {
                 numColumns={1}
                 horizontal={false}
                 data={keyinfo2}
-                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}
                 renderItem={({ item }) => (
 
                 <DataTable>

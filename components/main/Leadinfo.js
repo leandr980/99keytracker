@@ -236,16 +236,30 @@ export default function Leadinfo(props) {
             return {backgroundColor: "green", borderRadius: 300}
         }
     }
-
     const deletelead =()=> {
-        firebase.firestore()
+        
+        const firebasecollection = firebase.firestore()
         .collection('leadscollection')
         .doc(firebase.auth().currentUser.uid)
         .collection("leadslist")
         .doc(props.route.params.LeadId)
-        .delete()    
-    }
+        .collection("leadnotes")
+        .get()
 
+       
+
+        console.log(firebasecollection.then((snap) => {
+            return snap.size
+        }))
+          
+        /*firebase.firestore()
+        .collection('leadscollection')
+        .doc(firebase.auth().currentUser.uid)
+        .collection("leadslist")
+        .doc(props.route.params.LeadId)
+        .delete()*/
+    }
+    
     const arealist = (list) => {
         const renderList = list.map((item, index) => <Chip style={{marginRight: 2}} key={index}>{item}</Chip>);
         return renderList
@@ -279,14 +293,63 @@ export default function Leadinfo(props) {
                     <Card style={styles.cardstyle}>
                                 <Card.Content style={{alignItems: 'center', justifyContent: 'center'}}>
                                 <Text style={{fontSize: 30}}>{leadinfo.name}</Text>
-                                <IconButton icon={'delete'} onPress={()=> deletelead()}/>
                                 <Caption>{leadinfo.number}</Caption>
                                 <Caption>{leadinfo.email}</Caption>
                                 <View style={{flexDirection: 'row', size: 30}}>
-                                    <IconButton icon='whatsapp'/>
-                                    <IconButton icon='phone-outline'/>
-                                    <IconButton icon='android-messages'/>
-                                    <IconButton icon='email'/>
+                                    <IconButton icon='whatsapp' disabled='true'/>
+                                    <IconButton icon='phone-outline' disabled='true'/>
+                                    <IconButton icon='android-messages' disabled='true'/>
+                                    <IconButton icon='email' disabled='true'/>
+                                    <Menu>
+                                                <MenuTrigger>
+                                                    <IconButton icon="dots-vertical" />
+                                                </MenuTrigger>
+                                                <MenuOptions>
+
+                                                    <MenuOption onSelect={() => 
+                                                    Alert.alert(
+                                                        "This will change the lead status to *CONTACTED* and delete this reminder",
+                                                        "Are you sure you want to do this?",
+                                                        [
+                                                            {
+                                                                text: "YES",
+                                                                onPress: () => changeleadstatus(item.leadid, item.id)
+                                                            },
+                                                            { 
+                                                                text: "NO"
+                                                            }
+                                                        ]
+                                                    )}>
+                                                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                                            <IconButton icon='account'/>
+                                                            <Text>EDIT DETAILS</Text>
+                                                        </View>
+                                                    </MenuOption>
+                                                    
+                                                    <Divider/>
+                                                    
+                                                    <MenuOption onSelect={() => 
+                                                    Alert.alert(
+                                                        "Are you sure you want to delete this Lead?",
+                                                        "",
+                                                        [
+                                                            {
+                                                                text: "YES",
+                                                                onPress: () => deletelead()
+                                                            },
+                                                            { 
+                                                                text: "NO"
+                                                            }
+                                                        ]
+                                                    )}>
+                                                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                                            <IconButton icon='delete-outline'/>
+                                                            <Text>DELETE</Text>
+                                                        </View>
+                                                    
+                                                    </MenuOption>
+                                                </MenuOptions>
+                                            </Menu>
                                 </View>
                                 </Card.Content>
                             </Card>
@@ -406,7 +469,7 @@ export default function Leadinfo(props) {
                         <Card.Content>
                             <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, alignItems: 'center'}}>
                                 <Text>Status</Text>
-                                <Chip>{leadinfo.status}</Chip>
+                                <Chip icon={'check'} >{leadinfo.status}</Chip>
                             </View>
                             <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, alignItems: 'center'}}>
                                 <Text>Sale / Rent</Text>
@@ -596,7 +659,7 @@ async function registerForPushNotificationsAsync() {
         return;
       }
       token = (await Notifications.getExpoPushTokenAsync()).data;
-      console.log(token);
+      //console.log(token);
     } else {
       alert('Must use physical device for Push Notifications');
     }
