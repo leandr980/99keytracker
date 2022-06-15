@@ -12,6 +12,7 @@ const windowHeight = Dimensions.get('window').height;
 
 export default function Search(props) {
     const [keydata, setkeydata] = useState([])
+    const [selectedfilter, setselectedfilter] = useState('')
 
     const fetchUsers = (search) => {
         firebase.firestore()
@@ -47,11 +48,12 @@ export default function Search(props) {
                 });
 
                 if (snapshot.empty){
-                    console.log('empty search result')
+                    //console.log('empty search result')
                     onToggleSnackBar()
                     setfilterfield(filtervalue)
                 }
                 else{
+                    setselectedfilter(filtervalue)
                     setkeydata(keydata)
                 }
             })
@@ -65,12 +67,6 @@ export default function Search(props) {
         }, 4000);
     }
     
-    
-
-
-
-
-
     const [filterfield, setfilterfield] = useState('')
     const onDismissSnackBar = () => (setVisible(false), setfilterfield(''));
 
@@ -80,8 +76,13 @@ export default function Search(props) {
                 <View style={{flexDirection: 'row'}}>
                     <IconButton icon={'magnify'} size={30}/>
                     <View style={{flex:1, justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', marginHorizontal: 5}}>
+                        {selectedfilter == '' ?
                         <TextInput style={{fontSize: 20, width: windowWidth/1.2}} placeholder="Search . . . ." onChangeText={(search) => fetchUsers(search)}/>
-                        <IconButton icon={'close-circle'} onPress={()=> setkeydata([])}/>
+                        :
+                        <View>
+                        <Chip style={{marginRight: 10}} icon={'close-circle'} onPress={()=> (setkeydata([]), setselectedfilter(''))}>{selectedfilter}</Chip>
+                        </View>
+                        }
                     </View>
                     
                 </View>

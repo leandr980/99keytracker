@@ -40,11 +40,11 @@ export default function NewLead(props) {
     //const [area, setArea] = useState('')
     const [multiplearea, setmultiplearea] = useState([]);
     const [bedroom, setBedroom] = useState("Studio")
-    const [builduparea, setbuilduparea] = useState("")
+    const [builduparea, setbuilduparea] = useState(0)
     const [buildupareatype, setbuildupareatype] = useState("SqFt")
-    const [budget, setBudget] = useState("")
-    const [minbudget, setMinbudget] = useState("")
-    const [maxbudget, setMaxbudget] = useState("")
+    const [budget, setBudget] = useState(0)
+    const [minbudget, setMinbudget] = useState(0)
+    const [maxbudget, setMaxbudget] = useState(0)
     const [furnishing, setFurnishing] = useState("Un-Furnished")
     
     const [leadsource, setLeadsource] = useState('Walk-In')
@@ -266,6 +266,7 @@ export default function NewLead(props) {
                             <TextInput
                             style={styles.textinputstyle}
                             placeholder="Build up area. . ."
+                            keyboardType='numeric'
                             onChangeText={(buildup) => setbuilduparea(buildup)}/>
                             <View style={{flexDirection: 'row'}}>
                                 <Chip selected={ buildupareatype === 'SqFt' ? true : false } 
@@ -276,6 +277,7 @@ export default function NewLead(props) {
                                 style={{marginRight: 5, marginBottom: 5}} 
                                 onPress={()=> setbuildupareatype('SqM')}>SqM</Chip>
                             </View>
+                            <Caption>*If no area has been entered, 0 will be used as the default</Caption>
                         </Card.Content>
 
                         <Divider style={{margin: 10}}/>
@@ -293,21 +295,26 @@ export default function NewLead(props) {
                                     <TextInput
                                     style={styles.textinputstylebudget}
                                     placeholder="Min Budget. . ."
+                                    keyboardType='numeric'
                                     onChangeText={(minbudget) => setMinbudget(minbudget)}/>
 
                                     <TextInput
                                     style={styles.textinputstylebudget}
                                     placeholder="Max Budget . . ."
+                                    keyboardType='numeric'
                                     onChangeText={(maxbudget) => setMaxbudget(maxbudget)}/>
                                 </View>:
                                 <View>
                                     <TextInput
                                     style={styles.textinputstyle}
                                     placeholder="Budget. . ."
+                                    keyboardType='numeric'
                                     onChangeText={(budget) => setBudget(budget)}/>
                                 </View>
                                 
                             }
+
+                            <Caption>*If no budget has been entered, 0 will be used as the default</Caption>
                             
                         </Card.Content>
 
