@@ -237,27 +237,37 @@ export default function Leadinfo(props) {
         }
     }
     const deletelead =()=> {
-        
-        const firebasecollection = firebase.firestore()
+
+        setLoading(true)
+
+        const refnotes = firebase.firestore() 
         .collection('leadscollection')
         .doc(firebase.auth().currentUser.uid)
         .collection("leadslist")
         .doc(props.route.params.LeadId)
         .collection("leadnotes")
-        .get()
 
-       
+        leadnotes.forEach((doc)=>{
+            refnotes.doc(doc.id).delete()
+            console.log('deleted notes doc with id: ', doc.id)
+        })
 
-        console.log(firebasecollection.then((snap) => {
-            return snap.size
-        }))
-          
-        /*firebase.firestore()
-        .collection('leadscollection')
+        const refnotifs = firebase.firestore()
+        .collection("notification-collection")
         .doc(firebase.auth().currentUser.uid)
+        .collection("notificationlist")
+
+        notificationlist.forEach((doc)=>{
+            refnotifs.doc(doc.id).delete()
+            console.log('deleted notifs doc with id: ', doc.id)
+        })
+
+        firebase.firestore()
+        .collection("leadscollection")
+        .doc(props.route.params.uid)
         .collection("leadslist")
         .doc(props.route.params.LeadId)
-        .delete()*/
+        .delete()
     }
     
     const arealist = (list) => {
@@ -302,7 +312,7 @@ export default function Leadinfo(props) {
                                     <IconButton icon='email' disabled='true'/>
                                     <Menu>
                                                 <MenuTrigger>
-                                                    <IconButton icon="dots-vertical" />
+                                                    <IconButton icon="cog" />
                                                 </MenuTrigger>
                                                 <MenuOptions>
 
