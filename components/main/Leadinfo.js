@@ -45,11 +45,17 @@ export default function Leadinfo(props) {
     const [leadinfodate, setleadinfodate] = useState('')
     const [leadinfoupdate, setleadinfoupdate] = useState('')
     const [leadnotes, setleadnotes] = useState([])
+    const [multiplearea, setmultiplearea] = useState([])
 
     
     const [notes, setnotes] = useState('') 
 
     const [notificationlist, setnotificationlist] = useState([])
+
+    const setdate = (creation, update) =>{
+        setleadinfodate(format(new Date(data().creation.toDate().toString()), 'PPpp'))
+        setleadinfoupdate(format(new Date(docSnapshot.data().creationupdate.toDate().toString()), 'PPpp'))
+    }
     
     useEffect(() => {
         
@@ -57,7 +63,7 @@ export default function Leadinfo(props) {
         
         setTimeout(() => {
             setLoading(false);
-          }, 2000);
+          }, 1000);
 
         const subscribe = firebase.firestore()
         .collection("leadscollection")
@@ -67,10 +73,11 @@ export default function Leadinfo(props) {
         .onSnapshot((docSnapshot) => {
             if (!docSnapshot.metadata.hasPendingWrites) {  
                 setleadinfo(docSnapshot.data())
-                        setleadinfodate(format(new Date(docSnapshot.data().creation.toDate().toString()), 'PPpp'))
-                        setleadinfoupdate(format(new Date(docSnapshot.data().creationupdate.toDate().toString()), 'PPpp'))
-                    }
-                })
+                if(docSnapshot.data != undefined){
+                    setdate(docSnapshot.data().creation, docSnapshot.data().creationupdate)
+                    setmultiplearea(docSnapshot.data().multiplearea)
+                }}
+            })
                 
         const subscribe2 = firebase.firestore()
         .collection("leadscollection")
@@ -182,7 +189,6 @@ export default function Leadinfo(props) {
             status: status,
             creationupdate: creationupdate
         }).then(deletereminder(notificationid), addnewnotecontacted(leadid))
-        
     }
 
     const addnewnotecontacted = (leadid) => {
@@ -239,6 +245,9 @@ export default function Leadinfo(props) {
     const deletelead =()=> {
 
         setLoading(true)
+        setleadinfo([])
+        setmultiplearea([])
+    
 
         const refnotes = firebase.firestore() 
         .collection('leadscollection')
@@ -268,6 +277,9 @@ export default function Leadinfo(props) {
         .collection("leadslist")
         .doc(props.route.params.LeadId)
         .delete()
+        .then((function () {
+            props.navigation.pop()
+        }))
     }
     
     const arealist = (list) => {
@@ -476,6 +488,7 @@ export default function Leadinfo(props) {
                     </Card>
 
                     <Card style={styles.cardstyle}>
+                        <Text onPress={()=> setmultiplearea([])}> coc </Text>
                         <Card.Content>
                             <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, alignItems: 'center'}}>
                                 <Text>Status</Text>
@@ -496,7 +509,7 @@ export default function Leadinfo(props) {
                             <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, alignItems: 'center'}}>
                                 <Text>Area</Text>
                                 <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                                {arealist(leadinfo.multiplearea)}
+                                    {arealist(multiplearea)}
                                 </View>
                             </View>
                             <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, alignItems: 'center'}}>
@@ -534,9 +547,9 @@ export default function Leadinfo(props) {
                             </View>
                             <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, alignItems: 'center'}}>
                                 <Text>Created</Text>
-                                <Chip>{leadinfodate}</Chip>
+                                <Chip>{format(new Date(leadinfo.creation.toDate().toString()), 'PPpp')}</Chip>
                             </View>
-                        <Caption>Last updated on: {leadinfoupdate}</Caption>
+                        <Caption>Last updated on: {format(new Date(leadinfo.creationupdate.toDate().toString()), 'PPpp')}</Caption>
                         </Card.Content>
                     </Card> 
 
