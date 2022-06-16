@@ -108,7 +108,7 @@ function LeadTracker(props) {
 
     //console.log(isexpired(new Date().getTime() + 5000))
     const [initiallist, setintiallist] = useState(keyinfo2.slice(0,5))
-    console.log(initiallist)
+    //console.log(initiallist)
          
     return (
         <MenuProvider>
