@@ -12,7 +12,6 @@ import { MenuProvider, Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-
 
 import { Dimensions } from 'react-native';
 
-
 import firebase from 'firebase'
 require("firebase/firestore")
 
@@ -42,20 +41,11 @@ export default function Leadinfo(props) {
     const responseListener = useRef();
 
     const [leadinfo, setleadinfo] = useState([])
-    const [leadinfodate, setleadinfodate] = useState('')
-    const [leadinfoupdate, setleadinfoupdate] = useState('')
     const [leadnotes, setleadnotes] = useState([])
-    const [multiplearea, setmultiplearea] = useState([])
-
     
     const [notes, setnotes] = useState('') 
 
     const [notificationlist, setnotificationlist] = useState([])
-
-    const setdate = (creation, update) =>{
-        setleadinfodate(format(new Date(data().creation.toDate().toString()), 'PPpp'))
-        setleadinfoupdate(format(new Date(docSnapshot.data().creationupdate.toDate().toString()), 'PPpp'))
-    }
     
     useEffect(() => {
         
@@ -63,7 +53,7 @@ export default function Leadinfo(props) {
         
         setTimeout(() => {
             setLoading(false);
-          }, 1000);
+          }, 2000);
 
         const subscribe = firebase.firestore()
         .collection("leadscollection")
@@ -73,11 +63,8 @@ export default function Leadinfo(props) {
         .onSnapshot((docSnapshot) => {
             if (!docSnapshot.metadata.hasPendingWrites) {  
                 setleadinfo(docSnapshot.data())
-                if(docSnapshot.data != undefined){
-                    setdate(docSnapshot.data().creation, docSnapshot.data().creationupdate)
-                    setmultiplearea(docSnapshot.data().multiplearea)
-                }}
-            })
+                    }
+                })
                 
         const subscribe2 = firebase.firestore()
         .collection("leadscollection")
@@ -189,6 +176,7 @@ export default function Leadinfo(props) {
             status: status,
             creationupdate: creationupdate
         }).then(deletereminder(notificationid), addnewnotecontacted(leadid))
+        
     }
 
     const addnewnotecontacted = (leadid) => {
@@ -245,9 +233,6 @@ export default function Leadinfo(props) {
     const deletelead =()=> {
 
         setLoading(true)
-        setleadinfo([])
-        setmultiplearea([])
-    
 
         const refnotes = firebase.firestore() 
         .collection('leadscollection')
@@ -276,8 +261,7 @@ export default function Leadinfo(props) {
         .doc(props.route.params.uid)
         .collection("leadslist")
         .doc(props.route.params.LeadId)
-        .delete()
-        .then((function () {
+        .delete().then((function () {
             props.navigation.pop()
         }))
     }
@@ -313,6 +297,7 @@ export default function Leadinfo(props) {
                 )}
                 <ScrollView>
                     <Card style={styles.cardstyle}>
+                        <IconButton icon={'arrow-left'} onPress={function () {props.navigation.pop()}}/>
                                 <Card.Content style={{alignItems: 'center', justifyContent: 'center'}}>
                                 <Text style={{fontSize: 30}}>{leadinfo.name}</Text>
                                 <Caption>{leadinfo.number}</Caption>
@@ -353,7 +338,7 @@ export default function Leadinfo(props) {
                                                     <MenuOption onSelect={() => 
                                                     Alert.alert(
                                                         "Are you sure you want to delete this Lead?",
-                                                        "",
+                                                        "This will also delete all notes and reminders for this lead",
                                                         [
                                                             {
                                                                 text: "YES",
@@ -488,7 +473,6 @@ export default function Leadinfo(props) {
                     </Card>
 
                     <Card style={styles.cardstyle}>
-                        <Text onPress={()=> setmultiplearea([])}> coc </Text>
                         <Card.Content>
                             <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, alignItems: 'center'}}>
                                 <Text>Status</Text>
@@ -509,7 +493,7 @@ export default function Leadinfo(props) {
                             <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, alignItems: 'center'}}>
                                 <Text>Area</Text>
                                 <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                                    {arealist(multiplearea)}
+                                {arealist(leadinfo.multiplearea)}
                                 </View>
                             </View>
                             <View style={{flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15, alignItems: 'center'}}>

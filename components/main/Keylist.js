@@ -133,11 +133,9 @@ function Keylist(props) {
                         <Text style={{ fontSize: 30, fontWeight: 'bold', marginLeft: 10 }}> Recent Entries </Text>
                     </View>
                 }
-                ListFooterComponent={
-                <View style={{alignItems: 'center', margin: 10}}>
-                    <Caption> End of list</Caption>
-                </View> 
-                }
+                ListEmptyComponent={<View style={{alignItems: 'center'}}> 
+                    <Caption style={{marginTop: 80, marginLeft: 10}}>List is empty</Caption> 
+                    </View>}
                 data={keyinfo}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}
                 renderItem={({ item }) => (
