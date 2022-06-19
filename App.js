@@ -142,7 +142,8 @@ export class App extends Component {
                             headerStyle: {
                                 backgroundColor: '#efefef',
                                 elevation: 0,
-                            }
+                            },
+                            headerLeft: null
                         }}/>
                         <Stack.Screen name="Signature" component={SignatureScreen}
                             options={{
@@ -213,7 +214,8 @@ export class App extends Component {
                                 headerStyle: {
                                     backgroundColor: '#efefef',
                                     elevation: 0,
-                                }
+                                },
+                                headerLeft: null,
                             }}/>
 
                         <Stack.Screen name="Lead Search" component={SearchLeadScreen}

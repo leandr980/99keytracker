@@ -48,7 +48,7 @@ export default function NewHistoryCompany(props, { navigation }) {
             const gallerystatus = await ImagePicker.requestMediaLibraryPermissionsAsync();
             sethasgallerypermission(gallerystatus.status === 'granted');
 
-            const camerastatus = await Camera.requestPermissionsAsync();
+            const camerastatus = await Camera.requestCameraPermissionsAsync();
             sethascamerapermission(camerastatus.status === 'granted');
         })();
 

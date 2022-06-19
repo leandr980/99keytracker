@@ -226,6 +226,9 @@ function LeadTracker(props) {
                 numColumns={1}
                 horizontal={false}
                 data={keyinfo2}
+                ListEmptyComponent={<View style={{alignItems: 'center'}}> 
+                    <Caption style={{marginTop: 80}}>List is empty</Caption> 
+                    </View>}
                 renderItem={({ item }) => (
 
                 <DataTable>
