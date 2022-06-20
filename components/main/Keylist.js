@@ -54,46 +54,6 @@ function Keylist(props) {
         return <View/>
     }
 
-    const changechipcolor =(itementry)=> {
-        switch(itementry){
-            case 'LANDLORD':
-                return{
-                    backgroundColor: (`#ffd60a`), margin: 2
-                }
-            case 'COMPANY':
-                return{
-                    backgroundColor: (`#fb8500`), margin: 2
-                }
-            case 'AGENT':
-                return{
-                    backgroundColor: (`#a2d2ff`), margin: 2
-                }
-            case 'OTHER':
-                return{
-                    backgroundColor: (`#bdb2ff`), margin: 2
-                }
-            case 'NEW ENTRY':
-                return{
-                    backgroundColor: (`#8eecf5`), margin: 2
-                }
-        }
-    }
-
-    const changechipicon =(itementry)=> {
-        switch(itementry){
-            case 'LANDLORD':
-                return "account-star"
-            case 'COMPANY':
-                return "domain"
-            case 'AGENT':
-                return "account-tie"
-            case 'OTHER':
-                return "account-question-outline"
-            case 'NEW ENTRY':
-                return "folder-plus"
-        }
-    }
-
     const checkdate = (itemdate) => {
         const difindays = Math.abs(differenceInDays(new Date(itemdate.toDate().toString()), startOfDay()))
 
