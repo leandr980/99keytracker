@@ -7,7 +7,7 @@ import {format } from 'date-fns'
 import firebase from 'firebase'
 require("firebase/firestore")
 
-import { Newentry_component } from './keyinfo-components'
+import { Main_keyenty_component } from './keyinfo-components'
 
 export default function Keyinfo(props) {
 
@@ -62,61 +62,6 @@ export default function Keyinfo(props) {
                     subscribe2()
                 }
     }, [])
-
-    const changechipcolor =(itementry)=> {
-        switch(itementry){
-            case 'LANDLORD':
-                return{
-                    backgroundColor: (`#ffd60a`), margin: 10
-                }
-            case 'COMPANY':
-                return{
-                    backgroundColor: (`#fb8500`), margin: 10
-                }
-            case 'AGENT':
-                return{
-                    backgroundColor: (`#a2d2ff`), margin: 10
-                }
-            case 'OTHER':
-                return{
-                    backgroundColor: (`#bdb2ff`), margin: 10
-                }
-            case 'NEW ENTRY':
-                return{
-                    backgroundColor: (`#8eecf5`), margin: 10
-                }
-
-            case 'NOT RETURNED':
-                return{
-                    backgroundColor: (`#ff002b`), marginRight: 10, marginLeft: 5
-                }
-            case 'RETURNED':
-                return{
-                    backgroundColor: (`#70e000`), marginRight: 10, marginLeft: 5
-                }
-        }
-
-    }
-
-    const changechipicon =(itementry)=> {
-        switch(itementry){
-            case 'LANDLORD':
-                return "account-star"
-            case 'COMPANY':
-                return "domain"
-            case 'AGENT':
-                return "account-tie"
-            case 'OTHER':
-                return "account-question-outline"
-            case 'NEW ENTRY':
-                return "folder-plus"
-
-            case 'NOT RETURNED':
-                return "close"
-            case 'RETURNED':
-                return "check"
-        }
-    }
 
     const [state, setState] = React.useState({ open: false });
     const onStateChange = ({ open }) => setState({ open });
@@ -252,9 +197,9 @@ export default function Keyinfo(props) {
                                 horizontal={false}
                                 data={keyHistory}
                                 renderItem={({ item, index }) => (
-                                    <Card>
-                                        <Text>1</Text>
-                                    </Card>
+                                    <View>
+                                        <Main_keyenty_component keydetails={item}/>
+                                    </View>
                                 )}/>
                             
                             </View>
