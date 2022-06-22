@@ -13,7 +13,8 @@ export function Main_keyenty_component ({keydetails}) {
             <Chip 
             style={changechipcolor(keydetails.entrytype)} 
             icon={changechipicon(keydetails.entrytype)}>
-                {keydetails.entrytype}</Chip>}/> 
+                {keydetails.entrytype}</Chip>
+            }/> 
             <Divider/>
             {entryswitch(keydetails.entrytype, keydetails)}
             {mediafileswitch(keydetails)}
@@ -115,7 +116,7 @@ const agententry_component =(item)=> {
 const newentry_component =()=> {
     return(
     <Card.Content>
-        <Caption> This key was added </Caption>
+        <Caption> This key was created </Caption>
     </Card.Content>
     )
 }
