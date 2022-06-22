@@ -1,10 +1,12 @@
 import React, {useState } from 'react'
-import { View, StyleSheet, ScrollView, ImageBackground, Alert} from 'react-native'
+import { View, StyleSheet, ScrollView, ImageBackground, Alert, Text} from 'react-native'
 import { Card, Button, TextInput, Provider, Dialog} from 'react-native-paper'
 
 import firebase from 'firebase'
 require("firebase/firestore")
 require("firebase/firebase-storage")
+
+import {DropdownComponent} from './dropdowncomponent'
 
 const alerthandler = () =>{
     Alert.alert(
@@ -21,6 +23,9 @@ export default function Addkey(props) {
     const [keyname, setkeyname] = useState("")
     const [keybuildingvilla, setKeybuildingvilla] = useState("")
     const [keyarea, setKeyarea] = useState("")
+
+    const [text, settext] =useState('')
+    const [text1, settext1] =useState('')
 
     const creation = firebase.firestore.FieldValue.serverTimestamp()
     const keyhistorycreation = creation
@@ -46,7 +51,7 @@ export default function Addkey(props) {
                     keyarea,
                     entrytype,
                     creation,
-                    keyhistorycreation
+                    keyhistorycreation,
                 })
                 .then(function (docRef) {
                     console.log("Document written with ID: ", docRef.id);
@@ -111,6 +116,11 @@ export default function Addkey(props) {
                             placeholder="Area/Community . . ."
                             onChangeText={(keyarea) => setKeyarea(keyarea)}
                             />
+
+                            <DropdownComponent />
+                            <Text>coc {text}</Text>
+                            <DropdownComponent />
+
                         </Card.Content>
 
                     </Card>
