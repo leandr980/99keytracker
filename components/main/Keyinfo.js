@@ -89,26 +89,6 @@ export default function Keyinfo(props) {
 
     }
 
-    const setdisablechip =(index, historyid,returnedstatus)=>{
-        if(index > 0) {
-            if(returnedstatus == 'NOT RETURNED' && index != 0) {
-                const finstatus = 'RETURNED'
-                firebase.firestore()
-                .collection('keycollection')
-                .doc(props.route.params.uid)
-                .collection('keylist')
-                .doc(props.route.params.keyId)
-                .collection('keyhistory')
-                .doc(historyid)
-                .update({
-                    returnedstatus: finstatus,
-                    creation: creation
-                })
-            }
-            return true
-        }
-    }
-
     const deletecollection =()=> {
 
         setLoading(true)
@@ -153,7 +133,6 @@ export default function Keyinfo(props) {
             source={require('../../assets/bg-image/99-whatsapp-bg-small.jpg')}>
 
                         <Card style={styles.maincardstyle}>
-                        <IconButton icon={'arrow-left'} onPress={function () {props.navigation.pop()}}/>
 
                         <Divider/>
 
@@ -196,7 +175,7 @@ export default function Keyinfo(props) {
                                 numColumns={1}
                                 horizontal={false}
                                 data={keyHistory}
-                                renderItem={({ item, index }) => (
+                                renderItem={({ item }) => (
                                     <View>
                                         <Main_keyenty_component keydetails={item}/>
                                     </View>

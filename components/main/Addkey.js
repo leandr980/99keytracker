@@ -119,7 +119,6 @@ export default function Addkey(props) {
 
                             <DropdownComponent />
                             <Text>coc {text}</Text>
-                            <DropdownComponent />
 
                         </Card.Content>
 
