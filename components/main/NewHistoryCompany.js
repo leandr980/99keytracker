@@ -33,6 +33,7 @@ export default function NewHistoryCompany(props, { navigation }) {
     const showModalAlert = () => setVisibleAlert(true);
     const hideModalAlert = () => setVisibleAlert(false);
 
+    const [includeID, setincludeID] = useState('no')
     const [imageIDfront, setImageIDfront] = useState(null);
     const [imageIDback, setImageIDback] = useState(null);
 

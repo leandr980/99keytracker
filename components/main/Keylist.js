@@ -63,7 +63,7 @@ function Keylist(props) {
             case 1:
                 return 'Added yesterday'
             default:
-                return difindays, 'days ago'
+                return 'Added ' + difindays + ' days ago'
         }
     }
 
