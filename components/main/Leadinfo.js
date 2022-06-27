@@ -127,6 +127,7 @@ export default function Leadinfo(props) {
     else{return false}
     }
     
+    //copied to new file
     const addnewnote = () => {
         firebase.firestore()
         .collection('leadscollection')
@@ -166,6 +167,7 @@ export default function Leadinfo(props) {
     
     const status = 'CONTACTED'
     
+    //copied to new file
     const changeleadstatus = (leadid, notificationid) => {
         firebase.firestore()
         .collection("leadscollection")
@@ -179,6 +181,7 @@ export default function Leadinfo(props) {
         
     }
 
+    //copied to new file
     const addnewnotecontacted = (leadid) => {
         firebase.firestore()
         .collection('leadscollection')
@@ -193,6 +196,7 @@ export default function Leadinfo(props) {
         })
     }
 
+    //copied to new file
     const deletereminder = (doctodelete) => {
         firebase.firestore()
         .collection('notification-collection')
@@ -202,6 +206,7 @@ export default function Leadinfo(props) {
         .delete()    
     }
 
+    //copied to new file
     const deletenote = (doctodelete) => {
         firebase.firestore()
         .collection('leadscollection')
@@ -230,6 +235,8 @@ export default function Leadinfo(props) {
             return {backgroundColor: "green", borderRadius: 300}
         }
     }
+
+    //copied to new file
     const deletelead =()=> {
 
         setLoading(true)
@@ -297,7 +304,6 @@ export default function Leadinfo(props) {
                 )}
                 <ScrollView>
                     <Card style={styles.cardstyle}>
-                        <IconButton icon={'arrow-left'} onPress={function () {props.navigation.pop()}}/>
                                 <Card.Content style={{alignItems: 'center', justifyContent: 'center'}}>
                                 <Text style={{fontSize: 30}}>{leadinfo.name}</Text>
                                 <Caption>{leadinfo.number}</Caption>
