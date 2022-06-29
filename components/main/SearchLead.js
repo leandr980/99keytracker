@@ -77,7 +77,7 @@ export default function Search(props) {
                     <IconButton icon={'magnify'} size={30}/>
                     <View style={{flex:1, justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', marginHorizontal: 5}}>
                         {selectedfilter == '' ?
-                        <TextInput style={{fontSize: 20, width: windowWidth/1.2}} placeholder="Search . . . ." onChangeText={(search) => fetchUsers(search)}/>
+                        <TextInput style={{fontSize: 20, width: windowWidth/1.2}} placeholder="Search . . . . (Lead Name)" onChangeText={(search) => fetchUsers(search)}/>
                         :
                         <View>
                         <Chip style={{marginRight: 10}} icon={'close-circle'} onPress={()=> (setkeydata([]), setselectedfilter(''))}>{selectedfilter}</Chip>

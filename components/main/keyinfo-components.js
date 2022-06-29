@@ -7,13 +7,13 @@ export function Main_keyenty_component ({keydetails}) {
     return (
         <Card style={styles.cardstyle}>
             <Card.Title
-            title={'Added ' + format(new Date(keydetails.creation.toDate().toString()), 'PP')}
-            subtitle={format(new Date(keydetails.creation.toDate().toString()), 'p')}
+            subtitle={'Added on '+format(new Date(keydetails.creation.toDate().toString()), 'ppPP')}
             right={()=>
             <Chip 
             style={changechipcolor(keydetails.entrytype)} 
             icon={changechipicon(keydetails.entrytype)}>
                 {keydetails.entrytype}</Chip>
+
             }/> 
             <Divider/>
             {entryswitch(keydetails.entrytype, keydetails)}
