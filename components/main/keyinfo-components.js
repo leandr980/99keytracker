@@ -116,7 +116,7 @@ const agententry_component =(item)=> {
 const newentry_component =()=> {
     return(
     <Card.Content>
-        <Caption> This key was created </Caption>
+        <Caption style={{marginVertical: 10}}> This key was created </Caption>
     </Card.Content>
     )
 }

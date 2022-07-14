@@ -233,7 +233,7 @@ function LeadTracker(props) {
 
                 <DataTable>
                     <DataTable.Row>
-                        <DataTable.Cell onPress={() => props.navigation.navigate('Lead Info', { LeadId: item.id, uid: firebase.auth().currentUser.uid })}>{item.name}</DataTable.Cell>
+                        <DataTable.Cell onPress={() => props.navigation.navigate('Lead Info', { LeadId: item.id, uid: firebase.auth().currentUser.uid, name: item.name })}>{item.name}</DataTable.Cell>
                         <DataTable.Cell>{item.number}</DataTable.Cell>
                         <DataTable.Cell numeric>{item.salerent}</DataTable.Cell>
                         <DataTable.Cell numeric>{item.propertytype}</DataTable.Cell>
