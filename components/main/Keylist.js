@@ -105,7 +105,7 @@ function Keylist(props) {
                         <Card.Title
                         left={() => <MaterialCommunityIcons name="folder-key-outline" size={40} />}
                         right={()=> <IconButton icon="eye" 
-                        onPress={() => props.navigation.navigate("Keyinfo", { keyId: item.id, uid: firebase.auth().currentUser.uid })}/>}
+                        onPress={() => props.navigation.navigate("Keyinfo", { keyId: item.id, uid: firebase.auth().currentUser.uid, name: item.keyname })}/>}
                         title={item.keyname}
                         subtitle={item.keybuildingvilla + ', ' +item.keyarea}
                         />

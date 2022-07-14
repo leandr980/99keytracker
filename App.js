@@ -118,7 +118,9 @@ export class App extends Component {
                                 headerStyle: {
                                     backgroundColor: '#efefef',
                                     elevation: 0,
+                                    
                                 },
+                                headerTitleAlign: 'center'
                             }}/>
                         <Stack.Screen name="AddKeyHistory" component={AddkeyHistoryscreen}
                             options={{
@@ -126,7 +128,8 @@ export class App extends Component {
                                 headerStyle: {
                                     backgroundColor: '#efefef',
                                     elevation: 0,
-                                }
+                                },
+                                headerTitleAlign: 'center'
                             }}/>
                         <Stack.Screen name="KeyHistoryDetails" component={KeyHistoryDetailsscreen}
                             options={{
@@ -134,22 +137,24 @@ export class App extends Component {
                                 headerStyle: {
                                     backgroundColor: '#efefef',
                                     elevation: 0,
-                                }
+                                },
+                                headerTitleAlign: 'center'
                             }}/>
                         <Stack.Screen name="Keyinfo" component={KeyinfoScreen}
-                            options={{
-                                title: 'Key Info',
-                            headerStyle: {
-                                backgroundColor: '#efefef',
-                                elevation: 0,
-                            }
-                        }}/>
+                            options={ ({route}) => ({title: route.params.name,
+                                headerStyle: {
+                                    backgroundColor: '#efefef',
+                                    elevation: 0,
+                                },
+                                headerTitleAlign: 'center'
+                            })}/>
                         <Stack.Screen name="Signature" component={SignatureScreen}
                             options={{
                                 headerStyle: {
                                     backgroundColor: '#efefef',
                                     elevation: 0,
-                                }
+                                },
+                                headerTitleAlign: 'center'
                             }}/>
                             
                         <Stack.Screen name="Landlord" component={NewHistoryLandlord}
@@ -157,7 +162,8 @@ export class App extends Component {
                                 headerStyle: {
                                     backgroundColor: '#efefef',
                                     elevation: 0,
-                                }
+                                },
+                                headerTitleAlign: 'center'
                             }}/>
                             
                         <Stack.Screen name="Company" component={NewHistoryCompany}
@@ -165,7 +171,8 @@ export class App extends Component {
                                 headerStyle: {
                                     backgroundColor: '#efefef',
                                     elevation: 0,
-                                }
+                                },
+                                headerTitleAlign: 'center'
                             }}/>
                             
                         <Stack.Screen name="Agent" component={NewHistoryAgent}
@@ -173,7 +180,8 @@ export class App extends Component {
                                 headerStyle: {
                                     backgroundColor: '#efefef',
                                     elevation: 0,
-                                }
+                                },
+                                headerTitleAlign: 'center'
                             }}/>
                             
                         <Stack.Screen name="Other" component={NewHistoryOther}
@@ -181,7 +189,8 @@ export class App extends Component {
                                 headerStyle: {
                                     backgroundColor: '#efefef',
                                     elevation: 0,
-                                }
+                                },
+                                headerTitleAlign: 'center'
                             }}/>
 
                         <Stack.Screen name="Search" component={SearchScreen}
@@ -189,7 +198,8 @@ export class App extends Component {
                                 headerStyle: {
                                     backgroundColor: '#efefef',
                                     elevation: 0,
-                                }
+                                },
+                                headerTitleAlign: 'center'
                             }}/>
 
                         <Stack.Screen name="Edit Key" component={EditKeyScreen}
@@ -197,7 +207,8 @@ export class App extends Component {
                                 headerStyle: {
                                     backgroundColor: '#efefef',
                                     elevation: 0,
-                                }
+                                },
+                                headerTitleAlign: 'center'
                             }}/>
 
                         <Stack.Screen name="New Lead" component={NewLeadScreen}
@@ -205,23 +216,26 @@ export class App extends Component {
                                 headerStyle: {
                                     backgroundColor: '#efefef',
                                     elevation: 0,
-                                }
+                                },
+                                headerTitleAlign: 'center'
                             }}/>
 
                         <Stack.Screen name="Lead Info" component={LeadInfoScreen}
-                            options={{
+                            options={({route}) => ({title: route.params.name,
                                 headerStyle: {
                                     backgroundColor: '#efefef',
                                     elevation: 0,
-                                }
-                            }}/>
+                                },
+                                headerTitleAlign: 'center'
+                            })}/>
 
                         <Stack.Screen name="Lead Search" component={SearchLeadScreen}
                             options={{
                                 headerStyle: {
                                     backgroundColor: '#efefef',
                                     elevation: 0,
-                                }
+                                },
+                                headerTitleAlign: 'center'
                             }}/>
                             
                         <Stack.Screen name="Save" component={SaveScreen} navigation={ this.props.navigation}  />
