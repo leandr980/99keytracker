@@ -184,7 +184,7 @@ export default function Keyinfo(props) {
                             </View>
                             <FAB.Group
                             open={open}
-                            icon={open ? 'help-box' : 'plus'}
+                            icon={open ? 'help' : 'plus'}
                             theme={{ colors: { accent: 'white' } }}
                             actions={[
                                     {

@@ -52,7 +52,8 @@
     "redux": "^4.1.1",
     "redux-thunk": "^2.3.0",
     "signature_pad": "^4.0.2",
-    "utf8": "^3.0.0"
+    "utf8": "^3.0.0",
+    "expo-updates": "~0.13.3"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"
