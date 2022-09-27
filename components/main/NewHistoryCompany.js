@@ -33,6 +33,7 @@ export default function NewHistoryCompany(props, { navigation }) {
     const showModalAlert = () => setVisibleAlert(true);
     const hideModalAlert = () => setVisibleAlert(false);
 
+    const [includeID, setincludeID] = useState('no')
     const [imageIDfront, setImageIDfront] = useState(null);
     const [imageIDback, setImageIDback] = useState(null);
 
@@ -48,7 +49,7 @@ export default function NewHistoryCompany(props, { navigation }) {
             const gallerystatus = await ImagePicker.requestMediaLibraryPermissionsAsync();
             sethasgallerypermission(gallerystatus.status === 'granted');
 
-            const camerastatus = await Camera.requestPermissionsAsync();
+            const camerastatus = await Camera.requestCameraPermissionsAsync();
             sethascamerapermission(camerastatus.status === 'granted');
         })();
 

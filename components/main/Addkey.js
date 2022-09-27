@@ -1,10 +1,15 @@
 import React, {useState } from 'react'
-import { View, StyleSheet, ScrollView, ImageBackground, Alert} from 'react-native'
-import { Card, Button, TextInput, Provider, Dialog} from 'react-native-paper'
+import { View, StyleSheet, ScrollView, ImageBackground, Alert, TextInput} from 'react-native'
+import { Card, Button, Provider, Title, Divider} from 'react-native-paper'
+
+import { Dropdown, MultiSelect} from 'react-native-element-dropdown';
 
 import firebase from 'firebase'
 require("firebase/firestore")
 require("firebase/firebase-storage")
+
+import {DropdownComponent} from './dropdowncomponent'
+import {dubaiareadata} from './listofareas.js'
 
 const alerthandler = () =>{
     Alert.alert(
@@ -21,6 +26,9 @@ export default function Addkey(props) {
     const [keyname, setkeyname] = useState("")
     const [keybuildingvilla, setKeybuildingvilla] = useState("")
     const [keyarea, setKeyarea] = useState("")
+
+    const [text, settext] =useState('')
+    const [text1, settext1] =useState('')
 
     const creation = firebase.firestore.FieldValue.serverTimestamp()
     const keyhistorycreation = creation
@@ -46,10 +54,11 @@ export default function Addkey(props) {
                     keyarea,
                     entrytype,
                     creation,
-                    keyhistorycreation
+                    keyhistorycreation,
                 })
                 .then(function (docRef) {
                     console.log("Document written with ID: ", docRef.id);
+                    let keyid = docRef.id
 
                     firebase.firestore()
                         .collection('keycollection')
@@ -59,6 +68,7 @@ export default function Addkey(props) {
                         .collection("keyhistory")
                         .add({
                             entrytype,
+                            keyid,
                             creation: firebase.firestore.FieldValue.serverTimestamp()
                         },
                             function (error) {
@@ -102,13 +112,26 @@ export default function Addkey(props) {
                             placeholder="Building/Villa . . ."
                             onChangeText={(keybuildingvilla) => setKeybuildingvilla(keybuildingvilla)}
                             />
-
-                            <TextInput
-                            style={styles.textinputstyle}
-                            type='outlined'
-                            placeholder="Area/Community . . ."
-                            onChangeText={(keyarea) => setKeyarea(keyarea)}
+                            
+                            <Dropdown
+                            style={styles.dropdown}
+                            placeholderStyle={styles.placeholderStyle}
+                            selectedTextStyle={styles.selectedTextStyle}
+                            inputSearchStyle={styles.inputSearchStyle}
+                            iconStyle={styles.iconStyle}
+                            data={dubaiareadata}
+                            search
+                            maxHeight={300}
+                            labelField="label"
+                            valueField="value"
+                            placeholder="Select item"
+                            searchPlaceholder="Search..."
+                            value={keyarea}
+                            onChange={item => {
+                            setKeyarea(item.value);
+                            }}
                             />
+                   
                         </Card.Content>
 
                     </Card>
@@ -146,9 +169,39 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between'
     },
     textinputstyle: {
-        marginVertical: 10
+        marginVertical: 20,
+        borderBottomWidth: 0.5,
+        borderBottomColor: 'grey',
     },
     cardcontentstyle: {
         margin: 10
-    }
+    },
+
+    dropdown: {
+        height: 50,
+        backgroundColor: 'transparent',
+        borderBottomColor: 'gray',
+        borderBottomWidth: 0.5,
+    },
+    icon: {
+        marginRight: 5,
+    },
+    iconStyle: {
+      width: 20,
+      height: 20,
+    },
+
+    placeholderStyle: {
+        fontSize: 16,
+    },
+    selectedTextStyle: {
+        fontSize: 16,
+    },
+    inputSearchStyle: {
+        height: 40,
+        fontSize: 16,
+    },
+    selectedStyle: {
+        borderRadius: 12,
+    },
 })

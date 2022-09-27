@@ -6,7 +6,7 @@ import firebase from 'firebase'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
-import { fetchUser, fetchUserPosts, fetchKeyInfo, fetchKeyInfoDetails, fetchKeyInfo2, leadfiltersale} from '../redux/actions/index'
+import { fetchUser, fetchUserPosts, fetchKeyInfo, fetchKeyInfoDetails, fetchKeyInfo2, leadfiltersale, notificationlist} from '../redux/actions/index'
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -34,11 +34,20 @@ export class Main extends Component {
 		this.props.fetchKeyInfoDetails();
 		this.props.fetchKeyInfo2();
 		this.props.leadfiltersale();
-		
+		this.props.notificationlist();
+				
 	}
 	render() {
 		return (
 			<Tab.Navigator initialRouteName="Key List">
+
+				<Tab.Screen name='LeadTracker' component={LeadTrackerScreen}
+					options={{
+						tabBarIcon: ({ color, size }) => (
+							<MaterialCommunityIcons name="clipboard-account-outline" color={color} size={26} />
+						),
+						headerShown: false
+					}} />
 
 				<Tab.Screen name='Key List' component={KeyScreen} navigation={this.props.navigation}
 					listeners={({ navigation }) => ({
@@ -52,14 +61,6 @@ export class Main extends Component {
 						tabBarIcon: ({ color, size }) => (
 							<MaterialCommunityIcons name="key-variant" color={color} size={26}
 							/>
-						),
-						headerShown: false
-					}} />
-
-				<Tab.Screen name='LeadTracker' component={LeadTrackerScreen}
-					options={{
-						tabBarIcon: ({ color, size }) => (
-							<MaterialCommunityIcons name="clipboard-account-outline" color={color} size={26} />
 						),
 						headerShown: false
 					}} />
@@ -81,7 +82,15 @@ const mapStateToProps = (store) => ({
 	currentUser: store.userState.currentUser
 })
 
-const mapDispatchToProps = (dispatch) => bindActionCreators({ fetchUser, fetchUserPosts, fetchKeyInfo, fetchKeyInfoDetails, fetchKeyInfo2, leadfiltersale}, dispatch);
+const mapDispatchToProps = (dispatch) => bindActionCreators({ 
+	fetchUser, 
+	fetchUserPosts, 
+	fetchKeyInfo, 
+	fetchKeyInfoDetails, 
+	fetchKeyInfo2, 
+	leadfiltersale, 
+	notificationlist
+}, dispatch);
 
 
 export default connect(mapStateToProps, mapDispatchToProps)(Main)

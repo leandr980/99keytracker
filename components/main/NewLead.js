@@ -1,11 +1,13 @@
 import React, {useState, useRef} from 'react'
 import { View, StyleSheet, ScrollView, ImageBackground, Alert, SafeAreaView, TextInput, Text} from 'react-native'
-import { Card, Button, Provider, Chip, Divider, Title, RadioButton, TouchableRipple} from 'react-native-paper'
+import { Card, Button, Provider, Chip, Divider, Title, Switch, Caption} from 'react-native-paper'
 
 import {Picker} from '@react-native-picker/picker';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { Dropdown, MultiSelect} from 'react-native-element-dropdown';
 import Slider from '@react-native-community/slider';
+
+import {dubaiareadata, leadsourcedata} from './listofareas.js'
 
 import firebase from 'firebase'
 require("firebase/firestore")
@@ -27,38 +29,39 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 export default function NewLead(props) {
-
-    const [value, setValue] = useState('');
-    const [value2, setValue2] = useState('first');
     
     const [name, setName] = useState("")
     const [number, setNumber] = useState("")
     const [email, setEmail] = useState("")
 
-    const [salerent, setSalerent] = useState("")
-    const [propertytype, setPropertytype] = useState('')
-    const [propertystatus, setpropertystatus] = useState('')
+    const [salerent, setSalerent] = useState("Rent")
+    const [propertystatus, setpropertystatus] = useState('Ready')
+    const [propertytype, setPropertytype] = useState('Apartment')
     //const [area, setArea] = useState('')
     const [multiplearea, setmultiplearea] = useState([]);
-    const [bedroom, setBedroom] = useState("")
-    const [budget, setBudget] = useState("")
-    const [furnishing, setFurnishing] = useState("")
+    const [bedroom, setBedroom] = useState("Studio")
+    const [builduparea, setbuilduparea] = useState(0)
+    const [buildupareatype, setbuildupareatype] = useState("SqFt")
+    const [budget, setBudget] = useState(0)
+    const [minbudget, setMinbudget] = useState(0)
+    const [maxbudget, setMaxbudget] = useState(0)
+    const [furnishing, setFurnishing] = useState("Un-Furnished")
     
-    const [leadsource, setLeadsource] = useState('')
-    const [notes, setnotes] = useState('')
-    
-    const [propertytypeother, setpropertytypeother] = useState(false)
+    const [leadsource, setLeadsource] = useState('Walk-In')
+    //const [notes, setnotes] = useState('')
+    const [isSwitchOn, setIsSwitchOn] = React.useState(false);
+    const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
+
+    const date = ''
     
     const status = 'NOT CONTACTED'
 
     const creation = firebase.firestore.FieldValue.serverTimestamp()
-    const keyhistorycreation = creation
-
-    const [selectedsalerent ,setSelectedsalerent] = useState(false)
+    const creationupdate = creation
 
     const saveKeyData = () => {
 
-        if (!name.trim() || !number.trim() || !budget.trim() === "") {
+        if (!name.trim() || !number.trim() ) {
             alerthandler()
         }
         else {
@@ -76,45 +79,26 @@ export default function NewLead(props) {
                     propertytype,
                     multiplearea,
                     bedroom,
-                    budgetrange,
+                    builduparea,
+                    buildupareatype,
+                    //budgetrange,
+                    budget,
+                    minbudget,
+                    maxbudget,
                     furnishing,
 
                     leadsource,
-                    notes,
 
                     status,
-                    creation
+                    date,
+                    creation,
+                    creationupdate
                 }).then((function () {
                     props.navigation.pop()
                 }))
         }
     }
 
-    const leadsourcedata = [
-        { label: 'Property Finder', value: 'Property Finder' },
-        { label: 'Bayut', value: 'Bayut' },
-        { label: 'Dubizzle', value: 'Dubizzle' },
-        { label: 'Walk-In', value: 'Walk-In' },
-        { label: 'Cold Calling', value: 'Cold Calling' },
-        { label: 'Facebook / Instagram', value: 'Facebook / Instagram' },
-        { label: 'Google', value: 'Google' },
-        { label: 'Website', value: 'Website' },
-        { label: 'Referral', value: 'Referral' },
-    ];
-
-    const dubaiareadata = [
-        { label: 'Al Barsha', value: 'Al Barsha' },
-        { label: 'Emirates Hills', value: 'Emirates Hills' },
-        { label: 'Downtown Dubai', value: 'Downtown Dubai' },
-        { label: 'Jebal Ali', value: 'Jebal Ali' },
-        { label: 'Jumeirah Village Circle', value: 'Jumeirah Village Circle' },
-        { label: 'Jumeirah Village Triangle', value: 'Jumeirah Village Triangle' },
-    ];
-
-    const [budgetrange, setbudgetrange] = useState(0)
-    const [budgetrange1, setbudgetrange1] = useState(0)
-
-    const [checked, setChecked] = React.useState('');
 
     return (
         <Provider>
@@ -146,6 +130,7 @@ export default function NewLead(props) {
                             style={styles.textinputstyle}
                             type='outlined'
                             placeholder="Phone Number . . ."
+                            keyboardType='numeric'
                             onChangeText={(name) => setNumber(name)}/>
 
                             <TextInput
@@ -159,6 +144,9 @@ export default function NewLead(props) {
                     <Card style={styles.cardstyle}>
 
                         <Card.Title title='Property Details'/>
+                        <Card.Content>
+                            <Caption style={{flexWrap: 'wrap'}}>*Rent, Ready, Apartment, Studio, SqFt, Unfurnished and Walk-In are set as default selections, please change them accordingly</Caption>
+                        </Card.Content>
 
                         <Divider style={{margin: 10}}/>
                         <Card.Content style={{marginVertical: 15}}>
@@ -273,32 +261,74 @@ export default function NewLead(props) {
                         </Card.Content>
 
                         <Divider style={{margin: 10}}/>
-                        <Card.Content style={{marginVertical: 15}}>
-                            <Title>Budget</Title>
-                            <View style={{flexDirection: 'row', alignContent: 'center'}}>
-                                <Slider
-                                style={{height: 40, width: windowWidth/1.2}}
-                                onValueChange={(value)=> setbudgetrange(value)}
-                                minimumValue={0.1}
-                                maximumValue={2}
-                                minimumTrackTintColor="#d6d6d6"
-                                maximumTrackTintColor="#000000"
-                                />
-                                <Text>{Math.floor(budgetrange*10)*10000}</Text>
+                        <Card.Content>
+                            <Title>Build-Up Area</Title>
+                            <TextInput
+                            style={styles.textinputstyle}
+                            placeholder="Build up area. . ."
+                            keyboardType='numeric'
+                            onChangeText={(buildup) => setbuilduparea(buildup)}/>
+                            <View style={{flexDirection: 'row'}}>
+                                <Chip selected={ buildupareatype === 'SqFt' ? true : false } 
+                                style={{marginRight: 5, marginBottom: 5}} 
+                                onPress={()=> setbuildupareatype('SqFt')}>SqFt</Chip>
+
+                                <Chip selected={ bedroom === 'SqM' ? true : false } 
+                                style={{marginRight: 5, marginBottom: 5}} 
+                                onPress={()=> setbuildupareatype('SqM')}>SqM</Chip>
                             </View>
+                            <Caption>*If no area has been entered, 0 will be used as the default</Caption>
+                        </Card.Content>
+
+                        <Divider style={{margin: 10}}/>
+                        <Card.Content style={{marginVertical: 15}}>
+                            <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+                                <Title>Budget</Title>
+                                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                    <Caption>Set Min and Max Budget</Caption>
+                                    <Switch value={isSwitchOn} onValueChange={onToggleSwitch} />
+                                </View>
+                            </View>
+                            {
+                                isSwitchOn ? 
+                                <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                                    <TextInput
+                                    style={styles.textinputstylebudget}
+                                    placeholder="Min Budget. . ."
+                                    keyboardType='numeric'
+                                    onChangeText={(minbudget) => setMinbudget(minbudget)}/>
+
+                                    <TextInput
+                                    style={styles.textinputstylebudget}
+                                    placeholder="Max Budget . . ."
+                                    keyboardType='numeric'
+                                    onChangeText={(maxbudget) => setMaxbudget(maxbudget)}/>
+                                </View>:
+                                <View>
+                                    <TextInput
+                                    style={styles.textinputstyle}
+                                    placeholder="Budget. . ."
+                                    keyboardType='numeric'
+                                    onChangeText={(budget) => setBudget(budget)}/>
+                                </View>
+                                
+                            }
+
+                            <Caption>*If no budget has been entered, 0 will be used as the default</Caption>
+                            
                         </Card.Content>
 
                         <Divider style={{margin: 10}}/>
                         <Card.Content style={{marginVertical: 15}}>
                             <Title>Furnishing</Title>
                             <View style={{flexDirection: 'row'}}>
-                                <Chip selected={ furnishing === 'Furnished' ? true : false } 
-                                style={{marginRight: 5, marginBottom: 5}} 
-                                onPress={()=> setFurnishing('Furnished')}>Furnished</Chip>
-
                                 <Chip selected={ furnishing === 'Un-Furnished' ? true : false } 
                                 onPress={()=> setFurnishing('Un-Furnished')}
                                 style={{marginRight: 5, marginBottom: 5}}>Un-Furnished</Chip>
+
+                                <Chip selected={ furnishing === 'Furnished' ? true : false } 
+                                style={{marginRight: 5, marginBottom: 5}} 
+                                onPress={()=> setFurnishing('Furnished')}>Furnished</Chip>
 
                                 <Chip selected={ furnishing === 'Any' ? true : false } 
                                 onPress={()=> setFurnishing('Any')}
@@ -318,32 +348,49 @@ export default function NewLead(props) {
                         <Divider style={{margin: 10}}/>
                         <Card.Content style={{marginVertical: 15}}>
                             <Title>Lead Source</Title>
-                            <Dropdown
-                                style={styles.dropdown}
-                                placeholderStyle={styles.placeholderStyle}
-                                selectedTextStyle={styles.selectedTextStyle}
-                                inputSearchStyle={styles.inputSearchStyle}
-                                iconStyle={styles.iconStyle}
-                                data={leadsourcedata}
-                                search
-                                maxHeight={300}
-                                labelField="label"
-                                valueField="value"
-                                placeholder="Select a Lead Source"
-                                searchPlaceholder="Search..."
-                                value={value}
-                                onChange={item1 => {
-                                setValue(item1.value);
-                                }}
-                            />
+                            <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
+                                <Chip selected={ leadsource === 'Walk-In' ? true : false } 
+                                    style={{marginRight: 5, marginBottom: 5}} 
+                                    onPress={()=> setLeadsource('Walk-In')}>Walk-In</Chip>
+
+                                <Chip selected={ leadsource === 'Property Finder' ? true : false } 
+                                    style={{marginRight: 5, marginBottom: 5}} 
+                                    onPress={()=> setLeadsource('Property Finder')}>Properfinder</Chip>
+
+                                <Chip selected={ leadsource === 'Bayut' ? true : false } 
+                                    style={{marginRight: 5, marginBottom: 5}} 
+                                    onPress={()=> setLeadsource('Bayut')}>Bayut</Chip>
+
+                                <Chip selected={ leadsource === 'Dubizzle' ? true : false } 
+                                    style={{marginRight: 5, marginBottom: 5}} 
+                                    onPress={()=> setLeadsource('Dubizzle')}>Dubizzle</Chip>
+
+                                <Chip selected={ leadsource === 'Cold Call' ? true : false } 
+                                    style={{marginRight: 5, marginBottom: 5}} 
+                                    onPress={()=> setLeadsource('Cold Call')}>Cold Call</Chip>
+
+                                <Chip selected={ leadsource === 'Facebook/Instagram' ? true : false } 
+                                    style={{marginRight: 5, marginBottom: 5}} 
+                                    onPress={()=> setLeadsource('Facebook/Instagram')}>Facebook/Instagram</Chip>
+
+                                <Chip selected={ leadsource === 'Google' ? true : false } 
+                                    style={{marginRight: 5, marginBottom: 5}} 
+                                    onPress={()=> setLeadsource('Google')}>Google</Chip>
+
+                                <Chip selected={ leadsource === 'Website' ? true : false } 
+                                    style={{marginRight: 5, marginBottom: 5}} 
+                                    onPress={()=> setLeadsource('Website')}>Website</Chip>
+
+                                <Chip selected={ leadsource === 'Referral' ? true : false } 
+                                    style={{marginRight: 5, marginBottom: 5}} 
+                                    onPress={()=> setLeadsource('Referral')}>Referral</Chip>
+                            </View>
                         </Card.Content>
                     </Card>
 
-                    <Card style={styles.cardstyle}>
-                        <Card.Actions style={{ justifyContent: 'center' }}>
-                            <Button onPress={() => saveKeyData()}> SAVE </Button>
-                        </Card.Actions>
-                    </Card>
+                    <View style={{justifyContent: 'center', alignContent: 'center', alignItems: 'center', marginVertical: 20}}>
+                        <Button style={{borderRadius: 300}} mode="contained" onPress={() => saveKeyData()}> SAVE </Button>
+                    </View>
                 </ScrollView>
             </ImageBackground>
         </Provider>
@@ -368,36 +415,46 @@ const styles = StyleSheet.create({
         borderBottomWidth: 0.5,
         borderBottomColor: 'grey',
     },
+    textinputstylebudget: {
+        marginVertical: 20,
+        width: windowWidth/2.3,
+        borderBottomWidth: 0.5,
+        borderBottomColor: 'grey',
+    },
     pickerstyle: {
         marginVertical: 10
     },
     cardcontentstyle: {
         margin: 10
     },
+
+    
     dropdown: {
         margin: 16,
         height: 50,
         borderBottomColor: 'gray',
         borderBottomWidth: 0.5,
-      },
-      icon: {
+    },
+    icon: {
         marginRight: 5,
-      },
-      placeholderStyle: {
+    },
+    iconStyle: {
+      width: 20,
+      height: 20,
+    },
+
+
+    placeholderStyle: {
         fontSize: 16,
-      },
-      selectedTextStyle: {
+    },
+    selectedTextStyle: {
         fontSize: 16,
-      },
-      iconStyle: {
-        width: 20,
-        height: 20,
-      },
-      inputSearchStyle: {
+    },
+    inputSearchStyle: {
         height: 40,
         fontSize: 16,
-      },
-      selectedStyle: {
+    },
+    selectedStyle: {
         borderRadius: 12,
-      },
+    },
 })

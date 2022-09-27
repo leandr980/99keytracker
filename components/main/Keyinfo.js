@@ -1,11 +1,13 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { View, Text, Image, FlatList, StyleSheet, ImageBackground, ScrollView } from 'react-native'
-import { Card, FAB, IconButton, Chip, Divider, Caption, Provider, List, Menu, Switch} from 'react-native-paper'
+import { View, Text, Image, FlatList, StyleSheet, ImageBackground, ScrollView, Alert} from 'react-native'
+import { Card, FAB, IconButton, Chip, Divider, Caption, Provider, List, Menu, Switch, ActivityIndicator, Colors} from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import {format } from 'date-fns'
 
 import firebase from 'firebase'
 require("firebase/firestore")
+
+import { Main_keyenty_component } from './keyinfo-components'
 
 export default function Keyinfo(props) {
 
@@ -13,9 +15,15 @@ export default function Keyinfo(props) {
 
     const [keydetails, setKeydetails] = useState([])
     const [keyHistory, setKeyHistory] = useState([])
-    const [keyHistorydate, setKeyHistorydate] = useState('')
+
+
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
+
+        setTimeout(() => {
+            setLoading(false);
+          }, 2000);
 
         console.log(props.route.params.keyId)
 
@@ -27,7 +35,7 @@ export default function Keyinfo(props) {
                 .onSnapshot((docSnapshot) => {
                     if (!docSnapshot.metadata.hasPendingWrites) {  
                         setKeydetails(docSnapshot.data())
-                        setKeyHistorydate(docSnapshot.data().creation.toDate().toString())
+                        
                     }
                 })
 
@@ -37,7 +45,7 @@ export default function Keyinfo(props) {
                 .collection('keylist')
                 .doc(props.route.params.keyId)
                 .collection('keyhistory')
-                .orderBy("creation", "desc")
+                .orderBy("creation", "desc")    
                 .onSnapshot((docSnapshot) => {
                     let keyHistory = docSnapshot.docs.map(doc => {
                         const data = doc.data();
@@ -55,61 +63,6 @@ export default function Keyinfo(props) {
                 }
     }, [])
 
-    const changechipcolor =(itementry)=> {
-        switch(itementry){
-            case 'LANDLORD':
-                return{
-                    backgroundColor: (`#ffd60a`), margin: 10
-                }
-            case 'COMPANY':
-                return{
-                    backgroundColor: (`#fb8500`), margin: 10
-                }
-            case 'AGENT':
-                return{
-                    backgroundColor: (`#a2d2ff`), margin: 10
-                }
-            case 'OTHER':
-                return{
-                    backgroundColor: (`#bdb2ff`), margin: 10
-                }
-            case 'NEW ENTRY':
-                return{
-                    backgroundColor: (`#8eecf5`), margin: 10
-                }
-
-            case 'NOT RETURNED':
-                return{
-                    backgroundColor: (`#ff002b`), marginRight: 10, marginLeft: 5
-                }
-            case 'RETURNED':
-                return{
-                    backgroundColor: (`#70e000`), marginRight: 10, marginLeft: 5
-                }
-        }
-
-    }
-
-    const changechipicon =(itementry)=> {
-        switch(itementry){
-            case 'LANDLORD':
-                return "account-star"
-            case 'COMPANY':
-                return "domain"
-            case 'AGENT':
-                return "account-tie"
-            case 'OTHER':
-                return "account-question-outline"
-            case 'NEW ENTRY':
-                return "folder-plus"
-
-            case 'NOT RETURNED':
-                return "close"
-            case 'RETURNED':
-                return "check"
-        }
-    }
-
     const [state, setState] = React.useState({ open: false });
     const onStateChange = ({ open }) => setState({ open });
     const { open } = state;
@@ -119,8 +72,6 @@ export default function Keyinfo(props) {
     const closeMenu = () => setVisible(false);
 
     const [visiblesettings, setVisiblesettings ] = React.useState('');
-
-    //<IconButton icon={'pencil-outline'} onPress={()=> props.navigation.navigate( 'Edit Key', { keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid })}/>
 
     const [updatedata, setupdatedata] = useState([])
 
@@ -136,142 +87,46 @@ export default function Keyinfo(props) {
             .delete()
             console.log('deleted doc')
 
-            //set array with new data after
-            /*
-            const task = firebase.firestore()
-                .collection('keycollection')
-                .doc(props.route.params.uid)
-                .collection('keylist')
-                .doc(props.route.params.keyId)
-                .collection('keyhistory')
-                .orderBy("creation", "desc")
-                .onSnapshot((docSnapshot) => {
-                    let keyHistory = docSnapshot.docs.map(doc => {
-                        const data = doc.data();
-                        const id = doc.id;
-                        return { id, ...data }
-                    })
-                    if (!docSnapshot.metadata.hasPendingWrites) {  
-                        setupdatedata(keyHistory)
-                        console.log(keyHistory)
-                    }  
-                })
-                
-                //update db
-               const taskCompleted = firebase.firestore()
-                    .collection('keycollection')
-                    .doc(firebase.auth().currentUser.uid)
-                    .collection("keylist")
-                    .doc(props.route.params.keyId)
-                    .update({
-                        name: updatedata.name,
-                        entrytype: updatedata.entrytype,
-                        number: updatedata.number,
-                        keyhistorycreation: updatedata.keyhistorycreation
-                    },
-                        function (error) {
-                            if (error) {
-                                console.log("Data could not be saved." + error);
-                            } else {
-                                console.log("Data saved successfully.");
-                            }
-                        }
-                    )
-
-                    task.on("state_changed", taskCompleted)
-                    */
     }
 
-    const returnedstatus =(status,historyid)=>{
-        console.log(historyid)
-        if(status == 'RETURNED'){
-            const finstatus = 'NOT RETURNED'
-            firebase.firestore()
-            .collection('keycollection')
-            .doc(props.route.params.uid)
-            .collection('keylist')
-            .doc(props.route.params.keyId)
-            .collection('keyhistory')
-            .doc(historyid)
-            .update({
-                returnedstatus: finstatus,
-                creation: creation
-            })
-        }
-        else if (status == 'NOT RETURNED'){
-            const finstatus = 'RETURNED'
-            firebase.firestore()
-            .collection('keycollection')
-            .doc(props.route.params.uid)
-            .collection('keylist')
-            .doc(props.route.params.keyId)
-            .collection('keyhistory')
-            .doc(historyid)
-            .update({
-                returnedstatus: finstatus,
-                creation: creation
-            })
-        }
+    const deletecollection =()=> {
 
+        setLoading(true)
+
+        const refnotes = firebase.firestore() 
+        .collection('keycollection')
+        .doc(props.route.params.uid)
+        .collection('keylist')
+        .doc(props.route.params.keyId)
+        .collection('keyhistory')
+
+        keyHistory.forEach((doc)=>{
+            refnotes.doc(doc.id).delete()
+            console.log('deleted notes doc with id: ', doc.id)
+        })
+
+        firebase.firestore()
+        .collection('keycollection')
+        .doc(props.route.params.uid)
+        .collection('keylist')
+        .doc(props.route.params.keyId)
+        .delete().then((function () {
+            props.navigation.pop()
+        }))
     }
-
-    const setdisablechip =(index, historyid,returnedstatus)=>{
-        if(index > 0) {
-            if(returnedstatus == 'NOT RETURNED' && index != 0) {
-                const finstatus = 'RETURNED'
-                firebase.firestore()
-                .collection('keycollection')
-                .doc(props.route.params.uid)
-                .collection('keylist')
-                .doc(props.route.params.keyId)
-                .collection('keyhistory')
-                .doc(historyid)
-                .update({
-                    returnedstatus: finstatus,
-                    creation: creation
-                })
-            }
-            return true
-        }
-    }
-
-    const deletecollection = async()=>{
-
-        
-
-        for (let i = 0; i < keyHistory.length; i++) {
-            if(keyHistory[i].entrytype != 'NEW ENTRY'){
-                firebase.firestore()
-                .collection('keycollection')
-                .doc(props.route.params.uid)
-                .collection('keylist')
-                .doc(props.route.params.keyId)
-                .collection('keyhistory')
-                .doc(keyHistory[i].id)
-                .delete()
-            }
-            
-        }
-
-    }
-
-    /*
-                                            {
-                                            visiblesettings == 'edit' &&
-                                            <IconButton style={{marginTop: 20}} icon={'pencil-outline'}/>
-                                        }
-                                         {
-                                            visiblesettings == 'delete' &&
-                                                <IconButton style={{marginTop: 20}} icon={'delete-outline'} onPress={() => deletesingledoc(item.id)}/>
-                                        }
-
-                                        
-    */
 
     return (
         <Provider>
             <View style={styles.container}>
-
+                {
+                    loading ? 
+                    <ImageBackground 
+                    style={{flex: 1, justifyContent: 'center'}}
+                    imageStyle={{resizeMode: 'repeat'}}
+                    source={require('../../assets/bg-image/99-whatsapp-bg-small.jpg')}>
+                        <ActivityIndicator animating={true} color={Colors.red800} />
+                    </ImageBackground>
+                    : 
             <ImageBackground 
             style={{flex: 1}}
             imageStyle={{resizeMode: 'repeat'}}
@@ -279,14 +134,26 @@ export default function Keyinfo(props) {
 
                         <Card style={styles.maincardstyle}>
 
+                        <Divider/>
+
                             <Card.Title
                                 left={() => <MaterialCommunityIcons name="file-key-outline" size={40} />}
                                 right={()=> 
                                 <Menu visible={visible} onDismiss={closeMenu} anchor={<IconButton icon={'cog'} onPress={openMenu}/>}>
-                                <Menu.Item onPress={() => setVisiblesettings('edit')} title="EDIT" />
-                                <Menu.Item onPress={() => setVisiblesettings('delete')} title="DELETE" />
-                                <Divider/>
-                                <Menu.Item onPress={() => setVisiblesettings('')} title="CANCEL" />
+                                <Menu.Item onPress={()=> props.navigation.navigate( 'Edit Key', { keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid })} title="EDIT" />
+                                <Menu.Item onPress={()=> Alert.alert(
+                                                        "Are you sure you want to delete this Key?",
+                                                        "This will also delete all history items",
+                                                        [
+                                                            {
+                                                                text: "YES",
+                                                                onPress: () => deletecollection()
+                                                            },
+                                                            { 
+                                                                text: "NO"
+                                                            }
+                                                        ]
+                                                    )} title="DELETE" />
                                 </Menu>
                                 }
                                 style={{
@@ -298,19 +165,9 @@ export default function Keyinfo(props) {
                             />
                             
                             <Card.Content style={{flexDirection: 'row'}}>
-                                <Caption style={{marginLeft: 55}}>{'Added: '+keyHistorydate.substring(4, 15) }</Caption>
-                                {
-                                visiblesettings == 'edit' &&
-                                <IconButton style={{position: 'absolute', bottom: 10, left: 13}} icon={'pencil-outline'} onPress={()=> props.navigation.navigate( 'Edit Key', { keyId: props.route.params.keyId, uid: firebase.auth().currentUser.uid })}/>
-                                }
-                                {
-                                visiblesettings == 'delete' &&
-                                <IconButton style={{position: 'absolute', bottom: 10, left: 13}} icon={'delete-outline'} onPress={()=> deletecollection()}/>
-                                }
+                                <Caption style={{marginLeft: 55}}>{format(new Date(keydetails.creation.toDate().toString()), 'PPpp')}</Caption>
                             </Card.Content>
                         </Card>
-
-                        
 
                             <View style={styles.containerGallery}>
 
@@ -318,150 +175,16 @@ export default function Keyinfo(props) {
                                 numColumns={1}
                                 horizontal={false}
                                 data={keyHistory}
-
-                                renderItem={({ item, index }) => 
-
-                                ( 
-                                    <View style={{flex: 1, flexDirection: 'row'}}>
-
-                                       
-
-
-                                    <Card style={styles.cardstyle}>
-                                        <Card.Title
-                                            title={'Added ' + format(new Date(item.creation.toDate().toString()), 'PP')}
-                                            subtitle={format(new Date(item.creation.toDate().toString()), 'p')}
-                                            right={()=>
-                                            <Chip 
-                                            style={ changechipcolor(item.entrytype)} 
-                                            icon={changechipicon(item.entrytype)}
-                                            > {item.entrytype}</Chip>}/>
-                                            
-                                        <Divider />
-                                        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-
-                                        <View>
-                                        {
-                                        item.entrytype == 'LANDLORD' &&
-                                            <Card.Content>
-                                                <Caption> Name: {item.name} </Caption>
-                                                <Caption> Phone Number: {item.number} </Caption>
-                                                <Caption> Notes: {item.notes} </Caption>
-                                            </Card.Content>
-                                        }
-                                        {
-                                        item.entrytype == 'AGENT' &&
-                                            <Card.Content>
-                                                <Caption> Name: {item.name} </Caption>
-                                                <Caption> Phone Number: {item.number} </Caption>
-                                                <Caption> Agency: {item.agency} </Caption>
-                                                <Caption> Notes: {item.notes} </Caption>
-                                            </Card.Content>
-                                        }
-                                        {
-                                        item.entrytype == 'COMPANY' &&
-                                            <Card.Content>
-                                                <Caption> Name: {item.name} </Caption>
-                                                <Caption> Phone Number: {item.number} </Caption>
-                                                <Caption> Notes: {item.notes} </Caption>
-                                            </Card.Content>
-                                        }
-                                        {
-                                        item.entrytype == 'OTHER' &&
-                                            <Card.Content>
-                                                <Caption> Name: {item.name} </Caption>
-                                                <Caption> Phone Number: {item.number} </Caption>
-                                                <Caption> Notes: {item.notes} </Caption>
-                                            </Card.Content>
-                                        }
-                                        </View>
-                                        {
-                                            item.entrytype != 'NEW ENTRY' &&
-                                        <View style={{alignItems: 'center', flexDirection: 'row'}}>
-                                            <Caption>Key status</Caption>
-                                            <Chip 
-                                            icon={changechipicon(item.returnedstatus)} 
-                                            style={changechipcolor(item.returnedstatus)} 
-                                            onPress={()=>returnedstatus(item.returnedstatus, item.id)}
-                                            disabled={setdisablechip(index, item.id, item.returnedstatus)}
-                                            >{item.returnedstatus}</Chip>
-                                            
-                                        </View>
-                                        
-                                        }
-                                        </View>
-
-                                        {
-                                            {
-                                                'AGENT' :
-                                                <List.Section>
-                                                    <List.Accordion title='View Media'>
-                                                        <Divider/>
-                                                        <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap'}}>
-                                                            <ScrollView horizontal>
-                                                                <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
-                                                                    <Card.Cover source={{ uri: item.imageIDfrontURL}} 
-                                                                    defaultSource={require('../../assets/99nomedia.jpg')}
-                                                                    style={{alignSelf: "center",  width: 300}}/>
-                                                                    <Card.Title title={"Emirates ID Front"}/>
-                                                                </Card>
-
-                                                                <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
-                                                                    <Card.Cover source={{ uri: item.imageIDbackURL }}
-                                                                    defaultSource={require('../../assets/99nomedia.jpg')}
-                                                                    style={{alignSelf: "center", width: 300}}/>
-                                                                    <Card.Title title={"Emirates ID Front"}/>
-                                                                </Card>
-                                                                <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
-                                                                    <Card.Cover source={{ uri: item.signatureURL }}
-                                                                    defaultSource={require('../../assets/99nomedia.jpg')}
-                                                                    style={{alignSelf: "center", width: 300}}/>
-                                                                    <Card.Title title={"Agent Signature"}/>
-                                                                </Card>
-                                                            </ScrollView>                                                            
-                                                        </View>
-                                                    </List.Accordion>                                    
-                                                </List.Section>,
-
-                                                'NEW ENTRY' :
-                                                <></>
-
-                                            } [item.entrytype]||
-
-                                            <List.Section>
-                                                <List.Accordion title='View Media'>
-                                                    <Divider/>
-
-                                                    <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap'}}>
-
-                                                        <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
-                                                            <Card.Cover source={{ uri: item.imageIDfrontURL}} 
-                                                            defaultSource={require('../../assets/99nomedia.jpg')}
-                                                            style={{alignSelf: "center",  width: 300}}/>
-                                                            <Card.Title title={"Emirates ID Front"}/>
-                                                        </Card>
-
-                                                        <Card style={{borderRadius: 10, margin: 10, elevation: 5, width: 300}}>
-                                                            <Card.Cover source={{ uri: item.imageIDbackURL }}
-                                                            defaultSource={require('../../assets/99nomedia.jpg')}
-                                                            style={{alignSelf: "center", width: 300}}/>
-                                                            <Card.Title title={"Emirates ID Front"}/>
-                                                        </Card>
-
-                                                    </View>
-                                                </List.Accordion>                                    
-                                            </List.Section>
-                                        }
-                                    </Card>
+                                renderItem={({ item }) => (
+                                    <View>
+                                        <Main_keyenty_component keydetails={item}/>
                                     </View>
-                                    
-                                )
-                            }/>
+                                )}/>
                             
                             </View>
                             <FAB.Group
                             open={open}
-                            icon={open ? 'help-box' : 'plus'}
+                            icon={open ? 'help' : 'plus'}
                             theme={{ colors: { accent: 'white' } }}
                             actions={[
                                     {
@@ -497,6 +220,7 @@ export default function Keyinfo(props) {
                                 }}
                                 />
                 </ImageBackground>
+                }
             </View>
         </Provider>
     )

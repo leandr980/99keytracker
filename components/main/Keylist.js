@@ -1,5 +1,5 @@
 // JavaScript source code
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { View, Text, FlatList, StyleSheet, ImageBackground, RefreshControl} from 'react-native'
 import { Card, FAB, IconButton, Divider, Chip, Caption, Button } from 'react-native-paper'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -18,6 +18,31 @@ const wait = (timeout) => {
 
 function Keylist(props) {
 
+    useEffect(() => {
+
+            const subscribe2 = firebase.firestore()
+                .collection('keycollection')
+                .doc(firebase.auth().currentUser.uid)
+                .collection('keylistentry')
+                .orderBy('creation', 'desc')
+                .onSnapshot((docSnapshot) => {
+                    let keyHistory = docSnapshot.docs.map(doc => {
+                        const data = doc.data();
+                        const id = doc.id;
+                        return { id, ...data }
+                    })
+                    if (!docSnapshot.metadata.hasPendingWrites) {  
+                        setkeylistentry(keyHistory)
+                    }  
+                })
+
+                return () => {
+                    subscribe2()
+                }
+    }, [])
+
+    const [keylistentry, setkeylistentry] = useState([])
+
     const [refreshing, setRefreshing] = React.useState(false);
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
@@ -29,56 +54,18 @@ function Keylist(props) {
         return <View/>
     }
 
-    const changechipcolor =(itementry)=> {
-        switch(itementry){
-            case 'LANDLORD':
-                return{
-                    backgroundColor: (`#ffd60a`), margin: 2
-                }
-            case 'COMPANY':
-                return{
-                    backgroundColor: (`#fb8500`), margin: 2
-                }
-            case 'AGENT':
-                return{
-                    backgroundColor: (`#a2d2ff`), margin: 2
-                }
-            case 'OTHER':
-                return{
-                    backgroundColor: (`#bdb2ff`), margin: 2
-                }
-            case 'NEW ENTRY':
-                return{
-                    backgroundColor: (`#8eecf5`), margin: 2
-                }
-        }
-    }
+    const checkdate = (itemdate) => {
+        const difindays = Math.abs(differenceInDays(new Date(itemdate.toDate().toString()), startOfDay()))
 
-    const changechipicon =(itementry)=> {
-        switch(itementry){
-            case 'LANDLORD':
-                return "account-star"
-            case 'COMPANY':
-                return "domain"
-            case 'AGENT':
-                return "account-tie"
-            case 'OTHER':
-                return "account-question-outline"
-            case 'NEW ENTRY':
-                return "folder-plus"
+        switch(difindays){
+            case 0:
+                return 'Added today'
+            case 1:
+                return 'Added yesterday'
+            default:
+                return 'Added ' + difindays + ' days ago'
         }
     }
-    const testredux =(id)=> {
-        const arrayid = []
-        for (let i = 0; i < keyinfodetails.length; i++) {
-            if (id == keyinfodetails[i].id){
-                return keyinfodetails[i].id
-            }
-            //arrayid.push(keyinfodetails[i].id)
-        }
-        //return arrayid
-    }
-    
 
     return (
 
@@ -95,9 +82,6 @@ function Keylist(props) {
                 </View>
             </Card>
 
-
-            <Text onPress={()=> console.log(keyinfodetails)}> test</Text>
-
             <Divider />
 
             <View style={styles.containerGallery}>
@@ -109,11 +93,9 @@ function Keylist(props) {
                         <Text style={{ fontSize: 30, fontWeight: 'bold', marginLeft: 10 }}> Recent Entries </Text>
                     </View>
                 }
-                ListFooterComponent={
-                <View style={{alignItems: 'center', margin: 10}}>
-                    <Caption> End of list</Caption>
-                </View> 
-                }
+                ListEmptyComponent={<View style={{alignItems: 'center'}}> 
+                    <Caption style={{marginTop: 80, marginLeft: 10}}>List is empty</Caption> 
+                    </View>}
                 data={keyinfo}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}
                 renderItem={({ item }) => (
@@ -123,41 +105,20 @@ function Keylist(props) {
                         <Card.Title
                         left={() => <MaterialCommunityIcons name="folder-key-outline" size={40} />}
                         right={()=> <IconButton icon="eye" 
-                        onPress={() => props.navigation.navigate("Keyinfo", { keyId: item.id, uid: firebase.auth().currentUser.uid })}/>}
+                        onPress={() => props.navigation.navigate("Keyinfo", { keyId: item.id, uid: firebase.auth().currentUser.uid, name: item.keyname })}/>}
                         title={item.keyname}
                         subtitle={item.keybuildingvilla + ', ' +item.keyarea}
                         />
 
                         <Card.Content>
                             <Caption style={{marginLeft: 55}}>
-                            {Math.abs(differenceInDays(new Date(item.creation.toDate().toString()), startOfDay()))} days ago 
+                            {checkdate(item.creation)}
                             </Caption>
                         </Card.Content>
 
-                        <Divider/>  
-                        <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap', marginTop: 10, marginBottom: 10, marginLeft: 10, marginRight: 10, alignItems: 'center'}}>
-                            <Chip style={{margin: 2}}>Most Recent Log:</Chip>
-                            <Chip style={{margin: 2}}>{format(new Date(item.keyhistorycreation.toDate().toString()), 'PP')}</Chip>
-                            <Chip style={{margin: 2}}>{format(new Date(item.keyhistorycreation.toDate().toString()), 'p')}</Chip>
-                            {
-                                item.entrytype == 'NEW ENTRY' ? 
-                                <></>
-                                : 
-                                <>
-                                <Chip style={{margin: 2}}>{item.number}</Chip>
-                                <Chip style={{margin: 2}}>{item.name}</Chip>
-                                </>
-                            }
-                                    
-                            <Chip 
-                            style={changechipcolor(item.entrytype)} 
-                            icon={changechipicon(item.entrytype)}
-                            >{item.entrytype}</Chip>
-                        </View>
-
-
+                       
                     </Card>
-                )}/>                
+                )}/>
             </View>
 
             <FAB
